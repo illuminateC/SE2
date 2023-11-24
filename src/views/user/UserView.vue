@@ -41,12 +41,11 @@ export default {
         },
         setCookie(username) {
             console.log("set");
-            let curtime = new Date().getTime(); // 获取当前时间 ，转换成JSON字符串序列 
             let valueData = JSON.stringify({
                 username: username,
-                timer: curtime
+
             });
-            this.$Cookies.set('user_info', valueData); // 这里的30表示cookie的过期时间（以天为单位）
+            this.$Cookies.set('user_info', valueData, { expires: 30 }); // 这里的30表示cookie的过期时间（以天为单位）
 
 
         },
