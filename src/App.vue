@@ -1,30 +1,47 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <div id="app">
+    <TopBar @change="change"/>
+    <div class="app_container">
+      <router-view v-wechat-title='$route.meta.title'></router-view>
+    </div>
+    <FootBar />
+  </div>
 </template>
 
-<style>
+<script setup>
+import TopBar from "./components/Bar/TopBar.vue";
+import FootBar from "./components/Bar/FootBar.vue";
+
+
+useI18n()
+import { useI18n } from 'vue-i18n'
+const { locale } = useI18n()
+let change = () => {
+  if (locale.value == 'cn') {
+    locale.value = 'en'
+  } else {
+    locale.value = 'cn'
+  }
+}
+
+</script>
+
+<style scoped>
+@import "../node_modules/@elastic/react-search-ui-views/lib/styles/styles.css";
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  width: 98vw;
+  height: 98vh;
+
+  font-family: Avenir, apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  color: #191919;
+
 }
 
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+.app_container {
+  padding-top: 55px;
 }
 </style>
