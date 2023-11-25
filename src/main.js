@@ -10,12 +10,17 @@ import VueAxios from 'vue-axios'
 import VueWechatTitle from 'vue-wechat-title'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import { createI18n } from 'vue-i18n'
+import CookiesPlugin from './cookies-plugin'
 const app = createApp(App)
+app.use(router).use(store)
+app.use(VueAxios, axios)
+app.use(CookiesPlugin)
 app.use(router).use(store)
 app.use(VueAxios, axios)
 app.use(gsap)
 app.use(ElementPlus)
 app.use(VueWechatTitle);
+
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
   }
