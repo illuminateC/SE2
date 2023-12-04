@@ -1,4 +1,5 @@
 <template>
+
   <div id='root'>
     <div id="backpic">
       <StartPageInfo :type="'main'" />

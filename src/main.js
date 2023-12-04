@@ -11,6 +11,8 @@ import VueWechatTitle from 'vue-wechat-title'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import { createI18n } from 'vue-i18n'
 import CookiesPlugin from './cookies-plugin'
+import * as echarts from 'echarts';
+
 const app = createApp(App)
 app.use(router).use(store)
 app.use(VueAxios, axios)

@@ -36,6 +36,13 @@ const routes = [
     component: function () {
       return import('../views/TestView.vue')
     }
+  },
+  {
+    path: '/article',
+    name: 'articleDetail',
+    component: function () {
+      return import('../views/ArticleDetail.vue')
+    }
   }
 ]
 
