@@ -1,20 +1,23 @@
 <template>
-    <div>
-
-    </div>
+    <PersonalInfo />
 </template>
 
 <script>
-    export default {
-        data(){
-            return{
-                user:this.$Cookies.get('user_info')
-            }
+import PersonalInfo from '../../components/UserProfile/PersonalInfo.vue';
+export default {
+    components: {
+        PersonalInfo,
+    },
+    data() {
+        return {
+
         }
-        
-    }
+    },
+    created() {
+        console.log(1);
+    },
+
+}
 </script>
 
-<style  scoped>
-
-</style>
+<style ></style>

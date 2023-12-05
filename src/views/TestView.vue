@@ -1,6 +1,10 @@
 <template>
     <div>
-
+        1
+    </div>
+    <div class="box-container">
+        <div>3</div>
+        <div>2</div>
     </div>
 </template>
 
@@ -15,6 +19,7 @@ export default {
         console.log(this.Username);
     },
 }
+
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped></style>
