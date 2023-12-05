@@ -1,6 +1,4 @@
 <template>
-
-  <div id="main" style="width: 600px;height:400px;"></div>
   <div id="result_detail_page" >
     <div class="result_detail_page_container">
       <div class="result_detail_title_area">
@@ -185,8 +183,9 @@
           <div class="statistics_citation">
             <h3>相关文章</h3>
             <br/>
-            <related-paper-chart
-            ></related-paper-chart>
+            <related-paper-chart>
+              <div id="main" style="width: 400px;height:300px;"></div>
+            </related-paper-chart>
           </div>
         </div>
       </div>
@@ -300,27 +299,74 @@ export default {
   mounted() {
     this.drawChart();
   },
+
+//   option = {
+//   title: {
+//     text: '圆环图的例子',
+//     left: 'center',
+//     top: 'center'
+//   },
+//   series: [
+//     {
+//       type: 'pie',
+//       data: [
+//         {
+//           value: 335,
+//           name: 'A'
+//         },
+//         {
+//           value: 234,
+//           name: 'B'
+//         },
+//         {
+//           value: 1548,
+//           name: 'C'
+//         }
+//       ],
+//       radius: ['40%', '70%']
+//     }
+//   ]
+// };
   methods: {
     drawChart() {
-      // 基于准备好的dom，初始化echarts实例
       var myChart = echarts.init(document.getElementById('main'));
-      // 绘制图表
       myChart.setOption({
-        title: {
-          text: 'ECharts 入门示例'
-        },
-        tooltip: {},
-        xAxis: {
-          data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
-        },
-        yAxis: {},
-        series: [
-          {
-            name: '销量',
-            type: 'bar',
-            data: [5, 20, 36, 10, 10, 20]
-          }
-        ]
+        legend: {
+        orient: 'vertical',
+        x: 'left',
+        data: ['A', 'B', 'C', 'D', 'E']
+      },
+      series: [
+        {
+          type: 'pie',
+          radius: ['50%', '70%'],
+          avoidLabelOverlap: false,
+          label: {
+            show: false,
+            position: 'center'
+          },
+          labelLine: {
+            show: false
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: '30',
+              fontWeight: 'bold'
+            }
+          },
+          data: [
+            { value: 335, name: 'A' },
+            { value: 310, name: 'B' },
+            { value: 234, name: 'C' },
+            { value: 135, name: 'D' },
+            { value: 1548, name: 'E' },
+            { value: 1548, name: 'F' },
+            { value: 1548, name: 'G' },
+            { value: 1548, name: 'H' }
+          ]
+        }
+      ]
       });
     }
   }
