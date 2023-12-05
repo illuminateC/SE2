@@ -100,9 +100,9 @@
         <div class="result_detail_statistics_area" >
           <div class="citation_stat" >
             <h3>Year Citation</h3>
-            <paper-citation
-              
-            ></paper-citation>
+            <paper-citation>
+              <div id="yearCitation" style="width: 600px;height:300px;"></div>
+            </paper-citation>
           </div>
           <div>
             <h3>Reference Graph</h3>
@@ -184,7 +184,7 @@
             <h3>相关文章</h3>
             <br/>
             <related-paper-chart>
-              <div id="main" style="width: 400px;height:300px;"></div>
+              <div id="relatedArticle" style="width: 400px;height:300px;"></div>
             </related-paper-chart>
           </div>
         </div>
@@ -297,76 +297,84 @@ import * as echarts from 'echarts';
 
 export default {
   mounted() {
-    this.drawChart();
+    this.drawRelatedArticleChart();
+    this.drawYearCitationChart();
   },
-
-//   option = {
-//   title: {
-//     text: '圆环图的例子',
-//     left: 'center',
-//     top: 'center'
-//   },
-//   series: [
-//     {
-//       type: 'pie',
-//       data: [
-//         {
-//           value: 335,
-//           name: 'A'
-//         },
-//         {
-//           value: 234,
-//           name: 'B'
-//         },
-//         {
-//           value: 1548,
-//           name: 'C'
-//         }
-//       ],
-//       radius: ['40%', '70%']
-//     }
-//   ]
-// };
   methods: {
-    drawChart() {
-      var myChart = echarts.init(document.getElementById('main'));
+    drawRelatedArticleChart() {
+      var myChart = echarts.init(document.getElementById('relatedArticle'));
       myChart.setOption({
-        legend: {
-        orient: 'vertical',
-        x: 'left',
-        data: ['A', 'B', 'C', 'D', 'E']
-      },
-      series: [
-        {
-          type: 'pie',
-          radius: ['50%', '70%'],
-          avoidLabelOverlap: false,
-          label: {
-            show: false,
-            position: 'center'
-          },
-          labelLine: {
-            show: false
-          },
-          emphasis: {
-            label: {
-              show: true,
-              fontSize: '30',
-              fontWeight: 'bold'
+        title: {
+          left: 'center',
+          top: 'center'
+        },
+        series:[
+          {
+            type: 'pie',
+            data: [
+              {
+                value: 335,
+                name: 'A'
+              },
+              {
+                value: 234,
+                name: 'B'
+              },
+              {
+                value: 1548,
+                name: 'C'
+              },
+              {
+                value: 514,
+                name: 'D'
+              },
+              {
+                value: 114,
+                name: 'E'
+              }
+            ],
+            radius: ['40%', '70%']
+          }
+        ]
+      });
+    },
+    drawYearCitationChart(){
+      var myChart = echarts.init(document.getElementById('yearCitation'));
+      myChart.setOption({
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: [2016, 2017, 2018, 2019, 2020, 2021,2022],
+            axisTick: {
+              alignWithLabel: true
             }
-          },
-          data: [
-            { value: 335, name: 'A' },
-            { value: 310, name: 'B' },
-            { value: 234, name: 'C' },
-            { value: 135, name: 'D' },
-            { value: 1548, name: 'E' },
-            { value: 1548, name: 'F' },
-            { value: 1548, name: 'G' },
-            { value: 1548, name: 'H' }
-          ]
-        }
-      ]
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: 'Direct',
+            type: 'bar',
+            barWidth: '60%',
+            data: [10, 52, 200, 334, 390, 330, 220]
+          }
+        ]
       });
     }
   }
