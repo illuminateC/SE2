@@ -8,10 +8,10 @@ const routes = [
     redirect: '/home'
   },
   {
-    path:'/home',
-    name:'HomePage',
-    component:HomePage,
-    meta: {title: "XpertiseScholar 首页"}
+    path: '/home',
+    name: 'HomePage',
+    component: HomePage,
+    meta: { title: "XpertiseScholar 首页" }
   },
   {
     path: '/about',
@@ -23,13 +23,13 @@ const routes = [
       return import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
     }
   },
-  {
-    path: '/user',
-    name: 'user',
-    component: function () {
-      return import('../views/user/UserView.vue')
-    }
-  },
+  // {
+  //   path: '/user',
+  //   name: 'user',
+  //   component: function () {
+  //     return import('../views/user/UserView.vue')
+  //   }
+  // },
   {
     path: '/test',
     name: 'test',
@@ -42,6 +42,13 @@ const routes = [
     name: 'articleDetail',
     component: function () {
       return import('../views/ArticleDetail.vue')
+    }
+  },
+  {
+    path: '/user/:userId',
+    name: 'userProfile',
+    component: function () {
+      return import('../views/user/UserProfile.vue')
     }
   }
 ]
