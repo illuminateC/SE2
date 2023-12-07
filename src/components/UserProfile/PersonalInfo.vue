@@ -2,20 +2,45 @@
     <div class="profile-box">
         <div class="avatar-box">
             <img class="avatar">
-            <el-upload class="upload-demo" action="" drag :auto-upload="false" :show-file-list="false"
-                :on-change='changeUpload'>
+            <el-upload v-if="!this.$props.isVisitor" class="upload-demo" action="" drag :auto-upload="false"
+                :show-file-list="false" :on-change='changeUpload'>
+                <!-- <div class="upload-box"></div> -->
             </el-upload>
-            <div class="follow-box">
-                <button class="follow-button" @click="follow">follow</button>
+            <div v-if="this.$props.isVisitor" class="follow-box">
+                <button class="follow-button" @click="follow">FOLLOW</button>
             </div>
         </div>
-        Float
+
+        <div class="personal-info">
+            <p>个人简介</p>
+            <span>个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介</span>
+        </div>
+        <div class="instruction">
+            <el-icon size="large" style="top: 3px;color:#b0b0b0">
+                <OfficeBuilding />
+            </el-icon>
+            <span>BUAA</span>
+        </div>
+        <div class="moveDiv">
+            <p>关注</p>
+            <span> 123</span>
+        </div>
+        <div class="moveDiv">
+            <p>收藏</p>
+            <span> 123</span>
+        </div>
     </div>
     <div class="head-box">
-        <div class="name-box">
-            <p>here is the nick name</p>
+        <div class="headbottom-container">
+            <div class="name-box">
+                <p>here is the nick name</p>
 
+            </div>
+            <div v-if="!this.$props.isVisitor" class="message-box">
+                <Message></Message>
+            </div>
         </div>
+
     </div>
     <el-dialog id="cropDialog" v-model="isVisible" width="70%">
         <div class="container">
@@ -29,9 +54,16 @@
 </template>
 
 <script>
+import Message from './Message.vue'
 import 'cropperjs/dist/cropper.css';
 import Cropper from 'cropperjs';
 export default {
+    props: {
+        isVisitor: {
+            type: Boolean,
+            default: false
+        },
+    },
     data() {
         return {
             isVisible: false,
@@ -40,6 +72,9 @@ export default {
     },
     created() {
         console.log(123);
+    },
+    components: {
+        Message,
     },
     methods: {
         changeUpload(file, fileList) {
@@ -94,11 +129,68 @@ export default {
     margin: 8vh 7vw 0 10vh;
     width: 20vh;
     height: 70vh;
-    border-radius: 5px;
-    background-color: rgb(207, 232, 220);
-    transition: margin 0.5s ease, width 0.5s ease;
-    /* transition: width 0.5s; */
-    /* padding: 1em; */
+    border-radius: 10px;
+    background-color: white;
+    transition: all 0.5s ease;
+    box-shadow: 4px 3px 5px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 2;
+
+    .personal-info {
+        margin: 15% 10% 15% 10%;
+    }
+
+    .personal-info p {
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .personal-info span {
+        display: block;
+        margin-top: 10%;
+        font-size: 13px;
+        color: #9b9b9b;
+    }
+
+    .instruction {
+        margin: 10% 10% 60% 10%;
+    }
+
+    .instruction span {
+        margin-left: 10%;
+        color: #9b9b9b;
+    }
+
+    .moveDiv {
+        margin-top: 20%;
+        margin-bottom: 20%;
+        display: flex;
+        width: 100%;
+        transition: all 0.3s ease;
+
+    }
+
+    .moveDiv p {
+        display: block;
+        margin-left: 10%;
+        font-weight: 600;
+        font-size: 18px;
+        color: #7f7f7f;
+
+    }
+
+    .moveDiv span {
+        display: block;
+        margin-left: 35%;
+        margin-top: 3%;
+        font-weight: 600;
+    }
+
+    .moveDiv:hover {
+        border-radius: 5px;
+        box-shadow: 2px 2px 1px #a5a5a5;
+        transform: translate(-2px, -2px);
+    }
 }
 
 .avatar-box {
@@ -109,10 +201,13 @@ export default {
     transition: height 0.5s;
     background-image: url('@/assets/avatar.jpg');
     background-size: cover;
-
+    border-radius: 10px 10px 0 0;
 }
 
-
+.upload-box {
+    height: 20vh;
+    transform: translateY(-6vh);
+}
 
 .follow-box {
     position: absolute;
@@ -142,10 +237,12 @@ export default {
     }
 }
 
+
+
 .head-box {
     background-color: rgb(79, 185, 227);
     background-image: url('../../assets/background.jpg');
-    background-size: cover;
+    background-size: contain;
     padding: 10px;
     color: #0e0e0e;
     height: 20vh;
@@ -153,31 +250,45 @@ export default {
     z-index: 1;
 }
 
-.name-box {
+.headbottom-container {
     display: flex;
     position: absolute;
     bottom: 0;
     left: 30vh;
-    transition: left 0.5s
+    width: 50%;
+    transition: left 0.5s;
+
+    .name-box {
+        flex: 0 0 80%
+    }
+
+    .name-box p {
+        font-size: 40px;
+        font-family: sans-serif;
+        font-style: italic;
+    }
+
+    .message-box {}
 }
 
-.name-box p {
-    font-size: 40px;
-    font-family: sans-serif;
-    font-style: italic;
-}
+
 
 @media (max-width: 800px) {
     .profile-box {
         margin-left: 5vh;
         width: 17vh;
+        height: 60vh;
     }
 
     .avatar-box {
         height: 17vh
     }
 
-    .name-box {
+    .upload-box {
+        height: 17vh
+    }
+
+    .headbottom-container {
         left: 22vh
     }
 
@@ -191,9 +302,10 @@ export default {
 @media (min-width: 800px) and (max-width:1200px) {
     .profile-box {
         margin-left: 10vh;
+        height: 65vh;
     }
 
-    .name-box {
+    .headbottom-container {
         left: 32vh
     }
 
@@ -210,13 +322,18 @@ export default {
     .profile-box {
         margin-left: 15vh;
         width: 23vh;
+        height: 70vh;
     }
 
     .avatar-box {
         height: 23vh
     }
 
-    .name-box {
+    .upload-box {
+        height: 23vh
+    }
+
+    .headbottom-container {
         left: 45vh
     }
 

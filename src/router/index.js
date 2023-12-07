@@ -23,13 +23,13 @@ const routes = [
       return import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
     }
   },
-  // {
-  //   path: '/user',
-  //   name: 'user',
-  //   component: function () {
-  //     return import('../views/user/UserView.vue')
-  //   }
-  // },
+  {
+    path: '/user',
+    name: 'user',
+    component: function () {
+      return import('../views/user/UserView.vue')
+    }
+  },
   {
     path: '/test',
     name: 'test',
@@ -45,7 +45,7 @@ const routes = [
     }
   },
   {
-    path: '/user/:userId',
+    path: '/user/:id',
     name: 'userProfile',
     component: function () {
       return import('../views/user/UserProfile.vue')
