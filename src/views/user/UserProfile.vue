@@ -1,12 +1,17 @@
 <template>
-    <PersonalInfo />
+    <body>
+        <PersonalInfo />
+        <MapProfile></MapProfile>
+    </body>
 </template>
 
 <script>
 import PersonalInfo from '../../components/UserProfile/PersonalInfo.vue';
+import MapProfile from '../../components/UserProfile/MapProfile.vue';
 export default {
     components: {
         PersonalInfo,
+        MapProfile,
     },
     data() {
         return {
@@ -20,4 +25,13 @@ export default {
 }
 </script>
 
-<style ></style>
+<style scoped>
+body {
+    width: 90vw;
+    margin: 0 5vw;
+    font:
+        0.9em/1.2 Arial,
+        Helvetica,
+        sans-serif;
+}
+</style>
