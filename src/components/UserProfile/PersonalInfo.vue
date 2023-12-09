@@ -1,11 +1,8 @@
 <template>
     <div class="profile-box">
         <div class="avatar-box">
-            <img class="avatar">
-            <el-upload v-if="!this.$props.isVisitor" class="upload-demo" action="" drag :auto-upload="false"
-                :show-file-list="false" :on-change='changeUpload'>
-                <!-- <div class="upload-box"></div> -->
-            </el-upload>
+            <img class="avatar" :src="user.avatarUrl" @click="uploadAvatar">
+            <input type="file" accept="image/*" ref="fileInput" @change="changeUpload">
             <div v-if="this.$props.isVisitor" class="follow-box">
                 <button class="follow-button" @click="follow">FOLLOW</button>
             </div>
@@ -13,31 +10,31 @@
 
         <div class="personal-info">
             <p>个人简介</p>
-            <span>个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介</span>
+            <span>{{ user.personalInfo }}</span>
         </div>
         <div class="instruction">
             <el-icon size="large" style="top: 3px;color:#b0b0b0">
                 <OfficeBuilding />
             </el-icon>
-            <span>BUAA</span>
+            <span>{{ user.instruction }}</span>
         </div>
-        <div class="moveDiv">
+        <div class="moveDiv" @click="jumpFollow">
             <p>关注</p>
-            <span> 123</span>
+            <span> {{ user.followNum }}</span>
         </div>
-        <div class="moveDiv">
+        <div class="moveDiv" @click="jumpStar">
             <p>收藏</p>
-            <span> 123</span>
+            <span> {{ user.starNum }}</span>
         </div>
     </div>
     <div class="head-box">
         <div class="headbottom-container">
             <div class="name-box">
-                <p>here is the nick name</p>
+                <p>{{ user.nickName }}</p>
 
             </div>
-            <div v-if="!this.$props.isVisitor" class="message-box">
-                <Message></Message>
+            <div v-if="!this.$props.isVisitor" class="message-box" @click="jumpMessage">
+                <MessageBox :isIn="this.$props.isIn"></MessageBox>
             </div>
         </div>
 
@@ -48,13 +45,13 @@
         </div>
         <div class="bottom">
             <div class="previewBox"></div>
-            <div class="upload"><button @click="upload">上传</button></div>
+            <div class="upload"><button class="upload-button" @click="upload">上传</button></div>
         </div>
     </el-dialog>
 </template>
 
 <script>
-import Message from './Message.vue'
+import MessageBox from './MessageBox.vue'
 import 'cropperjs/dist/cropper.css';
 import Cropper from 'cropperjs';
 export default {
@@ -63,34 +60,49 @@ export default {
             type: Boolean,
             default: false
         },
+        isIn: {
+            type: Boolean,
+            default: false
+        }
     },
     data() {
         return {
             isVisible: false,
             cropperInstance: null,
+            user: {
+                avatarUrl: "",
+                personalInfo: "个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介",
+                followNum: "123",
+                starNum: "123",
+                nickName: "nick name",
+                instruction: "BUAA",
+            },
+            hasIdParam: false
         }
     },
+    mounted() {
+        this.$data.user.avatarUrl = require('@/assets/avatar.jpg');
+        this.$data.hasIdParam = this.$route.params.hasOwnProperty('id');
+    },
     created() {
-        console.log(123);
+
     },
     components: {
-        Message,
+        MessageBox,
     },
     methods: {
-        changeUpload(file, fileList) {
+        uploadAvatar() { if (!this.$props.isVisitor) this.$refs.fileInput.click() },
+        changeUpload(e) {
+            this.$data.isVisible = true
+            const avatarFile = e.target.files[0]
             let reader = new FileReader();
-            this.isVisible = true
-            console.log(file.raw)
-            reader.readAsDataURL(file.raw)
+            reader.readAsDataURL(avatarFile)
             reader.onload = (e) => {
                 let dataURL = reader.result;
-
-                // this.option.img = dataURL
                 document.querySelector('#cropImg').src = dataURL;
                 if (this.cropperInstance) {
                     this.cropperInstance.destroy();
                 }
-                // this.$refs.cropImg.src = dataURL;
                 const image = document.getElementById('cropImg');
                 this.cropperInstance = new Cropper(image, {
                     aspectRatio: 16 / 16,
@@ -101,11 +113,7 @@ export default {
                     preview: [document.querySelector('.previewBox')]
 
                 })
-
             }
-            // this.option.img = require(file.url)
-            this.isVisible = true
-
         },
         upload() {
             this.cropperInstance.getCroppedCanvas({
@@ -118,6 +126,25 @@ export default {
                 console.log(blob)
                 this.isVisible = false;
             })
+        },
+        jumpMessage() {
+            this.$router.push({ name: 'message' })
+        },
+        jumpFollow() {
+            if (this.$data.hasIdParam) {
+                const id = this.$route.params.id;
+                this.$router.push({ name: "otherFollow", params: "id" })
+            }
+            else
+                this.$router.push({ name: 'follow' })
+        },
+        jumpStar() {
+            if (this.$data.hasIdParam) {
+                const id = this.$route.params.id;
+                this.$router.push({ name: "otherStar", params: "id" })
+            }
+            else
+                this.$router.push({ name: 'star' })
         }
     },
 }
@@ -126,7 +153,7 @@ export default {
 <style scoped>
 .profile-box {
     float: left;
-    margin: 8vh 7vw 0 10vh;
+    margin: 8vh 0 0 10vh;
     width: 20vh;
     height: 70vh;
     border-radius: 10px;
@@ -153,7 +180,7 @@ export default {
     }
 
     .instruction {
-        margin: 10% 10% 60% 10%;
+        margin: 10% 10% 2vh 10%;
     }
 
     .instruction span {
@@ -162,11 +189,12 @@ export default {
     }
 
     .moveDiv {
-        margin-top: 20%;
-        margin-bottom: 20%;
+        margin-top: 2vh;
+        margin-bottom: 2vh;
         display: flex;
         width: 100%;
         transition: all 0.3s ease;
+        height: 30px;
 
     }
 
@@ -195,13 +223,26 @@ export default {
 
 .avatar-box {
     height: 20vh;
-    background-color: #f7b8b8;
+
     position: relative;
     z-index: 2;
     transition: height 0.5s;
-    background-image: url('@/assets/avatar.jpg');
-    background-size: cover;
+    /*background-image: url('@/assets/avatar.jpg');
+    background-size: cover;*/
     border-radius: 10px 10px 0 0;
+    overflow: hidden;
+}
+
+.avatar-box img {
+    height: 100%;
+}
+
+.avatar-box img:hover {
+    cursor: pointer;
+}
+
+.avatar-box input {
+    opacity: 0;
 }
 
 .upload-box {
@@ -373,5 +414,15 @@ export default {
     /* 垂直居中 */
     position: relative;
     margin-left: 40%;
+    border-radius: 2px;
+}
+
+.upload-button {
+    height: 40px;
+    width: 80px;
+    background-color: aliceblue;
+    cursor: pointer;
+    border-radius: 5px;
+    border-color: white;
 }
 </style>

@@ -12,7 +12,10 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import { createI18n } from 'vue-i18n'
 import CookiesPlugin from './cookies-plugin'
 import VueCropper from 'vue-cropper';
+import naive from 'naive-ui'
 import 'vue-cropper/dist/index.css'
+// import Swal from 'sweetalert2/dist/sweetalert2.js'
+// import 'sweetalert2/src/sweetalert2.scss'
 import * as echarts from 'echarts';
 
 const app = createApp(App)
@@ -24,6 +27,7 @@ app.use(VueAxios, axios)
 app.use(gsap)
 app.use(ElementPlus)
 app.use(VueCropper)
+app.use(naive)
 app.use(VueWechatTitle);
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {

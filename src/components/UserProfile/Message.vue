@@ -1,55 +1,149 @@
 <template>
-    <div>
-        <div class="mailbox-icon">
-            <!-- <span class="icon"></span> -->
-            <!-- <el-icon size="60px" height="1em">
-                <Message />
-            </el-icon> -->
-            <svg t="1701962927931" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                p-id="1480" width="60" height="60">
-                <path
-                    d="M967.112 907.72H106.552C47.8 907.72 0 859.918 0 801.166V222.834C0 164.082 47.8 116.28 106.552 116.28h810.894c58.752 0 106.552 47.8 106.552 106.552v445.614c0 15.71-12.734 28.444-28.444 28.444s-28.444-12.734-28.444-28.444V222.834c0-27.384-22.28-49.664-49.664-49.664H106.552c-27.384 0-49.664 22.28-49.664 49.664v578.332c0 27.384 22.28 49.664 49.664 49.664h860.558c15.71 0 28.444 12.734 28.444 28.444s-12.732 28.446-28.442 28.446z"
-                    fill="#2D527C" p-id="1481"></path>
-                <path
-                    d="M995.556 222.834L512 589.084 28.444 222.834c0-43.138 34.97-78.108 78.108-78.108h810.894c43.14 0 78.11 34.968 78.11 78.108z"
-                    fill="#CEE8FA" p-id="1482"></path>
-                <path
-                    d="M512 617.528c-6.048 0-12.094-1.922-17.174-5.768L11.27 245.51A28.448 28.448 0 0 1 0 222.834C0 164.082 47.8 116.28 106.552 116.28h810.894c58.752 0 106.552 47.8 106.552 106.552 0 8.906-4.17 17.298-11.27 22.676L529.174 611.76a28.406 28.406 0 0 1-17.174 5.768zM58.576 209.974L512 553.4l453.424-343.426c-5.68-21.172-25.036-36.804-47.978-36.804H106.552c-22.936 0-42.296 15.632-47.976 36.804zM967.088 907.324c-5.984 0-12.014-1.88-17.152-5.772l-199.112-150.81c-12.524-9.484-14.988-27.326-5.502-39.848 9.486-12.524 27.326-14.988 39.848-5.502l199.112 150.81c12.524 9.484 14.988 27.326 5.502 39.848a28.398 28.398 0 0 1-22.696 11.274zM69.048 898.13a28.4 28.4 0 0 1-22.696-11.272c-9.484-12.522-7.022-30.364 5.502-39.848l186.974-141.616c12.522-9.48 30.362-7.022 39.848 5.502 9.484 12.522 7.022 30.364-5.502 39.848L86.204 892.36a28.33 28.33 0 0 1-17.156 5.77z"
-                    fill="#2D527C" p-id="1483"></path>
-            </svg>
-            <span class="badge">3</span>
+    <div class="messagecontainer">
+
+        <div class="button" @click="back">
+            <back :height="30" :width="30"></back>
         </div>
+        <div class="message-box">
+            <div class="message" v-for="item in currentPageData" :key="item.id" @click="read(item.id)">
+                <li>{{ item.text }}</li>
+            </div>
+
+        </div>
+        <div class="changePage">
+            <n-pagination v-model:page="currentPage" :page-count="100" :page-slot="7" />
+        </div>
+
     </div>
+    <el-dialog v-model="isDialog"></el-dialog>
 </template>
 
 <script>
+import { defineComponent, ref } from "vue";
+import Swal from 'sweetalert2'
+import back from "../back.vue";
+export default defineComponent({
+    components: {
+        back,
+    },
+    setup() {
+        return {
+            page: ref(1),
+        };
+    },
+    data() {
+        return {
+            currentPage: 1, // 当前页码
+            itemsPerPage: 5, // 每页显示的条目数量
+            allData: [{ "id": 1, "text": "消息1" },
+            { "id": 2, "text": "消息2" },
+            { "id": 3, "text": "消息3" },
+            { "id": 4, "text": "消息4" },
+            { "id": 5, "text": "消息5" },
+            { "id": 6, "text": "消息6" },
+            { "id": 7, "text": "消息7" },
+            { "id": 8, "text": "消息8" },
+            { "id": 9, "text": "消息9" },
+            { "id": 20, "text": "消息10" },
+            { "id": 11, "text": "消息11" }],
+            isDialog: false,
 
+        };
+    },
+    computed: {
+        totalItems() {
+            return this.allData.length;
+        },
+        totalPages() {
+            return Math.ceil(this.totalItems / this.itemsPerPage);
+        },
+        currentPageData() {
+            const start = (this.currentPage - 1) * this.itemsPerPage;
+            const end = start + this.itemsPerPage;
+            return this.allData.slice(start, end);
+        },
+        visiblePages() {
+            const pages = [];
+            for (let i = 1; i <= this.totalPages; i++) {
+                pages.push(i);
+            }
+            return pages;
+        }
+    },
+    methods: {
+        back() { this.$router.push({ name: "currentUser" }) },
+        read(messageId) {
+            // this.isDialog = true
+            console.log("delete" + messageId)
+            const message = this.allData.find(item => item.id === messageId).text
+            Swal.fire(message);
+        },
+    },
+    mounted() {
+        // 模拟从后端获取数据
+        // 这里使用随机生成的邮箱作为示例数据
+        // for (let i = 0; i < 100; i++) {
+        //     this.allData.push({ id: i + 1, email: `user${i + 1}@example.com` });
+        // }
+    },
+})
 </script>
 
 <style  scoped>
-.mailbox-icon {
-    position: absolute;
-    display: inline-block;
-    bottom: 0;
-
+.button {
+    display: flex;
+    align-items: center;
+    margin-left: 0;
+    width: fit-content;
+    transition: all 0.3s ease;
+    margin-left: 3px;
 }
 
-.badge {
-    position: absolute;
-    top: 0px;
-    right: -5px;
-    background-color: #e74c3c;
-    /* 提示数量的背景颜色 */
-    color: #fff;
-    /* 提示数量的文字颜色 */
-    border-radius: 50%;
-    padding: 10px;
-    font-size: 16px;
-    height: 20px;
-    width: 20px;
-    line-height: 0px;
+.button:hover {
+    cursor: pointer;
+    border-radius: 4px;
+    box-shadow: 4px 3px 5px #ddd;
+    transform: translate(-2px, -2px);
+}
+
+.messagecontainer {
+    position: relative;
+    width: 55vw;
+    height: 65vh;
+    margin-left: 30vw;
+    background-color: whitesmoke;
+    padding-top: 10px;
+    border-radius: 10px;
+    box-shadow: 4px 3px 5px rgba(0, 0, 0, 0.5);
+}
+
+.message-box {
+    margin: 2vh 7% 2vh 7%;
+    width: 86%;
+    height: 50vh;
+    border-radius: 8px;
+    background-color: rgb(230, 230, 230);
+    display: grid;
+    grid-template-rows: repeat(5, 1fr);
+    border: 1px solid #ccc;
+    box-shadow: 10px 10px 1px #ddd;
+}
+
+.changePage {
+    width: 100%;
     display: flex;
     justify-content: center;
-    /* 使文字垂直居中 */
+}
+
+.message-box li {
+    grid-row: span 1;
+}
+
+.message {}
+
+
+.message:hover {
+    background-color: wheat;
+    cursor: pointer;
 }
 </style>

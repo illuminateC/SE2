@@ -61,7 +61,7 @@ export default {
         changeUpload(file, fileList) {
             let reader = new FileReader();
             this.isVisible = true
-            console.log(file.raw)
+
             reader.readAsDataURL(file.raw)
             reader.onload = (e) => {
                 let dataURL = reader.result;
