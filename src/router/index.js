@@ -40,7 +40,7 @@ const routes = [
     }
   },
   {
-    path: '/article',
+    path: '/article/:articleId',
     name: 'articleDetail',
     component: function () {
       return import('../views/ArticleDetail.vue')

@@ -3,9 +3,9 @@
     <div class="result_detail_page_container">
       <div class="result_detail_title_area">
         <div class="result_detail_title">
-          114
+          {{ this.article.title }}
         </div>
-        <div class="result_detail_author_container">
+        <!-- <div class="result_detail_author_container">
           <router-link
             tag="a"
             target="_blank"
@@ -23,79 +23,61 @@
               ,
             </div>
           </router-link>
-        </div>
+        </div> -->
       </div>
       <div class="result_detail_main_area">
         <div class="result_detail_article_area">
           <br/>
-          <div
-            
-            class="detail_abstract"
-          >
-            <h3>摘要</h3>
-            <p>这是摘要</p> <br/>
+          <div>
+            <h3 class="detail_abstract">摘要</h3>
+            <p>{{ this.article.abstract }}</p> <br/>
           </div>
-          <div  class="detail_year">
-            <h3>年份</h3>
-            <p>这是年份</p><br/>
+          <div >
+            <h3 class="detail_abstract">年份</h3>
+            <p>{{ this.article.year }}</p><br/>
           </div>
-          <div  class="detail_n_citation">
-            <h3>引用次数</h3>
-            <p>这是引用次数</p><br/>
+          <div>
+            <h3 class="detail_abstract">引用次数</h3>
+            <p>{{ this.article.citationNum }}</p><br/>
           </div>
           <div
-            
-        
             class="detail_keywords"
           >
-            <h3>关键字</h3>
+            <h3 class="detail_abstract">关键字</h3>
             <span >
-             这是关键字,
+             {{this.article.keywords}}
             </span><br/><br/>
           </div>
           <div
             
             class="detail_page_start"
           >
-            <h3>页面起止</h3>
-            <p>1-10</p><br/>
+            <h3 class="detail_abstract">页面数</h3>
+            <p>{{ this.article.pageNum }}</p><br/>
           </div>
           <div
-            
-            class="detail_abstract"
           >
-            <h3>语言</h3>
-            <p v-if=1>英文</p>
-            <p v-else-if=0>中文</p>
-            <p v-else>其他</p><br/>
+            <h3 class="detail_abstract">语言</h3>
+            <p>{{ this.article.language }}</p>
+            <br/>
           </div>
-          <div
-            
-            class="detail_abstract"
-          >
-            <h3>刊号</h3>
-            <p>这是刊号</p><br/>
+          <div>
+            <h3 class="detail_abstract">期刊/会议</h3>
+            <p>{{this.article.venue}}</p><br/>
           </div>
-          <div
-            
-            class="detail_abstract"
-          >
-            <h3>期刊/会议</h3>
-            <p>这是期刊</p><br/>
+          <div>
+            <h3 class="detail_abstract">刊号</h3>
+            <p>{{this.article.issn}}</p><br/>
           </div>
-          <div
-            class="detail_abstract"
-          >
-            <h3>ISSN</h3>
+          
+          <!-- <div>
+            <h3 class="detail_abstract">ISSN</h3>
             <p>ISSN</p><br/>
           </div>
-          <div
-            
-            class="detail_abstract"
-          >
-            <h3>DOI</h3>
+          <div>
+            <h3 class="detail_abstract">DOI</h3>
             <p>DOI</p><br/>
-          </div>
+          </div> -->
         </div>
         <div class="result_detail_statistics_area" >
           <div class="citation_stat" >
@@ -106,12 +88,14 @@
           </div>
           <div>
             <h3>Reference Graph</h3>
-            <reference-chart :data="this.referencedata"></reference-chart>
+            <reference-chart >
+              <div id="reference" style="width: 600px;height:300px;"></div>
+            </reference-chart>
           </div>
         </div>
         <div class="result_detail_comment_area">
           <el-tabs class="tabs_area" type="border-card">
-            <el-tab-pane label="评论">
+            <el-tab-pane class="pane_area" label="评论">
               <CommentSection :id="this.$route.params.docid" :paper="this.article" ref="comment_child"/>
             </el-tab-pane>
             <el-tab-pane label="专家推荐"
@@ -127,7 +111,7 @@
           <br/>
           <h3>引用</h3>
           <br/>
-          <el-button
+          <el-button @click="copyCitationToClipboard"
           ><el-icon style="margin-right: 10%;"><DocumentCopy /></el-icon>复制引用信息
           </el-button
           >
@@ -190,10 +174,10 @@
         </div>
       </div>
     </div>
-    <el-dialog
+    <!-- <el-dialog
       title="复制引用信息"
-      
       width="60%"
+      @click="copyCitationToClipboard"
     >
       <li
         v-for="(documentcopyinfo, index) in this.documentcopylist"
@@ -220,7 +204,7 @@
         </el-button
         >
       </li>
-    </el-dialog>
+    </el-dialog> -->
 
     <el-dialog title="推荐表单" >
       <el-form >
@@ -293,25 +277,38 @@
 </template>
 
 <script>
+import clipboard from 'clipboard';
 import * as echarts from 'echarts';
-
+import { ElMessage } from 'element-plus'
+import axios from "axios";
 export default {
-  mounted() {
-    this.drawRelatedArticleChart();
-    this.drawYearCitationChart();
-  },
-  methods: {
-    drawRelatedArticleChart() {
-      var myChart = echarts.init(document.getElementById('relatedArticle'));
-      myChart.setOption({
-        title: {
-          left: 'center',
-          top: 'center'
-        },
-        series:[
-          {
-            type: 'pie',
-            data: [
+  data() {
+    return {
+      article: {
+        paper_id: "",
+        title: "114",
+        authors: [],
+        abstract: "在大规模数据中心中，硬盘使用规模已经达到百万级别。盘类故障问题频发，会导致服务器甚至整个IT基础设施稳定性、可靠性的下降，最终对业务SLA带来负面影响。能否提前准确预测硬盘故障已经成为大规模数据中心和云计算时代工业界需要研究和解决的重要问题之一。本课题聚焦解决大规模生产系统中的硬盘故障预测问题，解决数据噪声、正负样本不均衡等技术问题，并通过构建机器学习模型，在一定时间范围内（30天）对将要故障的磁盘作出预警；对于已发生故障的磁盘，也应将其检测出来",
+        year: "2023",
+        keywords: "这是关键字",
+        citationNum: 0,
+        pageNum: 0,
+        language:"中文",
+        venue: "无",
+        issn: "0",
+        doi: "",
+        citationMessage:"test",
+      },
+      recommendForm: {
+        username: "",
+        name: "",
+        author_id: "",
+        reason: "",
+      },
+      columnForm: {
+        name: "",
+      },
+      data1:[
               {
                 value: 335,
                 name: 'A'
@@ -333,6 +330,176 @@ export default {
                 name: 'E'
               }
             ],
+      docid: "",
+      type: "",
+      option: "",
+      related_papers: [],
+      referencedata: [],
+      columnList: [],
+      searchState: {},
+      driverlink: "", // 控制es结果赋值
+      referenceloaded: false, // 控制引用图谱显示
+      articleloaded: false, // 控制整个页面显示
+      relatedloaded: false, // 控制相关文章显示
+      yearcitationloaded: false,
+      documentcopyvisible: false,
+      recommendVisible: false,
+      columnsVisible: false,
+      formLabelWidth: "120px",
+      documentcopylist: [],
+    };
+  },
+  mounted() {
+    this.drawRelatedArticleChart();
+    this.drawYearCitationChart();
+    this.drawReferenceChart();
+    // this.getData();
+  },
+  methods: {
+    copyCitationToClipboard() {
+      // clipboard.writeText(this.article.citationMessage);
+      const citation = this.article.citationMessage;
+  
+      // 创建一个临时的 textarea 元素
+      const textarea = document.createElement('textarea');
+      textarea.value = citation;
+      
+      // 将 textarea 添加到 DOM 中
+      document.body.appendChild(textarea);
+      
+      // 选中 textarea 内容
+      textarea.select();
+      
+      // 复制选中的内容到剪贴板
+      document.execCommand('copy');
+      
+      // 移除临时的 textarea 元素
+      document.body.removeChild(textarea);
+      ElMessage.success('已复制到剪贴板');
+    },
+    getData(){
+      // this.article.abstract="114";
+      let articleId = this.$route.params.articleId;
+      let formData = new FormData();
+      formData.append("articleId", articleId);
+      let config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+      axios
+        .post(
+          "https://go-service-296709.df.r.appspot.com/api/v1/user/favorite/isfav",
+          formData,
+          config
+        )
+        .then((response) => {
+          if (response) {
+            if (response.data.message == "true") {
+              this.article.abstract = response.data.abstract;
+            } else {
+              
+            }
+          }
+        });
+    },
+    drawReferenceChart(){
+      var myChart = echarts.init(document.getElementById('reference'));
+      myChart.setOption({
+        tooltip: {
+          trigger: 'item',
+          triggerOn: 'mousemove'
+        },
+        series: [
+          {
+            type: 'tree',
+            data: [{
+              name: 'tree',
+              children: [
+                {
+                  name: '比较',
+                  value: 29,
+                  children: [
+                    {
+                      name: '折线图',
+                      value: 1
+                    },
+                    {
+                      name: '面积图',
+                      value: 2
+                    },
+                    {
+                      name: '柱状图',
+                      value: 3
+                    }
+                  ]
+                },
+                {
+                  name: '趋势趋势趋势趋势趋势趋势趋势趋势趋势趋势',
+                  value: 9,
+                  children: [
+                    {
+                      name: '折线图',
+                      value: 1
+                    },
+                    {
+                      name: '阶梯图',
+                      value: 2
+                    },
+                    {
+                      name: '面积图',
+                      value: 3
+                    },
+                    {
+                      name: '堆叠面积图',
+                      value: 4
+                    }
+                  ]
+                },
+                {
+                  name: '组成'
+                }
+              ]
+            }],
+            top: '1%',
+            left: '7%',
+            bottom: '1%',
+            right: '20%',
+            symbolSize: 7,
+            label: {
+              position: 'left',
+              verticalAlign: 'middle',
+              align: 'right',
+              fontSize: 9
+            },
+            leaves: {
+              label: {
+                position: 'right',
+                verticalAlign: 'middle',
+                align: 'left'
+              }
+            },
+            emphasis: {
+              focus: 'descendant'
+            },
+            expandAndCollapse: true,
+            animationDuration: 550,
+            animationDurationUpdate: 750
+          }
+        ]
+      });
+    },
+    drawRelatedArticleChart() {
+      var myChart = echarts.init(document.getElementById('relatedArticle'));
+      myChart.setOption({
+        title: {
+          left: 'center',
+          top: 'center'
+        },
+        series:[
+          {
+            type: 'pie',
+            data: this.data1,
             radius: ['40%', '70%']
           }
         ]
@@ -421,7 +588,7 @@ export default {
   border-width: 1px;
   /* border-color: grey; */
   /* border-style: solid; */
-  border-radius: 20px;
+  border-radius: 0 0 10px 10px;
   box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.1),
   -2px -2px 20px rgba(255, 255, 255, 0.5);
 }
@@ -457,7 +624,7 @@ export default {
   padding: 20px;
   /* border-color: grey; */
   /* border-style: solid; */
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.1),
   -2px -2px 20px rgba(255, 255, 255, 0.5);
 }
@@ -490,8 +657,7 @@ export default {
   margin: 8px 8px;
 }
 
-/* .el-button {
-  padding: 3%;
-} */
-
+.detail_abstract{
+  margin-bottom: 10px;
+}
 </style>
