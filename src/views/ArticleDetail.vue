@@ -131,8 +131,7 @@
               type="warning"
               plain
             ><el-icon style="margin-right: 10px;"><Star /></el-icon>收藏
-            </el-button
-            >
+            </el-button>
             <el-button
               type="warning"
             ><el-icon style="margin-right: 10px;"><StarFilled /></el-icon>已收藏
@@ -277,11 +276,16 @@
 </template>
 
 <script>
+import CommentSection from "../components/comment/CommentSection";
+// import RecommendSection from "../components/recommendation/RecommendSection";
 import clipboard from 'clipboard';
 import * as echarts from 'echarts';
 import { ElMessage } from 'element-plus'
 import axios from "axios";
 export default {
+  components:{
+    CommentSection,
+  },
   data() {
     return {
       article: {
