@@ -30,6 +30,7 @@ app.use(ElementPlus)
 app.use(VueCropper)
 app.use(naive)
 app.use(VueWechatTitle);
+app.provide('$axios',axios)
 app.use(echarts)
 
 gsap.registerPlugin(ScrollTrigger)
