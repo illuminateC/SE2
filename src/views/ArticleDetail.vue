@@ -353,10 +353,11 @@ export default {
     };
   },
   mounted() {
+    this.getData();
     this.drawRelatedArticleChart();
     this.drawYearCitationChart();
     this.drawReferenceChart();
-    // this.getData();
+    
   },
   methods: {
     copyCitationToClipboard() {
@@ -387,30 +388,23 @@ export default {
       this.article.starred=false;
     },
     getData(){
-      // this.article.abstract="114";
-      let articleId = this.$route.params.articleId;
-      let formData = new FormData();
-      formData.append("articleId", articleId);
-      let config = {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      };
-      axios
-        .post(
-          "https://go-service-296709.df.r.appspot.com/api/v1/user/favorite/isfav",
-          formData,
-          config
-        )
-        .then((response) => {
-          if (response) {
-            if (response.data.message == "true") {
-              this.article.abstract = response.data.abstract;
-            } else {
-              
-            }
-          }
-        });
+      var art={
+        "entity_type": "works",
+        "params": {
+          "id": "W2741809807"
+        }
+      }
+      axios({
+        url:'http://123.249.124.181/api/search/entity/search/specific',
+        method:'post',
+        data: art,  //这里json对象会转换成json格式字符串发送
+        header:{
+        'Content-Type':'application/json'  //如果写成contentType会报错,如果不写这条也报错
+        //Content type 'application/x-www-form-urlencoded;charset=UTF-8'...
+        }
+                
+      })
+
     },
     drawReferenceChart(){
       var myChart = echarts.init(document.getElementById('reference'));
