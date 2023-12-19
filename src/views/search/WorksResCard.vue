@@ -14,7 +14,7 @@
           v-html="highlightText(item.display_name.replace(/<\/?i>/ig, ''))">
         </span>
         <span v-else>
-          [Title Missed]
+          Title Unknown
         </span>
       </h5>
 
@@ -45,6 +45,7 @@
         >
           {{ item.host_venue.display_name }}
         </span>
+<!--        <span v-else>来源</span>-->
         <!-- 这里由于伪元素位置的影响，必须span里面嵌套一个span -->
         <span class="dot-separator">
           <span>{{ item.publication_date }},&nbsp;&nbsp;</span>
@@ -57,7 +58,8 @@
 
       <!-- 论文的内容摘要 -->
       <div class="card-abstract" v-if="notInCollection">
-        <p>{{ item.abstract }}</p>
+        <p v-if="item.abstract">摘要：{{ item.abstract }}</p>
+        <p v-else>摘要：无</p>
       </div>
 
       <!-- 论文的领域concepts气泡展示，这里只截取前11个 -->
@@ -84,15 +86,13 @@
                 <!-- 引用数量 -->
                 <li>
                   <span class="citation">
-                    <i class="iconfont icon-quotes" style="font-size: 1.1rem"></i>
-                    <span>{{ toThousands(item.cited_by_count) }}</span>
+                    <span style="color: #0f5de5">被引 {{ toThousands(item.cited_by_count) }}</span>
                   </span>
                 </li>
                 <!-- 下载数量 -->
                 <li>
                   <span class="metric">
-                    <i class="iconfont icon-Rise" style="font-size: 1.3rem"></i>
-                    <span>{{ toThousands(item["2022_cited_count"]) }}</span>
+                    <span style="color: #0f5de5">下载 {{ toThousands(item["2022_cited_count"]) }}</span>
                   </span>
                 </li>
               </ul>
@@ -107,6 +107,7 @@
             <li>
               <div class="card-tool-btn" @click="getBiBTeX(item), bibtexDialogVisible = true">
                 <i class="iconfont icon-quotes" style="font-size: 1.1rem;"></i>
+                <svg t="1702991271138" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4234" width="32" height="32"><path d="M712.533333 371.2l-128 128-59.733333-59.733333 128-128L597.333333 256l-42.666666-42.666667h256v256l-42.666667-42.666666-55.466667-55.466667zM657.066667 256H768v110.933333V256h-110.933333zM298.666667 298.666667v426.666666h426.666666v-256l85.333334 85.333334v256H213.333333V213.333333h256l85.333334 85.333334H298.666667z" fill="#444444" p-id="4235"></path></svg>
                 <span class="card-btn-hint">
                   <span class="card-btn-hint-arrow"></span>
                   Export Citation
@@ -118,7 +119,7 @@
             <!-- TODO 添加收藏夹的浮窗 -->
             <li v-if="notInCollection">
               <div class="card-tool-btn" @click="showFav">
-                <i class="iconfont icon-folderplus-fill"></i>
+                <svg t="1702991385863" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5485" width="32" height="32"><path d="M248.482281 938.000324c-4.306072 0-8.592702-1.336438-12.211113-3.967358-6.395664-4.646833-9.600659-12.521175-8.264221-20.314675l48.430012-282.363949L71.288626 431.382914c-5.66093-5.519714-7.698333-13.772678-5.255701-21.291932 2.444679-7.519254 8.943696-13.000082 16.768919-14.137998l283.508006-41.195238L493.099535 97.853655c3.498684-7.089465 10.720156-11.577686 18.627243-11.577686 7.907087 0 15.127536 4.489244 18.627243 11.577686l126.788661 256.904091 283.510052 41.195238c7.823176 1.137916 14.322194 6.618744 16.766872 14.137998 2.442632 7.519254 0.405229 15.773242-5.255701 21.291932L747.012502 631.354342l48.430012 282.363949c1.336438 7.7935-1.868557 15.667841-8.264221 20.314675-6.399757 4.646833-14.878872 5.257747-21.874193 1.582031L511.726777 802.298666 258.146385 935.614997C255.107165 937.211355 251.789607 938.000324 248.482281 938.000324zM130.422422 431.011454 313.25654 609.228415c4.894474 4.7727 7.128351 11.647271 5.974062 18.385742l-43.163055 251.64532 225.994104-118.811989c6.048763-3.180436 13.282514-3.180436 19.331277 0l225.992057 118.811989-43.163055-251.64532c-1.154289-6.738471 1.079588-13.613042 5.974062-18.385742l182.833095-178.216961-252.665557-36.71418c-6.767124-0.983397-12.614296-5.233188-15.641235-11.362792L511.726777 153.97893 398.729214 382.934482c-3.025916 6.129604-8.874111 10.379395-15.639189 11.362792L130.422422 431.011454z" fill="#272636" p-id="5486"></path></svg>
                 <span class="card-btn-hint">
                   <span class="card-btn-hint-arrow"></span>
                   Add to Favor
@@ -138,7 +139,8 @@
               -->
             <li v-if="(item.open_access?.is_oa === 1)">
               <div class="card-tool-btn pdf-btn" @click="jumpToPDFOnlinePage(item.open_access.oa_url)">
-                <i class="iconfont icon-pdf1" style="font-size: 0.9rem;"></i>
+<!--                <i class="iconfont icon-pdf1" style="font-size: 0.9rem;"></i>-->
+                <svg t="1702991456469" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6528" width="32" height="32"><path d="M234.666667 469.333333h85.333333a85.333333 85.333333 0 0 1 85.333333 85.333334v21.333333a85.333333 85.333333 0 0 1-85.333333 85.333333h-42.666667v85.333334h-42.666666V469.333333z m448 170.666667v106.666667h-42.666667V469.333333h149.333333v42.666667h-106.666666v85.333333h85.333333v42.666667h-85.333333zM618.666667 85.333333l277.333333 277.333334v490.645333A85.205333 85.205333 0 0 1 810.88 938.666667H213.12A85.333333 85.333333 0 0 1 128 853.333333V170.666667c0-47.125333 38.165333-85.333333 85.12-85.333334H618.666667z m-0.448 277.504h217.493333L618.666667 145.664l-0.448 217.173333zM853.333333 853.333333V405.333333H618.496c-23.466667 0-42.496-19.072-42.496-42.496V128H213.12C189.738667 128 170.666667 147.093333 170.666667 170.666667v682.666666c0 23.530667 19.093333 42.666667 42.453333 42.666667h597.76c23.424 0 42.453333-19.093333 42.453333-42.688zM426.666667 469.333333h64a106.666667 106.666667 0 0 1 106.666666 106.666667v64a106.666667 106.666667 0 0 1-106.666666 106.666667h-64V469.333333z m42.666666 234.666667h21.333334a64 64 0 0 0 64-64v-64a64 64 0 0 0-64-64h-21.333334v192z m-192-192v106.666667h42.666667a42.666667 42.666667 0 0 0 42.666667-42.666667v-21.333333a42.666667 42.666667 0 0 0-42.666667-42.666667h-42.666667z" fill="#3D3D3D" p-id="6529"></path></svg>
                 <span class="card-btn-hint">
                   <span class="card-btn-hint-arrow"></span>
                   View PDF online
@@ -159,7 +161,7 @@
                     : item.doi
                 )"
               >
-                <i class="iconfont icon-signal-source" style="font-size: 1.3rem;"></i>
+<!--                <i class="iconfont icon-signal-source" style="font-size: 1.3rem;"></i>-->
                 <span class="card-btn-hint">
                   <span class="card-btn-hint-arrow"></span>
                   Get Access to Source Web
@@ -260,6 +262,7 @@ import {useRouter} from 'vue-router';
 import {useClipboard} from '@vueuse/core';
 import {highlightText, toThousands} from '@/utils';
 import {Collection} from '@/api/collect';
+import {Download, Star, StarFilled} from "@element-plus/icons-vue";
 
 const router = useRouter();
 const props = defineProps({
@@ -457,54 +460,6 @@ const likeIt = () => {
     }
   }
 }
-</script>
-<script>
-const exampleItem = {
-  id: "W1234567890", // Replace with your actual ID
-  display_name: "Example Paper Title",
-  publication_date: "May 20, 2022",
-  authorships: [
-    {
-      author: {
-        id: "A987654321", // Replace with your actual author ID
-        display_name: "John Doe"
-      }
-    },
-    // Add more authors as needed
-  ],
-  host_venue: {
-    id: "V111223344", // Replace with your actual venue ID
-    display_name: "Example Journal"
-  },
-  type: "Journal Article",
-  doi: "https://doi.org/10.1234/example-doi",
-  abstract: "This is an example abstract for the paper.",
-  concepts: [
-    {
-      id: "C567890123", // Replace with your actual concept ID
-      display_name: "Example Concept"
-    },
-    // Add more concepts as needed
-  ],
-  cited_by_count: 100, // Replace with the actual citation count
-  "2022_cited_count": 50, // Replace with the actual citation count for 2022
-  open_access: {
-    is_oa: 1,
-    oa_url: "https://example.com/example-paper.pdf" // Replace with the actual PDF URL
-  }
-  // Add more fields as needed
-};
-export default {
-  name: "YourComponentName",
-  data() {
-    return {
-      item: exampleItem,
-      notInCollection: true // You can adjust this based on your logic
-      // Add other data properties as needed
-    };
-  },
-  // ... Rest of your component
-};
 </script>
 <style scoped>
 /* #region 通用样式 */

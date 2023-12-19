@@ -82,9 +82,6 @@
                     <span> Results</span>
                     <span> for: </span>
                   </div>
-                  <div v-if="(totalSearchResNum > 10000)">
-                    由于搜索结果数量超过10,000，出于实用性考虑，下面的列表只会展示相关度排序的前10,000条
-                  </div>
                 </div>
               </div>
               <!-- 随着滚动 sticky 在header下方的筛选栏 -->
