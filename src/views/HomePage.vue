@@ -13,11 +13,15 @@
         <Search />
       </el-icon>
     </div>
-    <div v-if='!show' id='rankinglist'> 
+    <div id='rankinglist'> 
       <RankingList class='list' title="Recommend" type="main"/>
       <RankingList class='list' title='Top Paper' type='main'/>
       <RankingList class='list' title='Top Author' type='main'/>
       <RankingList class='list' title='Top Affiliation' type='main'/>
+    </div>
+    <div>
+      <TotalPaperChart id = 'paper-chart'></TotalPaperChart>
+      <StaticRelationMap id = 'paper-chart'></StaticRelationMap>
     </div>
   </div>
 </template>
@@ -25,6 +29,8 @@
 <script>
 import StartPageInfo from "../components/HomePage/StartPageInfo.vue";
 import RankingList from "../components/HomePage/RankingList.vue";
+import TotalPaperChart from "../components/HomePage/TotalPaperChart";
+import StaticRelationMap from "../components/HomePage/StaticRelationMap";
 import gsap from "gsap";
 export default {
   name: 'HomePage',
@@ -32,11 +38,12 @@ export default {
   components: {
     StartPageInfo,
     RankingList,
+    TotalPaperChart,
+    StaticRelationMap
   },
   data() {
     return {
       input: '',
-      show: false
     }
   },
   methods: {

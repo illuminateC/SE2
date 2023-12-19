@@ -1,7 +1,8 @@
 import { createApp } from 'vue'
 import ElementPlus from 'element-plus' //全局引入
 import 'element-plus/dist/index.css'
-import gsap from "gsap";
+// import gsap from "gsap";
+import {gsap, ScrollTrigger} from 'gsap/all'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -17,7 +18,7 @@ import 'vue-cropper/dist/index.css'
 // import Swal from 'sweetalert2/dist/sweetalert2.js'
 // import 'sweetalert2/src/sweetalert2.scss'
 import * as echarts from 'echarts';
-
+// import 'echarts-gl'
 const app = createApp(App)
 app.use(router).use(store)
 app.use(VueAxios, axios)
@@ -29,6 +30,9 @@ app.use(ElementPlus)
 app.use(VueCropper)
 app.use(naive)
 app.use(VueWechatTitle);
+app.use(echarts)
+
+gsap.registerPlugin(ScrollTrigger)
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)

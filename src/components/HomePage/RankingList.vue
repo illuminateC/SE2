@@ -49,7 +49,8 @@ export default {
             itemType: "Papers",
         };
     },
-    mounted() {
+    created() {
+        console.log(this.type);
         for (let i = 0; i < this.itemList.length; i++) {
             if (this.itemList[i].title.length > 22) {
                 this.itemList[i].title = this.itemList[i].title.slice(0, 22) + "...";
