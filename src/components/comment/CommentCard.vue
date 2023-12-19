@@ -12,11 +12,12 @@
                 <div class="comment_create_time">{{ this.comment.create_time }}</div></div>
                 <div class="comment_actions">
                 <el-button-group>
-                    <el-button icon="el-icon-top" :type="getLikeType()" @click="dislikeOrLikeComment(1)" :disabled="cannotlike()">顶 {{this.getLikeCount()}}</el-button>
-                    <el-button icon="el-icon-bottom" :type="getDislikeType()" @click="dislikeOrLikeComment(2)" :disabled="cannotdislike()">踩 {{this.getDislikeCount()}}</el-button>
-                    <el-button icon="el-icon-bottom" @click="operateComment(1)" v-if="this.commentOperate">置顶</el-button>
-                    <el-button icon="el-icon-bottom" @click="operateComment(3)" v-if=this.commentOperate>删除</el-button>
+                    <el-button  :type="getLikeType()" @click="dislikeOrLikeComment(1)"><el-icon style="margin-right: 10px;" ><Top /></el-icon>顶 {{this.getLikeCount()}}</el-button>
+                    <el-button  :type="getDislikeType()" @click="dislikeOrLikeComment(2)"><el-icon style="margin-right: 10px;"><Bottom /></el-icon>踩 {{this.getDislikeCount()}}</el-button>
+                    <el-button  @click="operateComment(1)" v-if="this.commentOperate">置顶</el-button>
+                    <el-button  @click="operateComment(3)" v-if=this.commentOperate>删除</el-button>
                 </el-button-group>
+                
             </div></div>
         </template>
         <div class="card_info">
@@ -52,20 +53,12 @@
       getLikeCount(){return this.comment.like + (this.vote === 1?1:0);},
       getDislikeCount(){return this.comment.dislike + (this.vote === 2?1:0);},
       getLikeType(){
-        if(this.cannotlike())return "success";
+        if(this.vote==1)return "success";
         else return "plain";
       },
       getDislikeType(){
-        if(this.cannotdislike())return "success";
+        if(this.vote==2)return "danger";
         else return "plain";
-      },
-      cannotlike(){
-        if(this.comment.status =='该条评论该用户已点赞')return true;
-        else return false;
-      },
-      cannotdislike(){
-        if(this.comment.status == '该条评论该用户已点踩')return true;
-        else return false;
       },
       handleClick2(method) {
         console.log(method);
@@ -78,16 +71,17 @@
         if(method === this.vote) method = 0;
         formData.append("method", method);
         let config = { headers: { "Content-Type": "multipart/form-data", }, };
-        axios.post(testurl, formData, config).then((response) => {
-          if (response) {
-            if (response.data.success) {
-              this.vote = method;
-              this.$parent.getCommentList();
-            } else {
-              console.log(response)
-            }
-          }
-        });
+        this.vote=method;
+        // axios.post(testurl, formData, config).then((response) => {
+        //   if (response) {
+        //     if (response.data.success) {
+        //       this.vote = method;
+        //       this.$parent.getCommentList();
+        //     } else {
+        //       console.log(response)
+        //     }
+        //   }
+        // });
       },
       operateComment(method) {
         let that = this;
@@ -107,37 +101,38 @@
         });
       },
     },
-    // data() {
-    //   return {
-    //     short_abstract: "",
-    //     comment:{
-    //       on_top:true,
-    //       author_name:"田所浩二",
-    //       username: "",
-    //       create_time:"2020-12-18 20:23:23",
-    //       content:"this is an example comment",
-    //       paper_id:114,
-    //       like:true,
-    //       dislike:false,
-    //       status:'该条评论该用户已点赞',
-    //     },
-    //     commentOperate:true,
-    //   };
-    // },
     data() {
-        return {
+      return {
         short_abstract: "",
-        itemExample: {
-            username: "",
-            create_time:"2020-12-18 20:23:23",
-            comment:"this is an example comment",
+        comment:{
+          on_top:true,
+          author_name:"田所浩二",
+          username: "",
+          create_time:"2020-12-18 20:23:23",
+          content:"this is an example comment",
+          paper_id:114,
+          like:114,
+          dislike:514,
+          status:'该条评论该用户已点赞',
         },
+        commentOperate:false,
         vote:0,
-        commentOperate: false,
-        judgeSettle: false,
-        judgeSettle2: false,
-        };
+      };
     },
+    // data() {
+    //     return {
+    //     short_abstract: "",
+    //     itemExample: {
+    //         username: "",
+    //         create_time:"2020-12-18 20:23:23",
+    //         comment:"this is an example comment",
+    //     },
+    //     vote:0,
+    //     commentOperate: false,
+    //     judgeSettle: false,
+    //     judgeSettle2: false,
+    //     };
+    // },
   };
   </script>
   
