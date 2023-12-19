@@ -19,7 +19,13 @@
         </svg>
 
         <div id="authorName">
-          <div>{{ this.author.name }}</div>
+          <router-link
+            :to="'/user/' + this.author.id"
+            target="_blank"
+            class="clean-router-link"
+          >
+            <div>{{ this.author.name }}</div>
+          </router-link>
         </div>
 
         <div id="authorNameFake">
@@ -43,7 +49,6 @@
             </svg>
             <div style="margin-left: 5px; white-space: nowrap">
               {{ this.author.numOfPaper }}篇
-              <!-- {{ this.author.n_pubs }}篇 -->
             </div>
           </div>
 
@@ -63,7 +68,6 @@
             </svg>
             <div style="margin-left: 5px; white-space: nowrap">
               {{ this.author.numOfCitation }}次
-              <!-- {{ this.author.n_citation }}次 -->
             </div>
           </div>
 
@@ -209,7 +213,7 @@
           </router-link>
         </div> -->
 
-        <div v-if="type == 2">
+        <div>
           <router-link
             class="link"
             v-for="(paper, index) in this.papers"
@@ -224,8 +228,6 @@
             <div style="width: 700px">{{ paper.name }}</div>
             <div class="citation2">第{{ numToChar(paper.authorIndex) }}作者</div>
             <div class="citation">被引{{ paper.numOfCitation }}次</div>
-            <!-- <div style="width: 700px">{{ paper.id }}</div>
-            <div class="citation">被引{{ paper.numOfCitation }}次</div> -->
           </router-link>
           <!-- <router-link
             class="link"
@@ -769,5 +771,10 @@ a:hover {
   align-items: center;
 
   margin: 10px;
+}
+
+.clean-router-link {
+  color: inherit;
+  text-decoration: none;
 }
 </style>

@@ -1,11 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
 import Aboutview from '../views/AboutView.vue'
-<<<<<<< HEAD
 import Cookies from 'js-cookie';
-=======
 import AuthorView from '../views/AuthorView.vue'
->>>>>>> chisato
 
 const routes = [
   {
