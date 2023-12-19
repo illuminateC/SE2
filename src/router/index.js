@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import AuthorView from '../views/AuthorView.vue'
 
 
+
 const routes = [
   {
     path: '/',
@@ -109,6 +110,18 @@ const routes = [
     name: 'Author',
     component: AuthorView,
     meta: {title: "XpertiseScholar 作者主页"}
+  },
+  // 搜索详情页面，后续可能会调整其位置
+  {
+    path: '/search-detail',
+    name: 'SearchDetail',
+    component: ()=>import('../views/search/SearchDetail.vue'),
+  },
+  // 高级搜索详情页面，后续可能会调整其位置
+  {
+    path: '/advance-search-detail',
+    name: 'AdvanceSearchDetail',
+    component: ()=>import('../views/search/AdvSearchDetail.vue'),
   },
 ]
 
