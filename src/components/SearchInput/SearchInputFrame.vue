@@ -62,9 +62,10 @@
         class="search-btn"
         @click="onSearchHandler"
       >
-        <svg aria-hidden="true" class="search-btn-icon">
-          <use xlink:href="#search" fill="#707070" />
-        </svg>
+<!--        <svg aria-hidden="true" class="search-btn-icon">-->
+<!--          <use xlink:href="#search" fill="#707070" />-->
+<!--        </svg>-->
+        <el-icon aria-hidden="true" class="search-btn-icon" fill="#707070" style="margin-left: -2px"><Search /></el-icon>
       </button>
     </div>
     <!--
@@ -108,6 +109,7 @@ const EMIT_BLUR = 'blur'
 import { onMounted, ref, watch } from 'vue';
 import { useVModel, onClickOutside } from '@vueuse/core';
 import { useSearchStore } from '../../stores/search.js';
+import {Search} from "@element-plus/icons-vue";
 
 const selectTarget = ref(null);
 const searchStore = useSearchStore();

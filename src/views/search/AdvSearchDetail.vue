@@ -11,23 +11,23 @@
             <!-- 这个就是单纯占位置的，因此绑定的数据也是随便绑定的 -->
             <ElSelect class="adv-select-relation hide" v-model="placeholderRelation">
               <ElOption
-                v-for="logicalRelation in advanceLogicalRelation"
-                :key="logicalRelation.value"
-                :label="logicalRelation.label"
-                :value="logicalRelation.value"
+                  v-for="logicalRelation in advanceLogicalRelation"
+                  :key="logicalRelation.value"
+                  :label="logicalRelation.label"
+                  :value="logicalRelation.value"
               />
             </ElSelect>
             <!-- 得益于pinia，这里的store中的数据是响应式的 -->
             <ElSelect class="adv-select" v-model="searchStore.searchType">
               <ElOption
-                v-for="option in advanceEntityTypeFilter"
-                :key="option.value"
-                :label="option.label"
-                :value="option.value"
+                  v-for="option in advanceEntityTypeFilter"
+                  :key="option.value"
+                  :label="option.label"
+                  :value="option.value"
               />
             </ElSelect>
             <!-- 绑定pinia中的 searchInputText -->
-            <AdvSearchInput class="adv-search-input" v-model="searchStore.searchInputText" />
+            <AdvSearchInput class="adv-search-input" v-model="searchStore.searchInputText"/>
             <template v-if="advanceCardExpanded">
               <div class="adv-search-btn" @click="initFilterLine">
                 <i class="iconfont icon-add"></i>
@@ -46,12 +46,12 @@
 
           <!-- 可以被删除的筛选行单元的数组 -->
           <div
-            class="adv-search-line clearfix"
-            v-if="advanceCardExpanded"
-            v-for="(filterLine, index) in advanceFilterResult[searchStore.searchType]"
-            :key=index
+              class="adv-search-line clearfix"
+              v-for="(filterLine, index) in advanceFilterResult[searchStore.searchType]"
+              :key="index"
           >
-            <!--
+            <div v-if="advanceCardExpanded">
+              <!--
               这里要区分 el-select 和 el-option 的双向绑定
               所有的 逻辑关系 下拉栏中
               >>> el-option 始终绑定的是同一个数据源 advanceLogicalRelation（因为选项本身不会改变）
@@ -65,48 +65,50 @@
                   这样 el-select 才会根据label自动显示value
               所有的 input 框，双向绑定着 该筛选栏对象filterLine的 content 键值
              -->
-            <ElSelect class="adv-select-relation" v-model="filterLine.logicalType">
-              <ElOption
-                v-for="logicalRelation in advanceLogicalRelation"
-                :key="logicalRelation.label"
-                :label="logicalRelation.label"
-                :value="logicalRelation.value"
-              />
-            </ElSelect>
-            <ElSelect class="adv-select" v-model="filterLine.category">
-              <ElOption
-                v-for="option in advanceSecondLevelFilter[searchStore.searchType]"
-                :label="option.label"
-                :value="option.value"
-              />
-            </ElSelect>
-            <AdvSearchInput class="adv-search-input" v-model="filterLine.content" />
-            <div class="adv-search-btn" @click="addFilterLine(index)">
-              <i class="iconfont icon-add"></i>
-            </div>
-            <div class="adv-search-btn" @click="deleteFilterLine(index)">
-              <i class="iconfont icon-sub1"></i>
+              <ElSelect class="adv-select-relation" v-model="filterLine.logicalType">
+                <ElOption
+                    v-for="logicalRelation in advanceLogicalRelation"
+                    :key="logicalRelation.label"
+                    :label="logicalRelation.label"
+                    :value="logicalRelation.value"
+                />
+              </ElSelect>
+              <ElSelect class="adv-select" v-model="filterLine.category">
+                <ElOption
+                    v-for="option in advanceSecondLevelFilter[searchStore.searchType]"
+                    :label="option.label"
+                    :value="option.value"
+                    :key="option"
+                />
+              </ElSelect>
+              <AdvSearchInput class="adv-search-input" v-model="filterLine.content"/>
+              <div class="adv-search-btn" @click="addFilterLine(index)">
+                <i class="iconfont icon-add"></i>
+              </div>
+              <div class="adv-search-btn" @click="deleteFilterLine(index)">
+                <i class="iconfont icon-sub1"></i>
+              </div>
             </div>
           </div>
 
           <!-- 如果是论文，支持根据 publication_year 的起始终止进行筛选 -->
           <div
-            class="adv-search-line clearfix"
-            v-if="advanceCardExpanded"
+              class="adv-search-line clearfix"
+              v-if="advanceCardExpanded"
           >
             <div class="date-picker-title" :class="{'hide': searchStore.searchType !== 'works'}">
               发布日期
             </div>
             <ElDatePicker
-              v-model="publicationDateRange"
-              type="daterange"
-              unlink-panels
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              value-format="YYYY-MM-DD"
-              :shortcuts="shortcuts"
-              :class="{'hide': searchStore.searchType !== 'works'}"
+                v-model="publicationDateRange"
+                type="daterange"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                value-format="YYYY-MM-DD"
+                :shortcuts="shortcuts"
+                :class="{'hide': searchStore.searchType !== 'works'}"
             />
 
             <div style="margin-left: 120px; display: inline-block;">
@@ -119,10 +121,10 @@
         </div>
         <!-- 展开/折叠的按钮 -->
         <div class="expand-btn clearfix" v-if="advanceCardExpanded" @click="handleAdvanceSearch">
-          <i class="iconfont icon-arrowup expand-btn-icon" />
+          <i class="iconfont icon-arrowup expand-btn-icon"/>
         </div>
         <div class="expand-btn clearfix" v-else @click="advanceCardExpanded = true">
-          <i class="iconfont icon-arrowup expand-btn-icon rotate" />
+          <i class="iconfont icon-arrowup expand-btn-icon rotate"/>
         </div>
       </div>
     </div>
@@ -141,17 +143,17 @@
                 index 是该筛选单元在 当前实体类型对应的 筛选列表 中的数组索引下标
                -->
               <div
-                class="colored-block"
-                v-for="(item, index) in AllTypeFilterList[searchStore.searchType]"
-                :key="index"
-                :ref="setFilterUnitDOM"
+                  class="colored-block"
+                  v-for="(item, index) in AllTypeFilterList[searchStore.searchType]"
+                  :key="index"
+                  :ref="setFilterUnitDOM"
               >
                 <!-- 筛选块标题 -->
                 <div
-                  class="colored-block-title clearfix"
-                  @click="handleAllTypeGroupSearch(filterUnitDOM[index], index)"
+                    class="colored-block-title clearfix"
+                    @click="handleAllTypeGroupSearch(filterUnitDOM[index], index)"
                 >
-                  <div class="colored-block-title-context">{{item.title}}</div>
+                  <div class="colored-block-title-context">{{ item.title }}</div>
                   <i class="iconfont icon-arrowup colored-block-icon"></i>
                 </div>
                 <!-- 折叠栏 -->
@@ -161,11 +163,12 @@
                     <div class="accordion-content">
                       <!-- 这里第一个[]是属性键值，第二个[]才是数组索引 -->
                       <ElCheckboxGroup
-                        v-model="AllTypeFilterList[searchStore.searchType][index].selectedArray"
-                        @change="handleChange(index)"
+                          v-model="AllTypeFilterList[searchStore.searchType][index].selectedArray"
+                          @change="handleChange(index)"
                       >
                         <ul class="rlist expand__list">
-                          <li v-for="labelItem in AllTypeFilterList[searchStore.searchType][index].objectArray" :key="labelItem">
+                          <li v-for="labelItem in AllTypeFilterList[searchStore.searchType][index].objectArray"
+                              :key="labelItem">
                             <!--
                               VERY IMPORTANT
                               这里 label属性 代表选中时，添加进入 ElCheckboxGroup 的v-model绑定的数组的值
@@ -173,8 +176,8 @@
                               实际上是把 labelItem.key 添加进入了对应的数组
                              -->
                             <ElCheckbox :label="labelItem.key">
-                              <span class="chose-label">{{labelItem.key_display_name}}</span>&nbsp;&nbsp;
-                              <span class="chose-num">({{labelItem.count}})</span>
+                              <span class="chose-label">{{ labelItem.key_display_name }}</span>&nbsp;&nbsp;
+                              <span class="chose-num">({{ labelItem.count }})</span>
                             </ElCheckbox>
                           </li>
                         </ul>
@@ -224,13 +227,13 @@
                     <span class="per-page-label">Per Page: </span>
                     <ul class="rlist--inline">
                       <li
-                        class="page-size-chose"
-                        v-for="(size, index) in pageSizeArray"
-                        :key="size"
-                        @click="handlePageSizeChangeSearch(index)"
-                        :ref="setPageSizeDom"
+                          class="page-size-chose"
+                          v-for="(size, index) in pageSizeArray"
+                          :key="size"
+                          @click="handlePageSizeChangeSearch(index)"
+                          :ref="setPageSizeDom"
                       >
-                        {{size}}
+                        {{ size }}
                       </li>
                     </ul>
                   </div>
@@ -244,11 +247,11 @@
                     <div class="sort-dropdown">
                       <ul class="rlist">
                         <li
-                          v-for="item in remainSortTypeArray"
-                          :key="item"
-                          @click="handleAllTypeSortSearch(item)"
+                            v-for="item in remainSortTypeArray"
+                            :key="item"
+                            @click="handleAllTypeSortSearch(item)"
                         >
-                          {{item}}
+                          {{ item }}
                         </li>
                       </ul>
                     </div>
@@ -259,7 +262,7 @@
               <ul class="rlist" v-show="totalSearchResNum">
                 <!-- 单个搜索结果卡片 -->
                 <li class="result-item" v-for="item in searchDataList" :key="item">
-                  <component :is="searchResCard[searchStore.searchType]" :item="item" />
+                  <component :is="searchResCard[searchStore.searchType]" :item="item"/>
                 </li>
               </ul>
               <ElEmpty v-show="!totalSearchResNum" description="No Result Found"/>
@@ -267,13 +270,13 @@
               <div class="search-result__pagination">
                 <div class="pagination-container">
                   <ElPagination
-                    hide-on-single-page
-                    v-model:current-page="searchResPageIndex"
-                    v-model:page-size="searchResPageSize"
-                    :total="(totalSearchResNum > 10000
+                      hide-on-single-page
+                      v-model:current-page="searchResPageIndex"
+                      v-model:page-size="searchResPageSize"
+                      :total="(totalSearchResNum > 10000
                       ? 10000
                       : totalSearchResNum)"
-                    layout="prev, pager, next, jumper"
+                      layout="prev, pager, next, jumper"
                   />
                 </div>
               </div>
@@ -329,11 +332,20 @@ const pageSizeArray = [5, 10, 20];
 </script>
 
 <script setup>
-import { toThousands } from '@/utils';
-import { Search } from '@/api/search';
-import { useSearchStore } from '@/stores/search';
-import { onMounted, reactive, ref, watch } from 'vue';
-import { ElCheckbox, ElCheckboxGroup, ElDatePicker, ElEmpty, ElNotification, ElOption, ElSelect, ElPagination } from 'element-plus';
+import {toThousands} from '@/utils';
+import {Search} from '@/api/search';
+import {useSearchStore} from '@/stores/search';
+import {onMounted, reactive, ref, watch} from 'vue';
+import {
+  ElCheckbox,
+  ElCheckboxGroup,
+  ElDatePicker,
+  ElEmpty,
+  ElNotification,
+  ElOption,
+  ElSelect,
+  ElPagination
+} from 'element-plus';
 import AdvSearchInput from '../../components/SearchInput/AdvSearch.vue';
 import WorksResCard from './WorksResCard.vue';
 import AuthorsResCard from './AuthorsResCard.vue';
@@ -656,28 +668,28 @@ const handleAdvanceSearch = () => {
         "filter": buildAdvanceFilterKey(),
         "page": 1,
         "per_page": 10,
-        "search" : searchStore.searchInputText,
+        "search": searchStore.searchInputText,
       }
     };
     console.log("高级搜索，前端发出的请求体");
     console.log(data);
     Search.getAdvanceSearchDataList(data)
-    .then((res) => {
-      if (res.data.result === 1) {
-        searchDataList.value = res.data.advanced_search_data[0].results;
-        totalSearchResNum.value = res.data.advanced_search_data[0].meta.count;
-        console.log(searchDataList);
-        ElNotification({
-          title: "恭喜您",
-          message: `搜索成功，用时 ${res.data.advanced_search_data[0].meta.db_response_time_ms / 1000} s`,
-          type: "success",
-          duration: 3000
+        .then((res) => {
+          if (res.data.result === 1) {
+            searchDataList.value = res.data.advanced_search_data[0].results;
+            totalSearchResNum.value = res.data.advanced_search_data[0].meta.count;
+            console.log(searchDataList);
+            ElNotification({
+              title: "恭喜您",
+              message: `搜索成功，用时 ${res.data.advanced_search_data[0].meta.db_response_time_ms / 1000} s`,
+              type: "success",
+              duration: 3000
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-    });
   }
 }
 
@@ -707,7 +719,7 @@ var totalSearchResNum = ref(0);
  * 注意，除了“页数更改搜索”外，“过滤搜索”、“排序搜索”、“页尺寸更改搜索”都会重置当前页数为第1页。
  * “分组搜索” 和 页数、页尺寸无关。
  */
-const searchResPageIndex =  ref(1);
+const searchResPageIndex = ref(1);
 // 搜索结果每一页的尺寸
 const searchResPageSize = ref(10);
 /**
@@ -729,42 +741,42 @@ const handlePageIndexChangeSearch = () => {
       "filter": buildAllTypeFilterKey(),
       "page": searchResPageIndex.value,
       "per_page": searchResPageSize.value,
-      "search" : searchStore.searchInputText,
+      "search": searchStore.searchInputText,
       "sort": buildSortKey(),
     }
   };
   console.log("页数更改触发搜索，前端发出的请求体");
   console.log(data);
   Search.getSearchDataList(data)
-  .then((res) => {
-    if (res.data.result === 1) {
-      searchDataList.value = res.data.list_of_data[0].results;
-      totalSearchResNum.value = res.data.list_of_data[0].meta.count;
-      console.log(searchDataList);
-      ElNotification({
-        title: "恭喜您",
-        message: `搜索成功，用时 ${res.data.list_of_data[0].meta.db_response_time_ms / 1000} s`,
-        type: "success",
-        duration: 3000
+      .then((res) => {
+        if (res.data.result === 1) {
+          searchDataList.value = res.data.list_of_data[0].results;
+          totalSearchResNum.value = res.data.list_of_data[0].meta.count;
+          console.log(searchDataList);
+          ElNotification({
+            title: "恭喜您",
+            message: `搜索成功，用时 ${res.data.list_of_data[0].meta.db_response_time_ms / 1000} s`,
+            type: "success",
+            duration: 3000
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    }
-  })
-  .catch((err) => {
-    console.log(err);
-  });
 };
 watch(
-  searchResPageIndex,
-  () => {
-    // 注意这里可能原来的页数就是1，因此即使是其他搜索重置为1，也不一定会触发watch
-    // 但是当原来页数不为1时，这里watch的上锁逻辑就是必要的，避免重复触发搜索
-    console.log("页数发生了变化");
-    // 确保不是由其他搜索触发的页数变化
-    if (pageIndexChangeSearchLock.value === false) {
-      console.log("触发 页数更改搜索")
-      handlePageIndexChangeSearch();
+    searchResPageIndex,
+    () => {
+      // 注意这里可能原来的页数就是1，因此即使是其他搜索重置为1，也不一定会触发watch
+      // 但是当原来页数不为1时，这里watch的上锁逻辑就是必要的，避免重复触发搜索
+      console.log("页数发生了变化");
+      // 确保不是由其他搜索触发的页数变化
+      if (pageIndexChangeSearchLock.value === false) {
+        console.log("触发 页数更改搜索")
+        handlePageIndexChangeSearch();
+      }
     }
-  }
 );
 
 // #region 每页数据量尺寸相关 -----------------------------------------------------------------------
@@ -779,7 +791,7 @@ const setPageSizeDom = (DOMElement) => {
 // 更新页面尺寸 + 更改样式
 const chosePageSize = (sizeIndex) => {
   searchResPageSize.value = pageSizeArray[sizeIndex];
-  for(let i = 0; i < pageSizeArray.length; i++) {
+  for (let i = 0; i < pageSizeArray.length; i++) {
     pageSizeDom.value[i].classList.remove("current");
   }
   pageSizeDom.value[sizeIndex].classList.add("current");
@@ -800,33 +812,33 @@ const handlePageSizeChangeSearch = (sizeIndex) => {
       "filter": buildAllTypeFilterKey(),
       "page": searchResPageIndex.value,
       "per_page": searchResPageSize.value,
-      "search" : searchStore.searchInputText,
+      "search": searchStore.searchInputText,
       "sort": buildSortKey(),
     }
   };
   console.log("页尺寸更改触发搜索，前端发出的请求体");
   console.log(data);
   Search.getSearchDataList(data)
-  .then((res) => {
-    if (res.data.result === 1) {
-      searchDataList.value = res.data.list_of_data[0].results;
-      totalSearchResNum.value = res.data.list_of_data[0].meta.count;
-      console.log(searchDataList);
-      ElNotification({
-        title: "恭喜您",
-        message: `搜索成功，用时 ${res.data.list_of_data[0].meta.db_response_time_ms / 1000} s`,
-        type: "success",
-        duration: 3000
-      });
-      // 解锁，可以触发“页数更改搜索”
-      pageIndexChangeSearchLock.value = false;
-    }
-  })
-  .catch((err) => {
-    console.log(err);
-    // 解锁，可以触发“页数更改搜索”
-    pageIndexChangeSearchLock.value = false;
-  })
+      .then((res) => {
+        if (res.data.result === 1) {
+          searchDataList.value = res.data.list_of_data[0].results;
+          totalSearchResNum.value = res.data.list_of_data[0].meta.count;
+          console.log(searchDataList);
+          ElNotification({
+            title: "恭喜您",
+            message: `搜索成功，用时 ${res.data.list_of_data[0].meta.db_response_time_ms / 1000} s`,
+            type: "success",
+            duration: 3000
+          });
+          // 解锁，可以触发“页数更改搜索”
+          pageIndexChangeSearchLock.value = false;
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        // 解锁，可以触发“页数更改搜索”
+        pageIndexChangeSearchLock.value = false;
+      })
 };
 // #endregion 每页数据量尺寸相关 --------------------------------------------------------------------
 
@@ -1004,25 +1016,25 @@ const handleAllTypeGroupSearch = (filterDOM, index) => {
         "group_by": AllTypeFilterList[searchStore.searchType][index].group,
         "page": 1,
         "per_page": searchResPageSize.value,
-        "search" : searchStore.searchInputText,
+        "search": searchStore.searchInputText,
         "sort": buildSortKey(),
       }
     };
     console.log("分组搜索，前端发出的请求体");
     console.log(data);
     Search.getGroupDataList(data)
-    .then((res) => {
-      if (res.data.result === 1) {
-        let groupArray = res.data.groups_of_data.group_by;
-        AllTypeFilterList[searchStore.searchType][index].objectArray = groupArray;
-        // 这是每个筛选单元要呈现在页面中的 选项文本
-        AllTypeFilterList[searchStore.searchType][index].stringArray = groupArray.map(item => item.key_display_name);
-      }
-      filterDOM.classList.add('js--open');  // 获取数据成功才执行“展开”
-    })
-    .catch((err) => {
-      console.log(err);
-    })
+        .then((res) => {
+          if (res.data.result === 1) {
+            let groupArray = res.data.groups_of_data.group_by;
+            AllTypeFilterList[searchStore.searchType][index].objectArray = groupArray;
+            // 这是每个筛选单元要呈现在页面中的 选项文本
+            AllTypeFilterList[searchStore.searchType][index].stringArray = groupArray.map(item => item.key_display_name);
+          }
+          filterDOM.classList.add('js--open');  // 获取数据成功才执行“展开”
+        })
+        .catch((err) => {
+          console.log(err);
+        })
   }
 };
 
@@ -1054,7 +1066,7 @@ const buildAllTypeFilterKey = () => {
     const groupKey = currentFilterList[i].group;
     filter[groupKey] = "";
     // 遍历每一个筛选单元中， 代表“选中”的 label 数组
-    for(let j = 0; j < currentFilterList[i].selectedArray.length; j++) {
+    for (let j = 0; j < currentFilterList[i].selectedArray.length; j++) {
       filter[groupKey] += currentFilterList[i].selectedArray[j] + "|";
     }
     // 去掉最后一个 '|' 字符
@@ -1073,7 +1085,7 @@ const handleAllTypeFilterSearch = () => {
   // 重置当前页数为第1页
   searchResPageIndex.value = 1;
   // 收起所有的筛选单元
-  for(let i = 0; i < 7; i++) {
+  for (let i = 0; i < 7; i++) {
     if (filterUnitDOM.value[i].classList.contains('js--open')) {
       filterUnitDOM.value[i].classList.remove('js--open');
     }
@@ -1084,33 +1096,33 @@ const handleAllTypeFilterSearch = () => {
       "filter": buildAllTypeFilterKey(),
       "page": 1,
       "per_page": searchResPageSize.value,
-      "search" : searchStore.searchInputText,
+      "search": searchStore.searchInputText,
       "sort": buildSortKey(),
     }
   };
   console.log("用户筛选搜索，前端发出的请求体");
   console.log(data);
   Search.getSearchDataList(data)
-  .then((res) => {
-    if (res.data.result === 1) {
-      searchDataList.value = res.data.list_of_data[0].results;
-      totalSearchResNum.value = res.data.list_of_data[0].meta.count;
-      // console.log(searchDataList);
-      ElNotification({
-        title: "恭喜您",
-        message: `搜索成功，用时 ${res.data.list_of_data[0].meta.db_response_time_ms / 1000} s`,
-        type: "success",
-        duration: 3000
-      });
-      // 解锁，可以触发“页数更改搜索”
-      pageIndexChangeSearchLock.value = false;
-    }
-  })
-  .catch((err) => {
-    console.log(err);
-    // 解锁，可以触发“页数更改搜索”
-    pageIndexChangeSearchLock.value = false;
-  })
+      .then((res) => {
+        if (res.data.result === 1) {
+          searchDataList.value = res.data.list_of_data[0].results;
+          totalSearchResNum.value = res.data.list_of_data[0].meta.count;
+          // console.log(searchDataList);
+          ElNotification({
+            title: "恭喜您",
+            message: `搜索成功，用时 ${res.data.list_of_data[0].meta.db_response_time_ms / 1000} s`,
+            type: "success",
+            duration: 3000
+          });
+          // 解锁，可以触发“页数更改搜索”
+          pageIndexChangeSearchLock.value = false;
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        // 解锁，可以触发“页数更改搜索”
+        pageIndexChangeSearchLock.value = false;
+      })
 };
 /**
  * 取消要进行 “带有搜索筛选字段” 的 搜索
@@ -1135,7 +1147,7 @@ const cancelFilterSearch = () => {
  * 初始化默认删去当前搜索实体 在当前选中的 排序类型
  */
 const remainSortTypeArray = ref(allEntitySortType[searchStore.searchType].filter(
-  (sortType) => sortType !== searchStore.sortType
+    (sortType) => sortType !== searchStore.sortType
 ));
 
 /**
@@ -1145,8 +1157,8 @@ const remainSortTypeArray = ref(allEntitySortType[searchStore.searchType].filter
 const sortDropdownTarget = ref(null);
 const expandSortDropdown = () => {
   sortDropdownTarget.value.classList.contains('js--open')
-    ? sortDropdownTarget.value.classList.remove('js--open')
-    : sortDropdownTarget.value.classList.add('js--open')
+      ? sortDropdownTarget.value.classList.remove('js--open')
+      : sortDropdownTarget.value.classList.add('js--open')
 };
 /**
  * 根据用户选择的sort类型，构建出 sort 字段
@@ -1207,27 +1219,27 @@ const buildSortKey = () => {
  * 所以需要 watch 来完成
  */
 watch(
-  () => searchStore.searchType,
-  (newSearchType) => {
-    if (newSearchType === "works") {
-      // 这是因为有可能在sortType为 "More Works" "Less Works" 时切换到 works
-      // 此时就要 重置 排序方式
-      if (searchStore.sortType === "More Works" || searchStore.sortType === "Less Works") {
-        searchStore.sortType = "Relevance";
+    () => searchStore.searchType,
+    (newSearchType) => {
+      if (newSearchType === "works") {
+        // 这是因为有可能在sortType为 "More Works" "Less Works" 时切换到 works
+        // 此时就要 重置 排序方式
+        if (searchStore.sortType === "More Works" || searchStore.sortType === "Less Works") {
+          searchStore.sortType = "Relevance";
+        }
+      } else {
+        // 这是因为有可能在sortType为 "Earliest" "Latest" 时切换到 除了 works 以外的4大实体
+        // 此时就要 重置 排序方式
+        if (searchStore.sortType === "Earliest" || searchStore.sortType === "Latest") {
+          searchStore.sortType = "Relevance";
+        }
       }
-    } else {
-      // 这是因为有可能在sortType为 "Earliest" "Latest" 时切换到 除了 works 以外的4大实体
-      // 此时就要 重置 排序方式
-      if (searchStore.sortType === "Earliest" || searchStore.sortType === "Latest") {
-        searchStore.sortType = "Relevance";
-      }
+      // 更新排序方式数组备选项，排除当前选中的类型那一条
+      remainSortTypeArray.value = allEntitySortType[newSearchType].filter(
+          (sortType) => sortType !== searchStore.sortType
+      );
+      handleAdvanceSearch();
     }
-    // 更新排序方式数组备选项，排除当前选中的类型那一条
-    remainSortTypeArray.value = allEntitySortType[newSearchType].filter(
-      (sortType) => sortType !== searchStore.sortType
-    );
-    handleAdvanceSearch();
-  }
 );
 
 /**
@@ -1246,7 +1258,7 @@ const handleAllTypeSortSearch = async (newSortType) => {
 
   // 更新排序方式数组备选项，排除当前选中的类型那一条
   remainSortTypeArray.value = allEntitySortType[searchStore.searchType].filter(
-    (sortType) => sortType !== searchStore.sortType
+      (sortType) => sortType !== searchStore.sortType
   );
   console.log(searchStore.sortType, searchStore.searchInputText, searchStore.searchType);
   // 确保搜索文本不为空
@@ -1257,33 +1269,33 @@ const handleAllTypeSortSearch = async (newSortType) => {
         "filter": buildAllTypeFilterKey(),
         "page": 1,
         "per_page": searchResPageSize.value,
-        "search" : searchStore.searchInputText,
-        "sort" : buildSortKey(),
+        "search": searchStore.searchInputText,
+        "sort": buildSortKey(),
       }
     }
     console.log("切换排序方式搜索，前端发出的请求体");
     console.log(data);
     Search.getSearchDataList(data)
-    .then((res) => {
-      if (res.data.result === 1) {
-        searchDataList.value = res.data.list_of_data[0].results;
-        totalSearchResNum.value = res.data.list_of_data[0].meta.count;
-        // console.log(searchDataList);
-        ElNotification({
-          title: "恭喜您",
-          message: `搜索成功，用时 ${res.data.list_of_data[0].meta.db_response_time_ms / 1000} s`,
-          type: "success",
-          duration: 3000
-        });
-        // 解锁，可以触发“页数更改搜索”
-        pageIndexChangeSearchLock.value = false;
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      // 解锁，可以触发“页数更改搜索”
-      pageIndexChangeSearchLock.value = false;
-    })
+        .then((res) => {
+          if (res.data.result === 1) {
+            searchDataList.value = res.data.list_of_data[0].results;
+            totalSearchResNum.value = res.data.list_of_data[0].meta.count;
+            // console.log(searchDataList);
+            ElNotification({
+              title: "恭喜您",
+              message: `搜索成功，用时 ${res.data.list_of_data[0].meta.db_response_time_ms / 1000} s`,
+              type: "success",
+              duration: 3000
+            });
+            // 解锁，可以触发“页数更改搜索”
+            pageIndexChangeSearchLock.value = false;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          // 解锁，可以触发“页数更改搜索”
+          pageIndexChangeSearchLock.value = false;
+        })
   }
 };
 // #endregion 数据结果排序类型相关 --------------------------------------------------------------------
@@ -1295,13 +1307,16 @@ const handleAllTypeSortSearch = async (newSortType) => {
 .el-tooltip__trigger {
   height: 40px;
 }
+
 .el-select .el-input {
   height: 100%;
 }
+
 .el-select .el-input .el-input__wrapper {
   border-radius: 0;
   border-right: none;
 }
+
 .el-select .el-input .el-input__inner {
   font-family: 'Times New Roman', Times, "Microsoft YaHei", serif;
   font-weight: bold;
@@ -1320,25 +1335,31 @@ const handleAllTypeSortSearch = async (newSortType) => {
   background-color: black;
   border-color: black;
 }
+
 .el-checkbox__inner:hover {
   border-color: black;
 }
-.el-checkbox__input.is-checked+.el-checkbox__label {
+
+.el-checkbox__input.is-checked + .el-checkbox__label {
   color: black;
   font-weight: bold;
 }
+
 .pagination-container .el-pager li.is-active {
   cursor: default;
   color: black;
   font-weight: bold;
 }
+
 .pagination-container .el-pager li:hover {
   color: black;
   font-weight: bold;
 }
+
 .pagination-container .el-pagination button:hover {
   color: black;
 }
+
 .pagination-container .el-input__wrapper.is-focus {
   box-shadow: 0 0 0 1px black;
 }
@@ -1366,31 +1387,35 @@ a, a:hover, a:focus {
   margin: 0;
   padding: 0;
 }
-.rlist--inline>li {
+
+.rlist--inline > li {
   display: inline-block;
 }
 
-.adv-search-detail-container{
+.adv-search-detail-container {
   box-sizing: border-box;
   /* background-color: rgb(228 228 231); */
   background-color: rgb(234, 234, 234);
   /* background-color: rgb(255, 255, 255); */
-  font-family: Merriweather Sans,sans-serif;
+  font-family: Merriweather Sans, sans-serif;
   line-height: 1.4;
   word-wrap: break-word;
   /* 控制一些手机或平板设备上使用的文本溢出算法，使用一个百分数来确定文本放大程度。 */
   text-size-adjust: 100%;
   min-height: calc(100vh - 64px);
 }
+
 /* #region 搜索区域 */
-.search-area{
+.search-area {
   /* background-color: rgb(147 197 253); */
   width: 100%;
   padding: 10px 20px;
 }
+
 .search-area-handler {
   width: 100%;
 }
+
 @media (max-width: 1315px) {
   .search-area-handler {
     display: none;
@@ -1423,13 +1448,14 @@ a, a:hover, a:focus {
   background-color: white;
   padding: 20px 50px;
 }
-.search-area-handler .adv-search-card .adv-search-line{
+
+.search-area-handler .adv-search-card .adv-search-line {
   width: 100%;
   margin: 20px 0;
   /* background-color: rgba(226, 241, 254, 0.6); */
 }
 
-.search-area .adv-search-input{
+.search-area .adv-search-input {
   display: inline-block;
   max-width: 58%;
   margin-right: 10px;
@@ -1449,7 +1475,7 @@ a, a:hover, a:focus {
   cursor: pointer;
 }
 
-.adv-search-btn > i{
+.adv-search-btn > i {
   display: inline-block;
   position: absolute;
   top: 50%;
@@ -1485,6 +1511,7 @@ a, a:hover, a:focus {
   color: black;
   overflow: hidden;
 }
+
 .adv-search-final-btn span {
   position: absolute;
   left: 0;
@@ -1495,6 +1522,7 @@ a, a:hover, a:focus {
   z-index: -1;
   border: 5px solid black;
 }
+
 .adv-search-final-btn span::before {
   content: "";
   position: absolute;
@@ -1506,12 +1534,14 @@ a, a:hover, a:focus {
   transform: translate(-50%, -50%) rotate(-60deg);
   transition: all 0.3s;
 }
+
 .adv-search-final-btn:hover span::before,
 .adv-search-final-btn:focus span::before {
   transform: translate(-50%, -50%) rotate(-90deg);
   width: 100%;
   background: black;
 }
+
 .adv-search-final-btn:hover,
 .adv-search-final-btn:focus {
   color: white;
@@ -1525,6 +1555,7 @@ a, a:hover, a:focus {
   padding: 0 2rem;
   transition: all 0.5s;
 }
+
 .expand-btn-icon {
   display: inline-block;
 }
@@ -1532,14 +1563,15 @@ a, a:hover, a:focus {
 .rotate {
   transform: rotate(180deg);
 }
+
 /* #endregion 搜索区域结束 */
 
 
 /* #region 筛选条件区域 */
-.result-area{
-  min-height: 37.5rem;  /* 600px */
+.result-area {
+  min-height: 37.5rem; /* 600px */
   padding-top: 0;
-  margin-top: 1.25rem;  /* 20px */
+  margin-top: 1.25rem; /* 20px */
   /* border: 1px solid black; */
   box-sizing: border-box;
 }
@@ -1551,10 +1583,12 @@ a, a:hover, a:focus {
   padding-right: 15px;
   /* border: 1px solid yellow; */
 }
+
 .row {
   margin-left: -15px;
   margin-right: -15px;
 }
+
 .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6,
 .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12,
 .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6,
@@ -1579,6 +1613,7 @@ a, a:hover, a:focus {
   margin-bottom: 1.25rem;
   box-sizing: border-box;
 }
+
 .colored-block-title {
   background-color: #f0f0f0;
   padding: .875rem 0;
@@ -1587,6 +1622,7 @@ a, a:hover, a:focus {
   cursor: pointer;
   /* border: 1px solid black; */
 }
+
 .colored-block-title-context {
   /* 下面三行创造 标题左边的黑色色块 */
   border-left: 8px solid;
@@ -1602,6 +1638,7 @@ a, a:hover, a:focus {
 .colored-block.js--open .colored-block-icon {
   transform: rotate(360deg);
 }
+
 .colored-block-icon {
   position: absolute;
   z-index: 3;
@@ -1626,7 +1663,8 @@ a, a:hover, a:focus {
   box-sizing: border-box;
   transition: all .5s;
 }
-.end-dash{
+
+.end-dash {
   /* display: none; */
   width: 1.125rem;
   height: .25rem;
@@ -1642,6 +1680,7 @@ a, a:hover, a:focus {
   max-height: 237px;
   overflow-y: auto;
 }
+
 /*
   VERY IMPORTANT
   妙手偶得，通过负数外边距、正数内边距，
@@ -1651,13 +1690,14 @@ a, a:hover, a:focus {
   /* display: none; */
   max-height: 0;
   overflow: hidden;
-  border-color: rgba(0,0,0,.12);
+  border-color: rgba(0, 0, 0, .12);
   border-bottom: .0625rem solid #ddd;
   padding: 0 .9375rem;
   margin-right: -.9375rem;
   margin-left: -.9375rem;
   transition: all .5s;
 }
+
 .filter-block:not(:last-child) {
   margin-bottom: 0;
 }
@@ -1667,32 +1707,37 @@ a, a:hover, a:focus {
   width: 10px;
   height: 10px;
 }
+
 /* ::-webkit-scrollbar-corner 边角 */
 .filter-block::-webkit-scrollbar-corner {
   background-color: initial;
 }
+
 /* ::-webkit-scrollbar-thumb 滚动条里面可以拖动的那个 */
 .filter-block::-webkit-scrollbar-thumb {
   background-color: #e4e4e7 !important;
   border-radius: 5px;
 }
+
 /* ::-webkit-scrollbar-track 外层轨道 */
 .filter-block::-webkit-scrollbar-track {
   background-color: transparent !important;
 }
 
 
-.accordion-content{
+.accordion-content {
   padding: 0;
   background-color: #f0f0f0;
   width: 100%;
   clear: both;
 }
+
 .expand__list {
   font-size: .75rem;
   font-weight: 600;
   color: #454545;
 }
+
 /* 这里取消了左右边框 */
 .expand__list li {
   box-sizing: border-box;
@@ -1701,10 +1746,11 @@ a, a:hover, a:focus {
   padding: 13px 15px;
   line-height: 14px;
   /* border: 1px solid rgba(0,0,0,.07); */
-  border-top: 1px solid rgba(0,0,0,.12);
+  border-top: 1px solid rgba(0, 0, 0, .12);
   /* border-top-color: rgba(0,0,0,.12); */
   border-bottom: none;
 }
+
 .expand__list li .chose-label {
   display: inline-block;
   vertical-align: middle;
@@ -1715,17 +1761,20 @@ a, a:hover, a:focus {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .expand__list li .chose-num {
   display: inline-block;
   vertical-align: middle;
   line-height: 1.125rem;
 }
+
 @media (max-width: 768px) {
   /* 在半屏适配下，增大文本显示的最大宽度 */
   .expand__list li .chose-label {
     max-width: 38rem;
   }
 }
+
 /* #endregion 筛选条件区域结束 */
 
 
@@ -1738,29 +1787,35 @@ a, a:hover, a:focus {
   margin-top: .625rem;
   background-color: white;
 }
+
 .search-result__info .search-num-info {
   font-size: 1.125rem;
 }
+
 .left-border-span {
   border-left: .5rem solid #000;
   padding-left: .375rem;
 }
+
 .search-result__info .left-border-span {
   border-color: #ebc34a;
   display: inline-block;
-    /* height: 18px; */
+  /* height: 18px; */
   height: 1.125rem;
   margin-top: .25rem;
   position: absolute;
 }
+
 .search-num-info-detail {
   display: inline-block;
   padding-left: 1rem;
   position: relative;
 }
-.search-num-info-detail .hitlength{
+
+.search-num-info-detail .hitlength {
   font-weight: 600;
 }
+
 .search-result {
   overflow: visible;
 }
@@ -1770,10 +1825,12 @@ a, a:hover, a:focus {
   border-bottom: .0625rem solid #d9d9d9;
   font-size: .875rem;
 }
+
 .search-result__sort .search-result__sort-right {
   float: right;
   font-family: 'Times New Roman', Times, "Microsoft YaHei", serif;
 }
+
 @media (min-width: 768px) {
   .search-result__sort {
     position: sticky;
@@ -1787,6 +1844,7 @@ a, a:hover, a:focus {
     margin: 0;
     margin-bottom: .625rem;
   }
+
   .search-result__sort-right {
     padding: .625rem 0;
   }
@@ -1800,6 +1858,7 @@ a, a:hover, a:focus {
   overflow: hidden;
   transition: all 0.2s;
 }
+
 .filter-btn-wrapper.extended {
   width: 134.6px;
 }
@@ -1819,6 +1878,7 @@ a, a:hover, a:focus {
   color: black;
   overflow: hidden;
 }
+
 .confirm-filter-btn span {
   position: absolute;
   left: 0;
@@ -1829,6 +1889,7 @@ a, a:hover, a:focus {
   z-index: -1;
   border: 4px solid black;
 }
+
 .confirm-filter-btn span::before {
   content: "";
   position: absolute;
@@ -1840,11 +1901,13 @@ a, a:hover, a:focus {
   transform: translate(-50%, -50%) rotate(-60deg);
   transition: all 0.3s;
 }
+
 .confirm-filter-btn:hover span::before {
   transform: translate(-50%, -50%) rotate(-90deg);
   width: 100%;
   background: black;
 }
+
 .confirm-filter-btn:hover {
   color: white;
 }
@@ -1863,6 +1926,7 @@ a, a:hover, a:focus {
   color: white;
   overflow: hidden;
 }
+
 .cancel-filter-btn span {
   position: absolute;
   left: 0;
@@ -1873,6 +1937,7 @@ a, a:hover, a:focus {
   z-index: -1;
   border: 4px solid black;
 }
+
 .cancel-filter-btn span::before {
   content: "";
   position: absolute;
@@ -1884,14 +1949,17 @@ a, a:hover, a:focus {
   transform: translate(-50%, -50%) rotate(-90deg);
   transition: all 0.3s;
 }
+
 .cancel-filter-btn:hover span::before {
   transform: translate(-50%, -50%) rotate(-60deg);
   width: 8%;
   background: white;
 }
+
 .cancel-filter-btn:hover {
   color: black;
 }
+
 /* #endregion 左侧筛选区域的确认和取消按钮 */
 
 
@@ -1904,24 +1972,29 @@ a, a:hover, a:focus {
   font-size: 16px;
   /* border: 1px solid black; */
 }
+
 .search-result__sort-right .per-page .per-page-label {
   padding: .3125rem 0;
   display: inline-block;
   box-sizing: border-box;
   font-weight: 600;
 }
+
 .search-result__sort-right .per-page ul {
   float: right;
   font-weight: 400;
 }
+
 .search-result__sort-right .per-page ul .page-size-chose.current {
   font-weight: 600;
 }
+
 .search-result__sort-right .per-page ul .page-size-chose {
   padding: .3125rem;
   box-sizing: border-box;
   cursor: pointer;
 }
+
 /* #endregion 每页数据的数量 */
 
 /* #region 当前排序的类型 */
@@ -1932,6 +2005,7 @@ a, a:hover, a:focus {
   /* font-size: 1.875rem; */
   /* font-family: "Microsoft YaHei", serif; */
 }
+
 .search-result__sort-right .sort-type .sort-type-btn {
   display: inline-block;
   position: relative;
@@ -1949,21 +2023,25 @@ a, a:hover, a:focus {
   font-size: 14px;
   text-transform: none;
 }
+
 .search-result__sort-right .sort-type .sort-type-btn b {
   font-size: 16px;
   font-family: 'Times New Roman', Times, "Microsoft YaHei", serif;
   color: black;
   font-weight: 600;
 }
+
 .search-result__sort-right .sort-type .sort-type-btn span {
   font-size: 16px;
   font-family: 'Times New Roman', Times, "Microsoft YaHei", serif;
   color: black;
   font-weight: 300 !important;
 }
-.search-result__sort-right .sort-type.js--open .sort-type-btn i{
+
+.search-result__sort-right .sort-type.js--open .sort-type-btn i {
   transform: rotate(360deg);
 }
+
 /*
   VERY IMPORTANT
   transform 对于行内元素不起作用，
@@ -1983,6 +2061,7 @@ a, a:hover, a:focus {
 .search-result__sort-right .sort-type.js--open .sort-dropdown {
   display: block;
 }
+
 .search-result__sort-right .sort-type .sort-dropdown {
   display: none;
   position: absolute;
@@ -1999,6 +2078,7 @@ a, a:hover, a:focus {
   box-shadow: 0 0.125rem 0.625rem rgb(82 82 82 / 43%);
   font-family: "Microsoft YaHei", serif;
 }
+
 @media (min-width: 768px) {
   .sort-dropdown {
     /* top: 55px; */
@@ -2011,7 +2091,8 @@ a, a:hover, a:focus {
   padding: 0;
   margin: 0;
 }
-.search-result__sort-right .sort-type .sort-dropdown .rlist li{
+
+.search-result__sort-right .sort-type .sort-dropdown .rlist li {
   padding: .375rem .9375rem;
   display: block;
   cursor: pointer;
@@ -2019,6 +2100,7 @@ a, a:hover, a:focus {
   /* font-style: italic; */
   font-weight: 300;
 }
+
 .search-result__sort-right .sort-type .sort-dropdown .rlist li:hover {
   background-color: #d9d9d9;
 }
@@ -2032,7 +2114,6 @@ a, a:hover, a:focus {
 }
 
 
-
 .search-result__pagination {
   margin-bottom: 1.875rem;
   margin-top: 1.25rem;
@@ -2040,6 +2121,7 @@ a, a:hover, a:focus {
   font-size: 14px;
   box-sizing: border-box;
 }
+
 .search-result__pagination .pagination-container {
   width: 100%;
   height: 40px;
@@ -2069,59 +2151,73 @@ div.el-pagination {
 }
 
 @media (min-width: 1200px) {
-  .result-content{
+  .result-content {
     max-width: 1310px;
     width: 100%;
   }
+
   .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6,
   .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
     float: left;
   }
+
   .col-lg-3 {
     width: 25%;
   }
+
   .col-lg-9 {
     width: 75%;
   }
 }
+
 @media (min-width: 992px) and (max-width: 1200px) {
-  .result-content{
+  .result-content {
     width: 960px;
   }
+
   .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6,
   .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
     float: left;
   }
+
   .col-md-3 {
     width: 25%;
   }
+
   .col-md-9 {
     width: 75%;
   }
 }
+
 @media (min-width: 768px) and (max-width: 992px) {
-  .result-content{
+  .result-content {
     width: 736px;
   }
+
   .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6,
   .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12 {
     float: left;
   }
+
   .col-sm-4 {
     width: 33.33333%;
   }
+
   .col-sm-8 {
     width: 66.66667%;
   }
 }
+
 @media (min-width: 532px) and (max-width: 768px) {
-  .result-content{
+  .result-content {
     width: 100%;
   }
+
   .search-result__info {
     margin-top: 0;
   }
 }
-  /* #endregion 响应式布局结束 */
+
+/* #endregion 响应式布局结束 */
 
 </style>

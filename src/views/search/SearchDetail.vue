@@ -35,7 +35,8 @@
                   @click="handleAllTypeGroupSearch(filterUnitDOM[index], index)"
                 >
                   <div class="colored-block-title-context">{{item.title}}</div>
-                  <i class="iconfont icon-arrowup colored-block-icon"></i>
+                  <el-icon class="iconfont icon-arrowup colored-block-icon"><ArrowUpBold /></el-icon>
+<!--                  <i class="iconfont icon-arrowup colored-block-icon"></i>-->
                 </div>
                 <!-- 折叠栏 -->
                 <div class="colored-block-content">
@@ -76,7 +77,7 @@
               <!-- 搜索结果顶部信息 -->
               <div class="search-result__info">
                 <div class="search-num-info">
-                  <span class="left-border-span"></span>
+<!--                  <span class="left-border-span"></span>-->
                   <div class="search-num-info-detail">
                     <span class="hitlength">{{toThousands(totalSearchResNum)}}</span>
                     <span> Results</span>
@@ -196,6 +197,7 @@ import AuthorsResCard from './AuthorsResCard.vue';
 import VenuesResCard from './VenuesResCard.vue';
 import InstitutionsResCard from './InstitutionsResCard.vue';
 import ConceptsResCard from './ConceptsResCard.vue';
+import {ArrowDownBold, ArrowUpBold} from "@element-plus/icons-vue";
 
 
 onMounted(() => {
