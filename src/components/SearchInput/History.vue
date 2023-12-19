@@ -12,7 +12,7 @@
     </div>
 
     <div class="search-history-container">
-      <div 
+      <div
         v-for="(item, index) in searchStore.historyList"
         :key="index"
         class="search-history-bubble"
@@ -20,7 +20,7 @@
       >
         <span class="search-history-context">{{item}}</span>
         <!--
-          @IMPORTANT 
+          @IMPORTANT
           这里的阻止冒泡非常关键，因为外层 div （v-for）也是靠点击触发
           外层div触发的是 搜索，删除图标触发的是 删除记录
          -->
@@ -41,7 +41,7 @@
 </script>
 
 <script setup>
-import { useSearchStore } from '../../stores/search.js';
+import { useSearchStore } from '@/stores/search';
 // TODO 删除所有搜索历史的确认对话框
 import { showConfirmDialog } from '../Dialog/index.js';
 
@@ -111,7 +111,7 @@ const onHistoryBubbleClick = (item) => {
   font-weight: 700;
   transition-duration: 300ms;
 
-  
+
 }
 .search-history-bubble:hover {
   background-color: rgb(228 228 231);

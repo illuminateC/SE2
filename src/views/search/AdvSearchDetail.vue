@@ -10,18 +10,20 @@
           <div class="adv-search-line clearfix">
             <!-- 这个就是单纯占位置的，因此绑定的数据也是随便绑定的 -->
             <ElSelect class="adv-select-relation hide" v-model="placeholderRelation">
-              <ElOption 
+              <ElOption
                 v-for="logicalRelation in advanceLogicalRelation"
+                :key="logicalRelation.value"
                 :label="logicalRelation.label"
                 :value="logicalRelation.value"
               />
             </ElSelect>
             <!-- 得益于pinia，这里的store中的数据是响应式的 -->
             <ElSelect class="adv-select" v-model="searchStore.searchType">
-              <ElOption 
+              <ElOption
                 v-for="option in advanceEntityTypeFilter"
+                :key="option.value"
                 :label="option.label"
-                :value="option.value" 
+                :value="option.value"
               />
             </ElSelect>
             <!-- 绑定pinia中的 searchInputText -->
@@ -43,20 +45,20 @@
           </div>
 
           <!-- 可以被删除的筛选行单元的数组 -->
-          <div 
+          <div
             class="adv-search-line clearfix"
             v-if="advanceCardExpanded"
-            v-for="(filterLine, index) in advanceFilterResult[searchStore.searchType]" 
+            v-for="(filterLine, index) in advanceFilterResult[searchStore.searchType]"
             :key=index
           >
-            <!-- 
+            <!--
               这里要区分 el-select 和 el-option 的双向绑定
-              所有的 逻辑关系 下拉栏中 
+              所有的 逻辑关系 下拉栏中
               >>> el-option 始终绑定的是同一个数据源 advanceLogicalRelation（因为选项本身不会改变）
               >>> el-select 双向绑定的是该筛选栏对象filterLine的 logicalType 键值
                   当然，这个键值必须是advanceLogicalRelation中的一个label，
                   这样 el-select 才会根据label自动显示value
-              所有的 字段筛选类型切换 下拉栏中 
+              所有的 字段筛选类型切换 下拉栏中
               >>> el-option 始终绑定的是同一个数据源 advanceSecondLevelFilter（因为选项本身不会改变）
               >>> el-select 双向绑定的是该筛选栏对象filterLine的 category 键值
                   当然，这个键值必须是advanceSecondLevelFilter中的一个label，
@@ -64,17 +66,18 @@
               所有的 input 框，双向绑定着 该筛选栏对象filterLine的 content 键值
              -->
             <ElSelect class="adv-select-relation" v-model="filterLine.logicalType">
-              <ElOption 
+              <ElOption
                 v-for="logicalRelation in advanceLogicalRelation"
+                :key="logicalRelation.label"
                 :label="logicalRelation.label"
                 :value="logicalRelation.value"
               />
             </ElSelect>
             <ElSelect class="adv-select" v-model="filterLine.category">
-              <ElOption 
+              <ElOption
                 v-for="option in advanceSecondLevelFilter[searchStore.searchType]"
                 :label="option.label"
-                :value="option.value" 
+                :value="option.value"
               />
             </ElSelect>
             <AdvSearchInput class="adv-search-input" v-model="filterLine.content" />
@@ -87,8 +90,8 @@
           </div>
 
           <!-- 如果是论文，支持根据 publication_year 的起始终止进行筛选 -->
-          <div 
-            class="adv-search-line clearfix" 
+          <div
+            class="adv-search-line clearfix"
             v-if="advanceCardExpanded"
           >
             <div class="date-picker-title" :class="{'hide': searchStore.searchType !== 'works'}">
@@ -131,21 +134,21 @@
           <!-- 左侧筛选部分 -->
           <div class="col-lg-3 col-md-3 col-sm-4">
             <div class="sticko__child colored-block">
-              <!-- 
+              <!--
                 AllTypeFilterList[searchStore.searchType] 即当前搜索的实体类型对应的筛选列表
                 该div包裹的是 单个筛选单元
                 item 是 当前实体类型对应的 筛选列表 中的单个筛选单元，
                 index 是该筛选单元在 当前实体类型对应的 筛选列表 中的数组索引下标
                -->
-              <div 
+              <div
                 class="colored-block"
-                v-for="(item, index) in AllTypeFilterList[searchStore.searchType]" 
-                :key="index" 
+                v-for="(item, index) in AllTypeFilterList[searchStore.searchType]"
+                :key="index"
                 :ref="setFilterUnitDOM"
               >
                 <!-- 筛选块标题 -->
-                <div 
-                  class="colored-block-title clearfix" 
+                <div
+                  class="colored-block-title clearfix"
                   @click="handleAllTypeGroupSearch(filterUnitDOM[index], index)"
                 >
                   <div class="colored-block-title-context">{{item.title}}</div>
@@ -157,14 +160,14 @@
                   <div class="filter-block">
                     <div class="accordion-content">
                       <!-- 这里第一个[]是属性键值，第二个[]才是数组索引 -->
-                      <ElCheckboxGroup 
-                        v-model="AllTypeFilterList[searchStore.searchType][index].selectedArray" 
+                      <ElCheckboxGroup
+                        v-model="AllTypeFilterList[searchStore.searchType][index].selectedArray"
                         @change="handleChange(index)"
                       >
                         <ul class="rlist expand__list">
-                          <li v-for="labelItem in AllTypeFilterList[searchStore.searchType][index].objectArray">
-                            <!-- 
-                              VERY IMPORTANT 
+                          <li v-for="labelItem in AllTypeFilterList[searchStore.searchType][index].objectArray" :key="labelItem">
+                            <!--
+                              VERY IMPORTANT
                               这里 label属性 代表选中时，添加进入 ElCheckboxGroup 的v-model绑定的数组的值
                               我们选择 labelItem 代表的这项（实际上是根据labelItem.key_display_name选择）
                               实际上是把 labelItem.key 添加进入了对应的数组
@@ -220,9 +223,10 @@
                   <div class="per-page">
                     <span class="per-page-label">Per Page: </span>
                     <ul class="rlist--inline">
-                      <li 
-                        class="page-size-chose" 
+                      <li
+                        class="page-size-chose"
                         v-for="(size, index) in pageSizeArray"
+                        :key="size"
                         @click="handlePageSizeChangeSearch(index)"
                         :ref="setPageSizeDom"
                       >
@@ -239,8 +243,9 @@
                     </button>
                     <div class="sort-dropdown">
                       <ul class="rlist">
-                        <li 
+                        <li
                           v-for="item in remainSortTypeArray"
+                          :key="item"
                           @click="handleAllTypeSortSearch(item)"
                         >
                           {{item}}
@@ -253,7 +258,7 @@
               <!-- 搜索结果主体 -->
               <ul class="rlist" v-show="totalSearchResNum">
                 <!-- 单个搜索结果卡片 -->
-                <li class="result-item" v-for="item in searchDataList">
+                <li class="result-item" v-for="item in searchDataList" :key="item">
                   <component :is="searchResCard[searchStore.searchType]" :item="item" />
                 </li>
               </ul>
@@ -265,8 +270,8 @@
                     hide-on-single-page
                     v-model:current-page="searchResPageIndex"
                     v-model:page-size="searchResPageSize"
-                    :total="(totalSearchResNum > 10000 
-                      ? 10000 
+                    :total="(totalSearchResNum > 10000
+                      ? 10000
                       : totalSearchResNum)"
                     layout="prev, pager, next, jumper"
                   />
@@ -324,9 +329,9 @@ const pageSizeArray = [5, 10, 20];
 </script>
 
 <script setup>
-import { toThousands } from '../../utils';
-import { Search } from '../../api/search';
-import { useSearchStore } from '../../stores/search';
+import { toThousands } from '@/utils';
+import { Search } from '@/api/search';
+import { useSearchStore } from '@/stores/search';
 import { onMounted, reactive, ref, watch } from 'vue';
 import { ElCheckbox, ElCheckboxGroup, ElDatePicker, ElEmpty, ElNotification, ElOption, ElSelect, ElPagination } from 'element-plus';
 import AdvSearchInput from '../../components/SearchInput/AdvSearch.vue';
@@ -634,7 +639,7 @@ const buildAdvanceFilterKey = () => {
     if (publicationDateRange.value[1]) {
       filter["to_publication_date"] = publicationDateRange.value[1];
     }
-  } 
+  }
   console.log("高级检索的filter对象: ", filter);
   return filter;
 }
@@ -820,7 +825,7 @@ const handlePageSizeChangeSearch = (sizeIndex) => {
   .catch((err) => {
     console.log(err);
     // 解锁，可以触发“页数更改搜索”
-    pageIndexChangeSearchLock.value = false; 
+    pageIndexChangeSearchLock.value = false;
   })
 };
 // #endregion 每页数据量尺寸相关 --------------------------------------------------------------------
@@ -1017,7 +1022,7 @@ const handleAllTypeGroupSearch = (filterDOM, index) => {
     })
     .catch((err) => {
       console.log(err);
-    })    
+    })
   }
 };
 
@@ -1118,7 +1123,7 @@ const cancelFilterSearch = () => {
   var filterListLength = currentFilterList.length;
   // 清空所有选择
   for (let i = 0; i < filterListLength; i++) {
-    currentFilterList[i].selectedArray = [];    
+    currentFilterList[i].selectedArray = [];
   }
 };
 // #endregion ！！过滤区域 -----------------------------------------------------------------------
@@ -1139,7 +1144,7 @@ const remainSortTypeArray = ref(allEntitySortType[searchStore.searchType].filter
  */
 const sortDropdownTarget = ref(null);
 const expandSortDropdown = () => {
-  sortDropdownTarget.value.classList.contains('js--open') 
+  sortDropdownTarget.value.classList.contains('js--open')
     ? sortDropdownTarget.value.classList.remove('js--open')
     : sortDropdownTarget.value.classList.add('js--open')
 };
@@ -1238,7 +1243,7 @@ const handleAllTypeSortSearch = async (newSortType) => {
   searchResPageIndex.value = 1;
   // 记录排序类型，并作持久化处理
   searchStore.setSortType(newSortType);
-  
+
   // 更新排序方式数组备选项，排除当前选中的类型那一条
   remainSortTypeArray.value = allEntitySortType[searchStore.searchType].filter(
     (sortType) => sortType !== searchStore.sortType
@@ -1283,7 +1288,7 @@ const handleAllTypeSortSearch = async (newSortType) => {
 };
 // #endregion 数据结果排序类型相关 --------------------------------------------------------------------
 
- 
+
 </script>
 
 <style>
@@ -1507,21 +1512,21 @@ a, a:hover, a:focus {
   width: 100%;
   background: black;
 }
-.adv-search-final-btn:hover, 
+.adv-search-final-btn:hover,
 .adv-search-final-btn:focus {
   color: white;
 }
 
 .expand-btn {
-  width: 5rem; 
-  height: 1.1rem; 
-  margin: 0 auto; 
-  background-color: #fff; 
+  width: 5rem;
+  height: 1.1rem;
+  margin: 0 auto;
+  background-color: #fff;
   padding: 0 2rem;
   transition: all 0.5s;
 }
 .expand-btn-icon {
-  display: inline-block; 
+  display: inline-block;
 }
 
 .rotate {
@@ -1550,13 +1555,13 @@ a, a:hover, a:focus {
   margin-left: -15px;
   margin-right: -15px;
 }
-.col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, 
-.col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12, 
-.col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, 
-.col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, 
-.col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, 
-.col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, 
-.col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, 
+.col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6,
+.col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12,
+.col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6,
+.col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12,
+.col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6,
+.col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12,
+.col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6,
 .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
   position: relative;
   min-height: 1px;
@@ -1637,7 +1642,7 @@ a, a:hover, a:focus {
   max-height: 237px;
   overflow-y: auto;
 }
-/* 
+/*
   VERY IMPORTANT
   妙手偶得，通过负数外边距、正数内边距，
   可以创造出一个隐藏滚动条的水平侧空间
@@ -1707,7 +1712,7 @@ a, a:hover, a:focus {
   line-height: 1.125rem;
   white-space: nowrap;
   max-width: 12rem;
-  overflow: hidden; 
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 .expand__list li .chose-num {
@@ -1777,7 +1782,7 @@ a, a:hover, a:focus {
     z-index: 555;
     left: 0;
     /* 这里改为我们的header高度-1 */
-    top: 63px; 
+    top: 63px;
     /* margin: .625rem 0; */
     margin: 0;
     margin-bottom: .625rem;
@@ -1789,7 +1794,7 @@ a, a:hover, a:focus {
 
 /* #region 左侧筛选区域的确认和取消按钮 */
 .filter-btn-wrapper {
-  float: left; 
+  float: left;
   margin-top: 10px;
   width: 0;
   overflow: hidden;
@@ -1959,10 +1964,10 @@ a, a:hover, a:focus {
 .search-result__sort-right .sort-type.js--open .sort-type-btn i{
   transform: rotate(360deg);
 }
-/* 
+/*
   VERY IMPORTANT
   transform 对于行内元素不起作用，
-  要给i加上display:inline-block的样式转为行内块元素。 
+  要给i加上display:inline-block的样式转为行内块元素。
 */
 .search-result__sort-right .sort-type .sort-type-btn i {
   display: inline-block;
@@ -2068,7 +2073,7 @@ div.el-pagination {
     max-width: 1310px;
     width: 100%;
   }
-  .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, 
+  .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6,
   .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
     float: left;
   }
@@ -2083,7 +2088,7 @@ div.el-pagination {
   .result-content{
     width: 960px;
   }
-  .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, 
+  .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6,
   .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
     float: left;
   }
@@ -2098,7 +2103,7 @@ div.el-pagination {
   .result-content{
     width: 736px;
   }
-  .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, 
+  .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6,
   .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12 {
     float: left;
   }

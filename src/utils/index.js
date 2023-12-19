@@ -1,4 +1,4 @@
-import { useSearchStore } from '../stores/search.js';
+import { useSearchStore } from '@/stores/search';
 
 /**
  * @description 获取当前时间
@@ -26,7 +26,7 @@ export function getBrowserLang() {
 	let defaultBrowserLang = "";
 	if (browserLang.toLowerCase() === "cn" || browserLang.toLowerCase() === "zh" || browserLang.toLowerCase() === "zh-cn") {
 		defaultBrowserLang = "zh";
-	} 
+	}
 	else {
 		defaultBrowserLang = "en";
 	}

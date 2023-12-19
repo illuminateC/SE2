@@ -10,8 +10,8 @@
     </div>
     <div class="result-item__content">
       <!-- 机构的标题 -->
-      <h5 
-        class="card-title" 
+      <h5
+        class="card-title"
         @click="jumpToInstitutionPage(item.id?.slice(21))"
       >
         <!-- 这里不可以分开span，不然会在逗号前出现一个距离 -->
@@ -22,8 +22,8 @@
           [Institution Name Unknown]
         </span>
       </h5>
-      
-      <!-- 
+
+      <!--
         机构的信息：来源（期刊会议）host_venue、发行日期、类型、doi网址
        -->
       <div class="card-simple-info">
@@ -49,13 +49,14 @@
           <a style="vertical-align: middle;" :href="item.doi">{{ item.doi }}</a>
         </span> -->
       </div>
-      
+
       <!-- 机构经常研究的领域concepts气泡展示，这里只截取前11个 -->
       <div class="card-concepts clearfix">
         <!-- 跳转到对应的concept主页 -->
         <div
           class="card-concepts-wrap"
           v-for="concept in item.x_concepts?.slice(0, 11)"
+          :key="concept"
           @click="jumpToConceptPage(concept.id?.slice(21))"
         >
           <i class="iconfont icon-menu"></i>
@@ -102,7 +103,7 @@
                 </span>
               </div>
             </li>
-            
+
             <!-- TODO 添加收藏夹的浮窗 -->
             <li>
               <div class="card-tool-btn">
@@ -136,7 +137,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { toThousands } from '../../utils';
+import { toThousands } from '@/utils';
 
 const router = useRouter();
 const props = defineProps({

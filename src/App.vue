@@ -1,16 +1,13 @@
 <template>
   <div id="app">
-    <TopBar @change="change" />
     <div class="app_container">
       <router-view v-wechat-title='$route.meta.title'></router-view>
     </div>
-    <!-- <FootBar /> -->
   </div>
 </template>
 
 <script setup>
-import TopBar from "./components/Bar/TopBar.vue";
-import FootBar from "./components/Bar/FootBar.vue";
+
 
 
 useI18n()

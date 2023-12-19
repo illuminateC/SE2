@@ -15,7 +15,7 @@
           : '')"
       >
         <!-- TODO 需要加匹配高亮 -->
-        <span 
+        <span
           v-if="item.display_name !== null"
           v-html="highlightText(item.display_name.replace(/<\/?i>/ig, ''))">
         </span>
@@ -24,7 +24,7 @@
         </span>
       </h5>
 
-      <!-- 
+      <!--
         作者的主要信息：所在机构、机构所在的国家、机构的类型、ocid网址
         这里 last_known_institution 字段可能整个为空
        -->
@@ -47,7 +47,7 @@
           <span>{{ item.last_known_institution?.country_code }},&nbsp;&nbsp;</span>
           <span>{{ item.last_known_institution?.type }}</span>
         </span>
-        <!-- 
+        <!--
           orcid 一个字符串，是世界通用的唯一ID号，但是由于在OpenAlex中覆盖较低，
             所以只是作为外部链接
          -->
@@ -62,6 +62,7 @@
         <div
           class="card-concepts-wrap"
           v-for="concept in item.x_concepts?.slice(0, 11)"
+          :key="concept"
           @click="jumpToConceptPage(concept.id?.slice(21))"
         >
           <i class="iconfont icon-menu"></i>
@@ -157,7 +158,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { highlightText, toThousands } from '../../utils/index.js';
+import { highlightText, toThousands } from '@/utils';
 
 const router = useRouter();
 const props = defineProps({

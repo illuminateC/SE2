@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { useLocalStorage } from "@vueuse/core";
-import { Search } from "../api/search";
+import { Search } from "@/api/search";
 export const useSearchStore = defineStore({
   id: "search",
   state: () => {

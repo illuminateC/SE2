@@ -8,8 +8,8 @@
 
     <div class="result-item__content">
       <!-- 会议/期刊的标题 -->
-      <h5 
-        class="card-title" 
+      <h5
+        class="card-title"
         @click="jumpToVenuePage(item.id?.slice(21))"
       >
         <!-- 这里不可以分开span，不然会在逗号前出现一个距离 -->
@@ -20,8 +20,8 @@
           [Venue Name Unknown]
         </span>
       </h5>
-      
-      <!-- 
+
+      <!--
         会议/期刊的信息：会议/期刊venue的主页、所有的issn号、发行商
        -->
       <div class="card-simple-info">
@@ -36,20 +36,21 @@
         </span>
         <!-- 这个Venue使用的所有的issn号 -->
         <span class="dot-separator" v-if="item.issn?.length">
-          <span v-for="issnItem in item.issn">{{ issnItem }},&nbsp;</span>
+          <span v-for="issnItem in item.issn" :key="issnItem">{{ issnItem }},&nbsp;</span>
         </span>
         <!-- 发行商 -->
         <span class="dot-separator" v-if="item.publisher">
           <span>{{ item.publisher }}</span>
         </span>
       </div>
-      
+
       <!-- 会议/期刊经常研究的领域concepts气泡展示，这里只截取前11个 -->
       <div class="card-concepts clearfix">
         <!-- 跳转到对应的concept主页 -->
         <div
           class="card-concepts-wrap"
           v-for="concept in item.x_concepts?.slice(0, 11)"
+          :key="concept"
           @click="jumpToConceptPage(concept.id?.slice(21))"
         >
           <i class="iconfont icon-menu"></i>
@@ -96,7 +97,7 @@
                 </span>
               </div>
             </li>
-            
+
             <!-- TODO 添加收藏夹的浮窗 -->
             <li>
               <div class="card-tool-btn">
@@ -117,7 +118,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { toThousands } from '../../utils';
+import { toThousands } from '@/utils';
 
 const router = useRouter();
 const props = defineProps({

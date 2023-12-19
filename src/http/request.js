@@ -1,8 +1,9 @@
+// request.js
 import axios from 'axios';
-import {useGlobalStore} from "../stores/global";
+import {useGlobalStore} from "@/stores/global";
 const globalStore = useGlobalStore();
 const service = axios.create({
-    baseURL: "https://scholar.super2021.com/api",
+    baseURL: "http://123.249.124.181/api",
     // 不进行超时中断
     timeout: 0,
 })

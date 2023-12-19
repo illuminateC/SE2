@@ -1,17 +1,17 @@
-<!-- 
+<!--
   @author Cloud-Iris
   搜索框的骨架，可以根据插槽完成自定义搜索框
  -->
 <template>
-  <div 
+  <div
     ref="searchContainerTarget"
     class="group search-container"
   >
     <div>
-      <!-- 
+      <!--
         搜索模式切换
        -->
-      <select 
+      <select
         ref="selectTarget"
         @change="handleSelectSearchType"
         class="group search-type-select"
@@ -26,25 +26,25 @@
       <!-- <div
         class="group search-divider-left"
       ></div> -->
-      <!-- 
+      <!--
         输入框（回车/点击按钮触发搜索）
         取消了 maxlength="20"，改用padding掩盖
        -->
       <input class="group search-input"
-        type="text" 
+        type="text"
         placeholder="搜索"
         v-model="inputSearchValue"
         @focus="onFocusHandler"
         @blur="onBlurHandler"
         @keyup.enter="onSearchHandler"
       />
-      <!-- 
+      <!--
         删除按钮，垂直居中，右偏移为 90px
         这里使得 inputSearchValue 不为 null 或者 '' 的时候才显示
       -->
-      <svg 
+      <svg
         v-show="inputSearchValue"
-        aria-hidden="true" 
+        aria-hidden="true"
         class="clear-text-icon"
         @click="onClearClick"
       >
@@ -54,20 +54,20 @@
       <div
         class="group search-divider"
       ></div>
-      <!-- 
+      <!--
         搜索按钮，点击按钮触发搜索。
-        图标垂直居中，右偏移为 20px 
+        图标垂直居中，右偏移为 20px
        -->
       <button
         class="search-btn"
         @click="onSearchHandler"
       >
         <svg aria-hidden="true" class="search-btn-icon">
-          <use xlink:href="#icon-search" fill="#707070" />
+          <use xlink:href="#search" fill="#707070" />
         </svg>
       </button>
     </div>
-    <!-- 
+    <!--
       搜索框下拉栏
       在开发者指定了 命名插槽name=dropdown以后 才会存在（$slot.dropdown不为空）
       在存在的基础上，当输入框获取到焦点的时候才会展示下拉栏
@@ -172,7 +172,7 @@ watch(inputSearchValue, (value) => {
  * 然后把 inputSearchValue 双向绑定给 子组件中的 input 框，
  * 再用 watch 监视 inputSearchValue 的值，一旦发生变化，就触发 update:value 事件
  * 将变化后的值传递给父组件
- * 
+ *
  * 不使用 vueuse 的 useVModel的写法是；
  * const inputValue = ref(props.modelValue);  （因为 props 的值不是响应式的）
  * watch( inputValue, (value) => {
@@ -242,12 +242,12 @@ onClickOutside(searchContainerTarget, () => {
 }
 
 .search-type-select {
-  position: absolute; 
-  top: 50%; 
-  left: 14px; 
+  position: absolute;
+  top: 50%;
+  left: 14px;
   transform: translate(0, -50%);
   width: 5rem;
-  height: 60%; 
+  height: 60%;
   outline: none;
   border: none;
   border-radius: 16px 0 0 16px;
@@ -280,13 +280,13 @@ input {
   /* padding-left: 40px; */
   padding-left: 100px;
   padding-right: 100px;
-  
+
   font-size: 14px;
   line-height: 18px;
   font-weight: 600;
   color: rgb(24 24 27);
   letter-spacing: 1px;
-  
+
   outline: 0;
   border-width: 1px;
   border-style: solid;

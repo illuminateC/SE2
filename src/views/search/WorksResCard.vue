@@ -9,7 +9,7 @@
       <!-- 论文的标题 -->
       <h5 class="card-title" @click="jumpToPaperPage(item.id?.slice(21))">
         <!-- 匹配高亮 -->
-        <span 
+        <span
           v-if="item.display_name !== null"
           v-html="highlightText(item.display_name.replace(/<\/?i>/ig, ''))">
         </span>
@@ -17,22 +17,22 @@
           [Title Missed]
         </span>
       </h5>
-      
+
       <!-- 论文的作者列表 -->
       <ul class="card-author-list">
-        <li v-for="(author, authorIndex) in item.authorships?.slice(0, 10)">
+        <li v-for="(author) in item.authorships?.slice(0, 10)" :key="author">
           <!-- 跳转到对应的作者主页 -->
           <a @click="jumpToAuthorPage(author.author.id
             ? author.author.id.slice(21)
             : '')"
           >
-            <img class="author-avator" src="https://dl.acm.org/pb-assets/icons/DOs/default-profile-1543932446943.svg" />
+            <img class="author-avator" src="https://dl.acm.org/pb-assets/icons/DOs/default-profile-1543932446943.svg"/>
             <span>{{ author.author.display_name }}</span>
           </a>
           <span>, </span>
         </li>
       </ul>
-      
+
       <!-- 论文的信息：来源（期刊会议）host_venue、发行日期、类型、doi网址 -->
       <div class="card-simple-info" v-if="notInCollection">
         <!-- 跳转到对应的host_venue主页 -->
@@ -54,7 +54,7 @@
           <a style="vertical-align: middle;" :href="item.doi">{{ item.doi }}</a>
         </span>
       </div>
-      
+
       <!-- 论文的内容摘要 -->
       <div class="card-abstract" v-if="notInCollection">
         <p>{{ item.abstract }}</p>
@@ -66,6 +66,7 @@
         <div
           class="card-concepts-wrap"
           v-for="concept in item.concepts?.slice(0, 11)"
+          :key="concept"
           @click="jumpToConceptPage(concept.id?.slice(21))"
         >
           <i class="iconfont icon-menu"></i>
@@ -91,7 +92,7 @@
                 <li>
                   <span class="metric">
                     <i class="iconfont icon-Rise" style="font-size: 1.3rem"></i>
-                    <span>{{ toThousands(item["2022_cited_count"])}}</span>
+                    <span>{{ toThousands(item["2022_cited_count"]) }}</span>
                   </span>
                 </li>
               </ul>
@@ -113,7 +114,7 @@
               </div>
             </li>
             <!-- Bibtex 复制窗口 -->
-            
+
             <!-- TODO 添加收藏夹的浮窗 -->
             <li v-if="notInCollection">
               <div class="card-tool-btn" @click="showFav">
@@ -125,9 +126,9 @@
               </div>
             </li>
           </ul>
-          
+
           <ul class="rlist--inline dot-separator" style="float: right;"
-            v-if="(item.open_access?.is_oa === 1 || item.host_venue?.id || item.doi)">
+              v-if="(item.open_access?.is_oa === 1 || item.host_venue?.id || item.doi)">
             <!--
               跳转到PDF在线预览的网页
               open_access.is_oa
@@ -170,7 +171,7 @@
       </div>
     </div>
   </div>
-  <teleport to='body' >
+  <teleport to='body'>
     <!-- 蒙版 -->
     <transition name="fade">
       <div v-if="bibtexDialogVisible" class="dialog-container" @click="bibtexDialogVisible = false"></div>
@@ -189,7 +190,7 @@
             <span></span>
           </button>
           <button class="dialog-confirm-btn" @click="copy(bibtex)" style="margin-right: 8px;">
-            {{ !copied ? 'CopyBib': 'Copied!' }}
+            {{ !copied ? 'CopyBib' : 'Copied!' }}
             <span></span>
           </button>
         </div>
@@ -197,12 +198,12 @@
     </transition>
   </teleport>
 
-  <teleport to='body' >
+  <teleport to='body'>
     <!-- 蒙版 -->
     <transition name="fade">
-      <div v-if="favDialogVisible" 
-        class="dialog-container" 
-        @click="favDialogVisible = false"></div>
+      <div v-if="favDialogVisible"
+           class="dialog-container"
+           @click="favDialogVisible = false"></div>
     </transition>
     <!-- 浮窗 -->
     <transition name="up" v-loading="favLoading">
@@ -211,26 +212,27 @@
         <div class="dialog-title">收藏此文献</div>
         <!-- 文本 -->
         <div v-if="collections.length != 0" class="dialog-content fav" style="white-space: pre-wrap;">
-            <el-scrollbar max-height="400px">
+          <el-scrollbar max-height="400px">
             <el-checkbox
-              v-for="(collection, index) in collections" 
-              :key="index" 
-              @change="favChanged(collection)" 
-              :checked="amInCol.find((col,idx,arr)=>{return col.package_id == collection.id})!=null" 
+              v-for="(collection, index) in collections"
+              :key="index"
+              @change="favChanged(collection)"
+              :checked="amInCol.find((col,idx,arr)=>{return col.package_id == collection.id})!=null"
               size="large"
               border
               style="width:90%;margin-bottom:20px;margin-left:20px"
             >
-                <el-tag
-                    type="info"
-                    effect="light"
-                    round
-                >{{collection.sum}}</el-tag>
-                &nbsp;&nbsp;&nbsp;
-                {{collection.name}}
-                
+              <el-tag
+                type="info"
+                effect="light"
+                round
+              >{{ collection.sum }}
+              </el-tag>
+              &nbsp;&nbsp;&nbsp;
+              {{ collection.name }}
+
             </el-checkbox>
-        </el-scrollbar>
+          </el-scrollbar>
         </div>
         <div v-else>
           您还没有创建收藏夹。
@@ -253,11 +255,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useClipboard } from '@vueuse/core';
-import { highlightText, toThousands } from '../../utils/index.js';
-import { Collection } from '../../api/collect';
+import {ref} from 'vue';
+import {useRouter} from 'vue-router';
+import {useClipboard} from '@vueuse/core';
+import {highlightText, toThousands} from '@/utils';
+import {Collection} from '@/api/collect';
 
 const router = useRouter();
 const props = defineProps({
@@ -278,7 +280,7 @@ const props = defineProps({
  * item.id用于跳转到论文详情页---W2171852244 √
  * @param {String} openAlexPaperId 论文的openAlexId
  */
- const jumpToPaperPage = (openAlexPaperId) => {
+const jumpToPaperPage = (openAlexPaperId) => {
   console.log(openAlexPaperId);
   // router.push({
   //   name: "PaperDetail",
@@ -366,7 +368,7 @@ const jumpToWorkSourceWeb = (webURL) => {
 
 // bibtex
 const bibtex = ref("");
-const { copy, copied } = useClipboard({ bibtex })
+const {copy, copied} = useClipboard({bibtex})
 const bibtexDialogVisible = ref(false);
 const getBiBTeX = (paperInfo) => {
   // 需要的字段有
@@ -374,7 +376,7 @@ const getBiBTeX = (paperInfo) => {
   // 文章的作者 work.authorships 对其中每条 authorship.author.display_name
   // 文章的journal host_venue.display_name
   // 文章的出版年份 work.publication_year
-  const { display_name, authorships, publication_year, host_venue } = paperInfo;
+  const {display_name, authorships, publication_year, host_venue} = paperInfo;
   const author = authorships.map((authorship) => {
     return authorship.author.display_name;
   });
@@ -395,67 +397,118 @@ const favLoading = ref(true)
 const collections = ref([])
 const amInCol = ref([])
 var changedCollection = []
-async function showFav(){
+
+async function showFav() {
   changedCollection = []
   collections.value = []
   amInCol.value = []
   favLoading.value = true
   favDialogVisible.value = true
-  const t1 = (await Collection.GetCollectionListByPaper({"work_id":props.item.id.substring(21)})).data.package_list
-  amInCol.value = t1?t1:[]
+  const t1 = (await Collection.GetCollectionListByPaper({"work_id": props.item.id.substring(21)})).data.package_list
+  amInCol.value = t1 ? t1 : []
   const t2 = (await Collection.GetCollection()).data.package_list
-  collections.value = t2?t2:[]
+  collections.value = t2 ? t2 : []
   favLoading.value = false
 }
+
 const favChanged = (which) => {
   var i = -1
-  if(i = changedCollection.find((col,idx,arr)=>{return col.id == which.id})) {
-    changedCollection.splice(i,1);
-  }
-  else {
+  if (i === changedCollection.find((col, idx, arr) => {
+    return col.id === which.id
+  })) {
+    changedCollection.splice(i, 1);
+  } else {
     changedCollection.push(which);
   }
 }
 const likeIt = () => {
-  for(const cc of changedCollection) {
-    console.log(amInCol.value,cc)
-    if(amInCol.value.find((col,idx,arr)=>{return col.package_id == cc.id})) {
+  for (const cc of changedCollection) {
+    console.log(amInCol.value, cc)
+    if (amInCol.value.find((col, idx, arr) => {
+      return col.package_id === cc.id
+    })) {
       Collection.CancelDocument({
-        work_id_list:[props.item.id.substring(21)],
+        work_id_list: [props.item.id.substring(21)],
         package_id: cc.id
       })
-      .then((res)=>{
-        ElNotification({
-          title: "取消收藏成功",
-          message: "成功将"+props.item.display_name+"移出收藏夹",
-          type: "success",
-          duration: 1000
-        });
-        favLoading.value = true;
-      })
-    }
-    else {
-      Collection.AddDocument({
-        work_id:props.item.id.substring(21),
-        package_id: cc.id
-      })
-      .then((res)=>{
-        ElNotification({
-          title: "收藏成功",
-          message: "成功将"+props.item.display_name+"加入收藏夹",
-          type: "success",
-          duration: 1000
+        .then((res) => {
+          ElNotification({
+            title: "取消收藏成功",
+            message: "成功将" + props.item.display_name + "移出收藏夹",
+            type: "success",
+            duration: 1000
+          });
+          favLoading.value = true;
         })
-        favLoading.value = true;
-      });
+    } else {
+      Collection.AddDocument({
+        work_id: props.item.id.substring(21),
+        package_id: cc.id
+      })
+        .then((res) => {
+          ElNotification({
+            title: "收藏成功",
+            message: "成功将" + props.item.display_name + "加入收藏夹",
+            type: "success",
+            duration: 1000
+          })
+          favLoading.value = true;
+        });
     }
   }
 }
 </script>
-
+<script>
+const exampleItem = {
+  id: "W1234567890", // Replace with your actual ID
+  display_name: "Example Paper Title",
+  publication_date: "May 20, 2022",
+  authorships: [
+    {
+      author: {
+        id: "A987654321", // Replace with your actual author ID
+        display_name: "John Doe"
+      }
+    },
+    // Add more authors as needed
+  ],
+  host_venue: {
+    id: "V111223344", // Replace with your actual venue ID
+    display_name: "Example Journal"
+  },
+  type: "Journal Article",
+  doi: "https://doi.org/10.1234/example-doi",
+  abstract: "This is an example abstract for the paper.",
+  concepts: [
+    {
+      id: "C567890123", // Replace with your actual concept ID
+      display_name: "Example Concept"
+    },
+    // Add more concepts as needed
+  ],
+  cited_by_count: 100, // Replace with the actual citation count
+  "2022_cited_count": 50, // Replace with the actual citation count for 2022
+  open_access: {
+    is_oa: 1,
+    oa_url: "https://example.com/example-paper.pdf" // Replace with the actual PDF URL
+  }
+  // Add more fields as needed
+};
+export default {
+  name: "YourComponentName",
+  data() {
+    return {
+      item: exampleItem,
+      notInCollection: true // You can adjust this based on your logic
+      // Add other data properties as needed
+    };
+  },
+  // ... Rest of your component
+};
+</script>
 <style scoped>
 /* #region 通用样式 */
-*{
+* {
   box-sizing: border-box;
   line-height: 1.4;
   word-wrap: break-word;
@@ -483,28 +536,31 @@ a:focus {
   margin: 0;
   padding: 0;
 }
-.rlist--inline>li {
+
+.rlist--inline > li {
   display: inline-block;
 }
+
 /* #endregion 通用样式结束 */
 
 /* #region 对话框 */
 .fade-enter-active,
-.fade-leave-active{
+.fade-leave-active {
   transition: all v-bind(closeDuration);
 }
+
 .fade-enter-from,
-.fade-leave-to{
+.fade-leave-to {
   opacity: 0;
 }
 
 .up-enter-active,
-.up-leave-active{
+.up-leave-active {
   transition: all v-bind(closeDuration);
 }
 
 .up-enter-from,
-.up-leave-to{
+.up-leave-to {
   opacity: 0;
   transform: translate3d(-50%, 100px, 0);
 }
@@ -519,6 +575,7 @@ a:focus {
   top: 0;
   left: 0;
 }
+
 .dialog-window {
   width: 80%;
   position: fixed;
@@ -532,11 +589,13 @@ a:focus {
   cursor: pointer;
   background-color: white;
 }
+
 @media (min-width: 1280px) {
-  .dialog-window{
+  .dialog-window {
     width: 35%;
-  } 
+  }
 }
+
 .dark.dialog-window {
   background-color: rgb(39 39 42);
   border-color: rgb(82 82 91);
@@ -548,6 +607,7 @@ a:focus {
   font-weight: 700;
   margin-bottom: 20px;
 }
+
 .dark.dialog-title {
   color: rgb(228 228 231);
 }
@@ -559,6 +619,7 @@ a:focus {
   margin-bottom: 20px;
   font-weight: 500;
 }
+
 .dark.dialog-content {
   color: rgb(228 228 231);
 }
@@ -583,6 +644,7 @@ a:focus {
   color: black;
   overflow: hidden;
 }
+
 .dialog-confirm-btn span {
   position: absolute;
   left: 0;
@@ -593,6 +655,7 @@ a:focus {
   z-index: -1;
   border: 4px solid black;
 }
+
 .dialog-confirm-btn span::before {
   content: "";
   position: absolute;
@@ -604,11 +667,13 @@ a:focus {
   transform: translate(-50%, -50%) rotate(-60deg);
   transition: all 0.3s;
 }
+
 .dialog-confirm-btn:hover span::before {
   transform: translate(-50%, -50%) rotate(-90deg);
   width: 100%;
   background: black;
 }
+
 .dialog-confirm-btn:hover {
   color: white;
 }
@@ -627,6 +692,7 @@ a:focus {
   color: white;
   overflow: hidden;
 }
+
 .dialog-cancel-btn span {
   position: absolute;
   left: 0;
@@ -637,6 +703,7 @@ a:focus {
   z-index: -1;
   border: 4px solid black;
 }
+
 .dialog-cancel-btn span::before {
   content: "";
   position: absolute;
@@ -648,11 +715,13 @@ a:focus {
   transform: translate(-50%, -50%) rotate(-90deg);
   transition: all 0.3s;
 }
+
 .dialog-cancel-btn:hover span::before {
   transform: translate(-50%, -50%) rotate(-60deg);
   width: 8%;
   background: white;
 }
+
 .dialog-cancel-btn:hover {
   color: black;
 }
@@ -668,12 +737,14 @@ a:focus {
   background: #fff;
   word-break: break-word;
 }
+
 .result-item__citation {
   vertical-align: top;
   /* 12px */
   font-size: .75rem;
   text-transform: uppercase;
 }
+
 @media (min-width: 768px) {
   .result-item__citation {
     width: 8.75rem;
@@ -682,11 +753,12 @@ a:focus {
   }
 }
 
-.citation-heading{
+.citation-heading {
   margin-top: .25rem;
   margin-right: .625rem;
   font-weight: 600;
 }
+
 .citation-date {
   display: inline-block;
   color: #757575;
@@ -695,9 +767,11 @@ a:focus {
   font-weight: 400;
   text-transform: capitalize;
 }
+
 .result-item__content {
   display: inline-block;
 }
+
 @media (min-width: 992px) {
   .result-item__content {
     width: calc(100% - 8.75rem);
@@ -722,27 +796,33 @@ a:focus {
   color: #6b6b6b;
   font-size: .875rem;
 }
+
 .card-author-list > li:not(:last-child) {
   margin-right: .3125rem;
 }
+
 .card-author-list > li {
   display: inline-block;
   line-height: 2rem;
 }
+
 .card-author-list a {
   text-decoration: underline;
   color: inherit;
   cursor: pointer;
   background-color: transparent;
 }
+
 .card-author-list img {
   filter: grayscale(100%);
   transition: all .2s ease-in-out;
 }
+
 img {
   max-width: 100%;
   border-style: none;
 }
+
 .author-avator {
   width: 1.5rem;
   height: 1.5rem;
@@ -760,15 +840,18 @@ img {
   margin: .625rem 0;
   box-sizing: border-box;
 }
-.card-simple-info span{
+
+.card-simple-info span {
   display: inline-block;
   vertical-align: middle;
 }
-.card-simple-info .epub-section__title{
+
+.card-simple-info .epub-section__title {
   font-size: 14px;
   box-sizing: border-box;
   cursor: pointer;
 }
+
 .card-abstract {
   height: auto;
   margin: 0.9rem 0;
@@ -780,11 +863,13 @@ img {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 4;
 }
+
 .card-concepts {
   height: auto;
   margin-bottom: .8rem;
 }
-.card-concepts .card-concepts-wrap{
+
+.card-concepts .card-concepts-wrap {
   float: left;
   margin-right: 10px;
   margin-bottom: 5px;
@@ -795,14 +880,17 @@ img {
   font-size: 14px;
   cursor: pointer;
 }
-.card-concepts .card-concepts-wrap i{
+
+.card-concepts .card-concepts-wrap i {
   display: inline-block;
   margin-right: 3px;
 }
-.card-concepts .card-concepts-wrap .card-concept-context{
+
+.card-concepts .card-concepts-wrap .card-concept-context {
   display: inline-block;
   text-transform: capitalize;
 }
+
 .card-footer {
   height: auto;
 }
@@ -811,13 +899,16 @@ img {
 .card-footer-left {
   float: left;
 }
+
 .card-footer-left li {
   /* 6px */
   padding-right: .375rem;
 }
+
 .card-footer-left > ul > li {
   vertical-align: text-top;
 }
+
 @media (min-width: 533px) {
   .card-footer-left > ul > li {
     border-right: .0625rem solid #d9d9d9;
@@ -831,13 +922,16 @@ img {
   display: inline-block;
   font-weight: 600;
 }
+
 .card-footer-left .citation {
   color: #0077c2;
 }
+
 .card-footer-left .metric {
   color: #651fff;
 }
-.card-footer-left li i{
+
+.card-footer-left li i {
   padding-right: .375rem;
   vertical-align: sub;
   transition: transform .5s;
@@ -849,6 +943,7 @@ img {
 .card-footer-right {
   float: right;
 }
+
 /**
   这里因为上面规定了 .rlist--inline li 元素是 display:inline-block;
   vertical-align 用来指定行内元素（inline）或表格单元格（table-cell）元素的垂直对齐方式。
@@ -863,6 +958,7 @@ img {
   background-color: #d7d7d7;
   cursor: pointer;
 }
+
 .card-footer-right .rlist--inline li .card-tool-btn {
   position: relative;
   display: inline-block;
@@ -887,26 +983,31 @@ img {
   /* background-color: #d44848; */
   background-color: #e34444;
 }
+
 .card-footer-right .rlist--inline li .card-tool-btn.pdf-btn {
   background-color: #d40c03;
   color: white;
 }
+
 .card-footer-right .rlist--inline li .card-tool-btn.web-btn:hover {
   background-color: #319ddf;
 }
+
 .card-footer-right .rlist--inline li .card-tool-btn.web-btn {
   background-color: #0077c2;
   color: white;
 }
-.card-footer-right .rlist--inline li .card-tool-btn i{
+
+.card-footer-right .rlist--inline li .card-tool-btn i {
   vertical-align: middle;
   padding-right: 0;
 }
 
-.card-footer-right .rlist--inline li:hover .card-tool-btn .card-btn-hint{
+.card-footer-right .rlist--inline li:hover .card-tool-btn .card-btn-hint {
   display: inline-block;
 }
-.card-footer-right .rlist--inline li .card-tool-btn .card-btn-hint{
+
+.card-footer-right .rlist--inline li .card-tool-btn .card-btn-hint {
   display: none;
   position: absolute;
   top: calc(2rem + 0.8rem);
@@ -921,13 +1022,15 @@ img {
   z-index: 9020;
   max-width: 300px;
 }
+
 /*
   经典的利用 宽度高度为0，边框宽度不为0，形成三角形
 */
-.card-footer-right .rlist--inline li:hover .card-tool-btn .card-btn-hint .card-btn-hint-arrow{
+.card-footer-right .rlist--inline li:hover .card-tool-btn .card-btn-hint .card-btn-hint-arrow {
   display: inline-block;
 }
-.card-footer-right .rlist--inline li .card-tool-btn .card-btn-hint .card-btn-hint-arrow{
+
+.card-footer-right .rlist--inline li .card-tool-btn .card-btn-hint .card-btn-hint-arrow {
   display: none;
   width: 0;
   height: 0;
@@ -938,6 +1041,7 @@ img {
   left: calc(50% - .625rem);
   z-index: -1;
 }
+
 /* #endregion 单个底部工具按钮+下拉栏 结束 */
 
 .dot-separator::before {
@@ -950,25 +1054,31 @@ img {
   vertical-align: middle;
   box-sizing: border-box;
 }
+
 /* #endregion 卡片底部右侧快捷操作 */
 
-:deep(.fav .el-checkbox__inner){
+:deep(.fav .el-checkbox__inner) {
   background-color: #fff;
 }
+
 :deep(.fav .el-checkbox__input.is-checked .el-checkbox__inner) {
   background-color: black;
   border-color: black;
 }
+
 :deep(.fav .el-checkbox__inner:hover) {
   border-color: black;
 }
+
 :deep(.fav .el-checkbox__input.is-checked+.el-checkbox__label) {
   color: black;
   font-weight: bold;
 }
-:deep(.fav .el-checkbox.is-bordered.is-checked){
-  border-color:black;
+
+:deep(.fav .el-checkbox.is-bordered.is-checked) {
+  border-color: black;
 }
+
 /* #endregion 收藏弹窗 */
 
 </style>

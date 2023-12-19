@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- v-html 填充标签内部 DOM -->
-    <div 
+    <div
       v-for="(item, index) in hintData"
       :key="index"
       class="hint-text-container"
@@ -16,10 +16,10 @@
 </script>
 
 <script setup>
-// import { ref } from 'vue';
+import { ref } from 'vue';
 import { watchDebounced } from '@vueuse/core';
-import { Search } from '../../api/search';
-import { useSearchStore } from '../../stores/search.js';
+import { Search } from '@/api/search';
+import { useSearchStore } from '@/stores/search';
 
 const props = defineProps({
   // 搜索文本
@@ -63,11 +63,11 @@ const getHintData = async () => {
 watchDebounced(
   () => props.searchText,
   getHintData,
-  { 
+  {
     immediate: true,
     // 在 300 ms 内同一事件触发，不触发新的请求
     debounce : 300
-  }  
+  }
 );
 
 /**

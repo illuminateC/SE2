@@ -12,19 +12,19 @@
       <template #dropdown>
         <div>
           <!-- 搜索提示，点击某个搜索提示也会触发搜索 -->
-          <Hint 
+          <Hint
             v-show="inputSearchValue"
             :search-text="inputSearchValue"
             @hint-item-click="handleSearch"
             />
-          <!-- 
+          <!--
             最近搜索，和搜索提示交替出现
             点击历史记录气泡默认触发搜索+将历史记录放到数组最开始
-            点击搜索的叉号则会删除单条记录 
+            点击搜索的叉号则会删除单条记录
             -->
           <History
             v-show="!inputSearchValue"
-            @history-bubble-click="handleSearch"         
+            @history-bubble-click="handleSearch"
           />
         </div>
       </template>
@@ -38,10 +38,11 @@ const EMIT_SEARCH = "finalSearch";
 
 <script setup>
 // import { ref } from 'vue';
-import { useSearchStore } from '../../stores/search.js';
+import { useSearchStore } from '@/stores/search';
 import Hint from './Hint.vue';
 import History from './History.vue';
 import SearchInputFrame from './SearchInputFrame.vue';
+import {ref} from "vue";
 
 const emits = defineEmits([EMIT_SEARCH]);
 
@@ -58,7 +59,7 @@ const inputSearchValue = ref(searchStore.searchInputText);
 const handleSearch = (val) => {
   // 去掉可能的斜体标签
   val = val.replace(/<\/?i>/ig, "");
-  
+
   // console.log(val);
   inputSearchValue.value = val;
   if( val ) {

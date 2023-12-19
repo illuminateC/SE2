@@ -10,8 +10,8 @@
     </div>
     <div class="result-item__content">
       <!-- 机构的标题 -->
-      <h5 
-        class="card-title" 
+      <h5
+        class="card-title"
         @click="jumpToConceptPage(item.id?.slice(21))"
       >
         <!-- 这里不可以分开span，不然会在逗号前出现一个距离 -->
@@ -22,8 +22,8 @@
           [Concept Name Unknown]
         </span>
       </h5>
-      
-      <!-- 
+
+      <!--
         领域concept的信息：来源（期刊会议）host_venue、发行日期、类型、doi网址
        -->
       <div class="card-simple-info">
@@ -36,12 +36,12 @@
             <b style="font-weight: 600;">Wiki Introduction: </b> {{ item.wikidata }}
           </a>
         </span>
-        
+
         <!-- <span class="dot-separator" v-if="item.doi">
           <a style="vertical-align: middle;" :href="item.doi">{{ item.doi }}</a>
         </span> -->
       </div>
-      
+
       <!-- 领域concept的简要描述 -->
       <div class="concept-card-abstract">
         <p>{{ item.description }}</p>
@@ -53,6 +53,7 @@
         <div
           class="card-concepts-wrap"
           v-for="ancestor in item.ancestors?.slice(0, 11)"
+          :key="ancestor"
           @click="jumpToConceptPage(ancestor.id?.slice(21))"
         >
         <!-- 这里的icon不一样，以表示区别于其他实体的含义 -->
@@ -100,7 +101,7 @@
                 </span>
               </div>
             </li>
-            
+
             <!-- TODO 添加收藏夹的浮窗 -->
             <li>
               <div class="card-tool-btn">
@@ -150,7 +151,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { toThousands } from '../../utils';
+import { toThousands } from '@/utils';
 
 const router = useRouter();
 const props = defineProps({
