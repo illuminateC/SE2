@@ -1,7 +1,7 @@
 import service from "../http/request";
 const url = {
     single: "/search/get_single_data_view",
-    getSearchDataList: "/search/get_list_of_data_view",
+    getSearchDataList: "/search/entity/search/list",
     getGroupDataList: "/search/get_groups_of_data_view",
     getAssociateContent: "/search/associate_content_view",
     postSearchHistory: "/history/update_history",
