@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
 import Aboutview from '../views/AboutView.vue'
+import AuthorView from '../views/AuthorView.vue'
 
 const routes = [
   {
@@ -36,7 +37,13 @@ const routes = [
     component: function () {
       return import('../views/TestView.vue')
     }
-  }
+  },
+  {
+    path: '/author/:authorId',
+    name: 'Author',
+    component: AuthorView,
+    meta: {title: "XpertiseScholar 作者主页"}
+  },
 ]
 
 const router = createRouter({

@@ -12,6 +12,7 @@
     "@elastic/search-ui-app-search-connector": "^1.20.2",
     "@element-plus/icons-vue": "^2.1.0",
     "axios": "^1.6.1",
+    "echarts": "^5.4.3",
     "element-plus": "^2.4.2",
     "gsap": "^3.12.2",
     "js-cookie": "^3.0.5",
