@@ -7,12 +7,12 @@
         placeholder="请输入内容"
         v-model="textarea">
       </el-input>
-      <el-button style="margin:10px" type="primary" >提交评论</el-button>
+      <el-button style="margin-top:10px" type="primary" >提交评论</el-button>
       <el-divider v-if="commentList!=null&&commentList.length<1" content-position="left">暂无评论</el-divider>
       <el-divider v-else content-position="left">评论列表</el-divider>
-      <CommentCard v-for="(comment,index) in commentList" :key="index" :comment="comment"
-                    :index="index"></CommentCard>
-      <!-- <CommentCard></CommentCard> -->
+      <!-- <CommentCard v-for="(comment,index) in commentList" :key="index" :comment="comment"
+                    :index="index"></CommentCard> -->
+      <CommentCard></CommentCard>
     </div>
   </template>
   

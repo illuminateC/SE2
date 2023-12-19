@@ -93,29 +93,22 @@
             </reference-chart>
           </div>
         </div>
-        <div class="result_detail_comment_area">
-          <el-tabs class="tabs_area" type="border-card">
-            <el-tab-pane class="pane_area" label="评论">
-              <CommentSection :id="this.$route.params.docid" :paper="this.article" ref="comment_child"/>
-            </el-tab-pane>
-            <el-tab-pane label="专家推荐"
-            >
-              <RecommendSection :recommends="this.$data.recommends" ref="child"
-              />
-            </el-tab-pane>
-          </el-tabs>
+        <div class="result_detail_statistics_area" >
+            <h3 class="detail_abstract">评论</h3>
+            <CommentSection :id="this.$route.params.docid" :paper="this.article" ref="comment_child"/>  
         </div>
+        
       </div>
       <div class="result_detail_side_area">
         <div class="result_detail_side_container">
-          <br/>
+          <!-- <br/>
           <h3>引用</h3>
           <br/>
           <el-button @click="copyCitationToClipboard"
           ><el-icon style="margin-right: 10%;"><DocumentCopy /></el-icon>复制引用信息
           </el-button
           >
-          <br/>
+          <br/> -->
           <br/>
           <h3>操作</h3>
           <br/>
@@ -129,15 +122,19 @@
             
             <el-button
               type="warning"
-              plain
-            ><el-icon style="margin-right: 10px;"><Star /></el-icon>收藏
+              plain v-if="this.article.starred === false" @click="addToFav"
+            ><el-icon style="margin-right: 10px;" ><Star /></el-icon>收藏
             </el-button>
             <el-button
-              type="warning"
-            ><el-icon style="margin-right: 10px;"><StarFilled /></el-icon>已收藏
+              type="warning" v-else @click="removeFromFav"
+            ><el-icon style="margin-right: 10px;" ><StarFilled /></el-icon>已收藏
             </el-button
             >
-            <el-button
+            <el-button @click="copyCitationToClipboard"
+            ><el-icon style="margin-right: 10%;"><DocumentCopy /></el-icon>复制引用信息
+            </el-button
+            >
+            <!-- <el-button
               type="success"         
               plain
             ><el-icon style="margin-right: 10px;"><DocumentAdd /></el-icon>加入清单
@@ -147,7 +144,7 @@
               type="success"
             ><el-icon style="margin-right: 10px;"><DocumentRemove /></el-icon>移出清单
             </el-button
-            >
+            > -->
           </div>
           <br/>
           <el-button-group style="padding-top:10px">
@@ -277,7 +274,7 @@
 
 <script>
 import CommentSection from "../components/comment/CommentSection";
-// import RecommendSection from "../components/recommendation/RecommendSection";
+
 import clipboard from 'clipboard';
 import * as echarts from 'echarts';
 import { ElMessage } from 'element-plus'
@@ -302,6 +299,8 @@ export default {
         issn: "0",
         doi: "",
         citationMessage:"test",
+        starred:false,
+        listed:false,
       },
       recommendForm: {
         username: "",
@@ -380,6 +379,12 @@ export default {
       // 移除临时的 textarea 元素
       document.body.removeChild(textarea);
       ElMessage.success('已复制到剪贴板');
+    },
+    addToFav(){
+      this.article.starred=true;
+    },
+    removeFromFav(){
+      this.article.starred=false;
     },
     getData(){
       // this.article.abstract="114";
