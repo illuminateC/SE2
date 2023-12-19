@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import RankingItem from "./RankingItem.vue";
 export default {
     name: "RankingList",
@@ -25,31 +26,46 @@ export default {
                     "papers": 1,
                     "rank": 1,
                     "title": "A Survey on Deep Learning for Named Entity Recognition",
-                    "url": "/detail/cs/2110000000000000001",
+                    "Id": 1,
                 },
                 {
                     "papers": 1,
                     "rank": 2,
                     "title": "A Survey on Deep Learning for Named Entity Recognition",
-                    "url": "/detail/cs/2110000000000000001",
+                    "Id": 2,
                 },
                 {
                     "papers": 1,
                     "rank": 3,
                     "title": "A Survey on Deep Learning for Named Entity Recognition",
-                    "url": "/detail/cs/2110000000000000001",
+                    "Id": 3,
                 },
                 {
                     "papers": 1,
                     "rank": 4,
                     "title": "A Survey on Deep Learning for Named Entity Recognition",
-                    "url": "/detail/cs/2110000000000000001",
+                    "Id": 4,
                 },
             ],
             itemType: "Papers",
         };
     },
+    methods: {
+        getHomepage() {
+            axios({
+                method: 'post',
+                url: 'http://123.249.124.181/api/search/homepage',
+            })
+                .then(function (res) {
+                    console.log(res.msg);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+    },
     created() {
+        this.getHomepage();
         console.log(this.type);
         for (let i = 0; i < this.itemList.length; i++) {
             if (this.itemList[i].title.length > 22) {

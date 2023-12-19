@@ -10,7 +10,7 @@
             <div id='up'>
 
                 <div style="font-weight: bold; white-space: nowrap;">
-                    <router-link class="link" :to="this.information.url" tag="a" target="_blank">
+                    <router-link class="link" :to="{path:'/article/:' + this.information.Id}" tag="a" target="_blank">
                         {{ this.information.title }}
                     </router-link>
                 </div>
