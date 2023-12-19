@@ -29,7 +29,7 @@ app.use(ElementPlus)
 app.use(VueCropper)
 app.use(naive)
 app.use(VueWechatTitle);
-
+app.provide('$axios',axios)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
