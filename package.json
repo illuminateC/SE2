@@ -24,7 +24,6 @@
     "echarts": "^5.4.3",
     "echarts-gl": "^2.0.9",
     "element-plus": "^2.4.3",
-    "element-ui": "^2.15.14",
     "gsap": "^3.12.2",
     "js-cookie": "^3.0.5",
     "moment": "^2.29.4",

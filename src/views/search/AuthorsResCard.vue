@@ -1,10 +1,10 @@
 <template>
   <div class="result-item-card clearfix">
     <div class="result-item__citation">
-      <div class="citation-heading">research-author</div>
+      <div class="citation-heading">Author</div>
     </div>
     <div class="author-card-avator">
-      <img src="https://dl.acm.org/pb-assets/icons/DOs/default-profile-1543932446943.svg"/>
+      <img style="margin-top:20px" src="https://dl.acm.org/pb-assets/icons/DOs/default-profile-1543932446943.svg"/>
     </div>
     <div class="result-item__content">
       <!-- 作者的名字 -->
@@ -20,7 +20,7 @@
           v-html="highlightText(item.display_name.replace(/<\/?i>/ig, ''))">
         </span>
         <span v-else>
-          [Author Name Unknown]
+          Author Name Unknown
         </span>
       </h5>
 
@@ -33,10 +33,10 @@
         <span
           v-if="item.last_known_institution?.display_name"
           class="epub-section__title"
-          @click="jumpToInstitutionPage(item.last_known_institution.id
-            ? item.last_known_institution.id.slice(21)
-            : '')"
         >
+<!--          @click="jumpToInstitutionPage(item.last_known_institution.id-->
+<!--            ? item.last_known_institution.id.slice(21)-->
+<!--            : '')"-->
           {{ item.last_known_institution?.display_name }}
         </span>
         <span v-else class="epub-section__title">
@@ -51,9 +51,9 @@
           orcid 一个字符串，是世界通用的唯一ID号，但是由于在OpenAlex中覆盖较低，
             所以只是作为外部链接
          -->
-        <span class="dot-separator" v-if="item.orcid">
-          <a style="vertical-align: middle;" :href="item.orcid">{{ item.orcid }}</a>
-        </span>
+<!--        <span class="dot-separator" v-if="item.orcid">-->
+<!--          <a style="vertical-align: middle;" :href="item.orcid">{{ item.orcid }}</a>-->
+<!--        </span>-->
       </div>
 
       <!-- 作者常涉及的领域concepts气泡展示，这里只截取前11个 -->
@@ -63,9 +63,9 @@
           class="card-concepts-wrap"
           v-for="concept in item.x_concepts?.slice(0, 11)"
           :key="concept"
-          @click="jumpToConceptPage(concept.id?.slice(21))"
         >
-          <i class="iconfont icon-menu"></i>
+<!--          @click="jumpToConceptPage(concept.id?.slice(21))"-->
+<!--          <i class="iconfont icon-menu"></i>-->
           <div class="card-concept-context">{{ concept.display_name }}</div>
         </div>
       </div>
@@ -73,22 +73,22 @@
       <!-- 作者底部简略信息和快捷操作 -->
       <div class="card-footer clearfix">
         <!-- 作者底部简略信息（已经完成） -->
-        <div class="card-footer-left">
+        <div class="card-footer-right">
           <ul class="rlist--inline">
             <li class="metric-holder">
               <ul class="rlist--inline">
                 <!-- 该作者的论文被引用的总数量 -->
                 <li>
                   <span class="citation">
-                    <i class="iconfont icon-quotes" style="font-size: 1.1rem"></i>
-                    <span>{{ toThousands(item.cited_by_count) }}</span>
+                    <span style="margin: 5px ;color: #0f5de5"> 被引</span>
+                    <span style="margin: 5px ;color:#191919;">{{ toThousands(item.cited_by_count) }}</span>
                   </span>
                 </li>
                 <!-- 该作者的论文的总数量 -->
                 <li>
                   <span class="metric">
-                    <i class="iconfont icon-paper" style="font-size: 1rem"></i>
-                    <span>{{ toThousands(item.works_count) }}</span>
+                    <span style="margin: 5px ;color: #0f5de5"> 发布</span>
+                    <span style="margin: 5px ;color:#191919;">{{ toThousands(item.works_count) }}</span>
                   </span>
                 </li>
               </ul>
@@ -97,60 +97,60 @@
         </div>
 
         <!-- 作者底部快捷操作（可能取消） -->
-        <div class="card-footer-right">
-          <ul class="rlist--inline" style="float: left;">
-            <!-- TODO 导出bibtex等引用格式 -->
-            <li>
-              <div class="card-tool-btn">
-                <i class="iconfont icon-quotes" style="font-size: 1.1rem;"></i>
-                <span class="card-btn-hint">
-                  <span class="card-btn-hint-arrow"></span>
-                  Export Citation
-                </span>
-              </div>
-            </li>
+<!--        <div class="card-footer-right">-->
+<!--          <ul class="rlist&#45;&#45;inline" style="float: left;">-->
+<!--            &lt;!&ndash; TODO 导出bibtex等引用格式 &ndash;&gt;-->
+<!--            <li>-->
+<!--              <div class="card-tool-btn">-->
+<!--                <i class="iconfont icon-quotes" style="font-size: 1.1rem;"></i>-->
+<!--                <span class="card-btn-hint">-->
+<!--                  <span class="card-btn-hint-arrow"></span>-->
+<!--                  Export Citation-->
+<!--                </span>-->
+<!--              </div>-->
+<!--            </li>-->
 
-            <!-- TODO 添加收藏夹的浮窗 -->
-            <li>
-              <div class="card-tool-btn">
-                <i class="iconfont icon-folderplus-fill"></i>
-                <span class="card-btn-hint">
-                  <span class="card-btn-hint-arrow"></span>
-                  Add to Favor
-                </span>
-              </div>
-            </li>
-          </ul>
-          <!-- <ul class="rlist--inline dot-separator" style="float: right;"
-            v-if="(item.open_access.is_oa === 1 || item.host_venue.id || item.doi)">
-            <li v-if="(item.open_access.is_oa === 1)">
-              <div class="card-tool-btn pdf-btn" @click="jumpToPDFOnlinePage(item.open_access.oa_url)">
-                <i class="iconfont icon-pdf1" style="font-size: 0.9rem;"></i>
-                <span class="card-btn-hint">
-                  <span class="card-btn-hint-arrow"></span>
-                  View PDF online
-                </span>
-              </div>
-            </li>
+<!--            &lt;!&ndash; TODO 添加收藏夹的浮窗 &ndash;&gt;-->
+<!--            <li>-->
+<!--              <div class="card-tool-btn">-->
+<!--                <i class="iconfont icon-folderplus-fill"></i>-->
+<!--                <span class="card-btn-hint">-->
+<!--                  <span class="card-btn-hint-arrow"></span>-->
+<!--                  Add to Favor-->
+<!--                </span>-->
+<!--              </div>-->
+<!--            </li>-->
+<!--          </ul>-->
+<!--          &lt;!&ndash; <ul class="rlist&#45;&#45;inline dot-separator" style="float: right;"-->
+<!--            v-if="(item.open_access.is_oa === 1 || item.host_venue.id || item.doi)">-->
+<!--            <li v-if="(item.open_access.is_oa === 1)">-->
+<!--              <div class="card-tool-btn pdf-btn" @click="jumpToPDFOnlinePage(item.open_access.oa_url)">-->
+<!--                <i class="iconfont icon-pdf1" style="font-size: 0.9rem;"></i>-->
+<!--                <span class="card-btn-hint">-->
+<!--                  <span class="card-btn-hint-arrow"></span>-->
+<!--                  View PDF online-->
+<!--                </span>-->
+<!--              </div>-->
+<!--            </li>-->
 
-            <li v-if="(item.host_venue.id || item.doi)">
-              <div
-                class="card-tool-btn web-btn"
-                @click="jumpToWorkSourceWeb(
-                  item.host_venue.id
-                    ? item.host_venue.id
-                    : item.doi
-                )"
-              >
-                <i class="iconfont icon-signal-source" style="font-size: 1.3rem;"></i>
-                <span class="card-btn-hint">
-                  <span class="card-btn-hint-arrow"></span>
-                  Get Access to Source Web
-                </span>
-              </div>
-            </li>
-          </ul> -->
-        </div>
+<!--            <li v-if="(item.host_venue.id || item.doi)">-->
+<!--              <div-->
+<!--                class="card-tool-btn web-btn"-->
+<!--                @click="jumpToWorkSourceWeb(-->
+<!--                  item.host_venue.id-->
+<!--                    ? item.host_venue.id-->
+<!--                    : item.doi-->
+<!--                )"-->
+<!--              >-->
+<!--                <i class="iconfont icon-signal-source" style="font-size: 1.3rem;"></i>-->
+<!--                <span class="card-btn-hint">-->
+<!--                  <span class="card-btn-hint-arrow"></span>-->
+<!--                  Get Access to Source Web-->
+<!--                </span>-->
+<!--              </div>-->
+<!--            </li>-->
+<!--          </ul> &ndash;&gt;-->
+<!--        </div>-->
       </div>
     </div>
   </div>
@@ -389,7 +389,7 @@ img {
 .card-simple-info .epub-section__title{
   font-size: 14px;
   box-sizing: border-box;
-  cursor: pointer;
+  //cursor: pointer;
 }
 .card-abstract {
   height: auto;
@@ -415,7 +415,7 @@ img {
   border: 1.6px solid black;
   border-radius: 5px;
   font-size: 14px;
-  cursor: pointer;
+  //cursor: pointer;
 }
 .card-concepts .card-concepts-wrap i{
   display: inline-block;

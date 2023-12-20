@@ -18,9 +18,9 @@
       >
         <option value="works">论文</option>
         <option value="authors">作者</option>
-        <option value="venues">期刊会议</option>
-        <option value="institutions">机构</option>
-        <option value="concepts">领域</option>
+<!--        <option value="venues">期刊会议</option>-->
+<!--        <option value="institutions">机构</option>-->
+<!--        <option value="concepts">领域</option>-->
       </select>
       <!-- TODO: 可以来个左侧分割线，但不太必要 -->
       <!-- <div
@@ -62,9 +62,10 @@
         class="search-btn"
         @click="onSearchHandler"
       >
-        <svg aria-hidden="true" class="search-btn-icon">
-          <use xlink:href="#search" fill="#707070" />
-        </svg>
+<!--        <svg aria-hidden="true" class="search-btn-icon">-->
+<!--          <use xlink:href="#search" fill="#707070" />-->
+<!--        </svg>-->
+        <el-icon aria-hidden="true" class="search-btn-icon" fill="#707070" style="margin-left: -2px"><Search /></el-icon>
       </button>
     </div>
     <!--
@@ -108,6 +109,7 @@ const EMIT_BLUR = 'blur'
 import { onMounted, ref, watch } from 'vue';
 import { useVModel, onClickOutside } from '@vueuse/core';
 import { useSearchStore } from '../../stores/search.js';
+import {Search} from "@element-plus/icons-vue";
 
 const selectTarget = ref(null);
 const searchStore = useSearchStore();

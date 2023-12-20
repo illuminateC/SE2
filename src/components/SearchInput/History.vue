@@ -2,13 +2,16 @@
   <div>
     <div class="search-history-title">
       <span>最近搜索</span>
-      <svg
-        aria-hidden="true"
-        class="search-history-icon-delete"
-        @click="onDeleteAllClick"
-      >
-        <use xlink:href="#icon-delete" fill="#a1a1aa"/>
-      </svg>
+<!--      <svg-->
+<!--        aria-hidden="true"-->
+<!--        class="search-history-icon-delete"-->
+<!--        @click="onDeleteAllClick"-->
+<!--      >-->
+<!--        <use xlink:href="#icon-delete" fill="#a1a1aa"/>-->
+<!--      </svg>-->
+      <el-icon aria-hidden="true"
+               class="search-history-icon-delete"
+               @click="onDeleteAllClick" fill="#a1a1aa"><DeleteFilled /></el-icon>
     </div>
 
     <div class="search-history-container">
@@ -24,13 +27,16 @@
           这里的阻止冒泡非常关键，因为外层 div （v-for）也是靠点击触发
           外层div触发的是 搜索，删除图标触发的是 删除记录
          -->
-        <svg
-          aria-hidden="true"
-          class="search-history-icon-delete"
-          @click.stop="onDeleteClick(index)"
-        >
-          <use xlink:href="#icon-clear" />
-        </svg>
+<!--        <svg-->
+<!--          aria-hidden="true"-->
+<!--          class="search-history-icon-delete"-->
+<!--          @click.stop="onDeleteClick(index)"-->
+<!--        >-->
+<!--          <use xlink:href="#icon-clear" />-->
+<!--        </svg>-->
+        <el-icon aria-hidden="true"
+                 class="search-history-icon-delete"
+                 @click.stop="onDeleteClick(index)"><DeleteFilled /></el-icon>
       </div>
     </div>
   </div>
@@ -44,6 +50,7 @@
 import { useSearchStore } from '@/stores/search';
 // TODO 删除所有搜索历史的确认对话框
 import { showConfirmDialog } from '../Dialog/index.js';
+import {DeleteFilled} from "@element-plus/icons-vue";
 
 const emits = defineEmits([EMIT_HISTORY_BUBBLE_CLICK]);
 
@@ -53,7 +60,7 @@ const searchStore = useSearchStore();
  * 删除所有记录
  */
 const onDeleteAllClick = () => {
-  showConfirmDialog('清空历史记录', '您要删除所有记录吗？')
+  showConfirmDialog('清空历史记录', '是否删除所有搜索记录？')
   .then(() => {
     searchStore.deleteAllHistory();
   })
