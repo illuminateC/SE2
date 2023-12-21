@@ -56,6 +56,7 @@ import MessageBox from './MessageBox.vue'
 import 'cropperjs/dist/cropper.css';
 import Cropper from 'cropperjs';
 import Swal from 'sweetalert2';
+import userAPI from '@/api/user';
 export default {
     props: {
         isVisitor: {
@@ -84,11 +85,12 @@ export default {
         }
     },
     mounted() {
-        this.$data.user.avatarUrl = require('@/assets/avatar.jpg');
+        // this.$data.user.avatarUrl = require('@/assets/avatar.jpg');
         this.$data.hasIdParam = this.$route.params.hasOwnProperty('id');
+   
     },
     created() {
-
+        this.getAvatar()
     },
     components: {
         MessageBox,
@@ -230,8 +232,20 @@ export default {
                     })
                 }
             })
+        },
+        async getAvatar(){
+        try{
+            const data={"user_id":1}
+            const response=await userAPI.getAvatar(data)
+            this.$data.user.avatarUrl="http://123.249.124.181"+response.data.avatar_url;
+            console.log(response.data.msgno)
+        }catch(error){
+            console.error(response.data.msg)
         }
+    }
+
     },
+    
 }
 </script>
 

@@ -8,6 +8,9 @@
         <swiper-slide>Slide 6</swiper-slide><swiper-slide>Slide 7</swiper-slide>
         <swiper-slide>Slide 8</swiper-slide><swiper-slide>Slide 9</swiper-slide>
     </swiper>
+
+<button @click="login">login</button>
+<button @click="logout">logout</button>
 </template>
 <script>
 // Import Swiper Vue.js components
@@ -22,6 +25,8 @@ import 'swiper/css/pagination';
 
 // import required modules
 import { Mousewheel, Pagination } from 'swiper/modules';
+import userAPI from '@/api/user';
+import CookiesPlugin from '@/cookies-plugin';
 export default {
     components: {
         Swiper,
@@ -31,6 +36,18 @@ export default {
         return {
             modules: [Mousewheel, Pagination],
         };
+    },
+    methods: {
+        login() {
+            this.$Cookies.set('token',"s@7pgk)vt7nc_j+dpeb4(hl3(48rgmp6#!(4566piv8ggwdp53")
+        },
+        async logout(){
+
+const response=await userAPI.logout()
+this.$Cookies.remove('token')
+alert(response.data.msg)
+
+        }
     },
 };
 </script>
