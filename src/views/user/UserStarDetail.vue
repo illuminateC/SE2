@@ -1,26 +1,31 @@
 <template>
     <body>
-        <PersonalInfo :isVisitor="this.$props.isVisitor"></PersonalInfo>
-        <Star></Star>
+        <PersonalInfo :isVisitor="isVisitor"></PersonalInfo>
+        <star></star>
     </body>
 </template>
 
 <script>
 import PersonalInfo from '@/components/UserProfile/PersonalInfo.vue';
-import Star from '@/components/UserProfile/Star.vue';
+import star from '@/components/UserProfile/star-post.vue';
 export default {
     props: {
-        isVisitor: {
-            type: Boolean,
-            default: true
-        },
+        // isVisitor: {
+        //     type: Boolean,
+        //     default: true
+        // },
     },
     components: {
         PersonalInfo,
-        Star
+        star
+    },
+    computed: {
+        isVisitor() {
+            return this.$route.query.isVisitor === 'true';
+        }
     },
     created() {
-        ;
+
     },
 }
 </script>

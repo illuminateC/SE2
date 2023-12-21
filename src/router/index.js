@@ -109,20 +109,26 @@ const routes = [
     path: '/author/:authorId',
     name: 'Author',
     component: AuthorView,
-    meta: {title: "XpertiseScholar 作者主页"}
+    meta: { title: "XpertiseScholar 作者主页" }
   },
   // 搜索详情页面，后续可能会调整其位置
   {
     path: '/search-detail',
     name: 'SearchDetail',
-    component: ()=>import('../views/search/SearchDetail.vue'),
+    component: () => import('../views/search/SearchDetail.vue'),
   },
   // 高级搜索详情页面，后续可能会调整其位置
   {
     path: '/advance-search-detail',
     name: 'AdvanceSearchDetail',
-    component: ()=>import('../views/search/AdvSearchDetail.vue'),
+    component: () => import('../views/search/AdvSearchDetail.vue'),
   },
+  {
+    path: '/starlist/:starId',
+    name: 'starList',
+    component: () => import('../views/user/UserStarDetail.vue'),
+    props: true
+  }
 ]
 
 const router = createRouter({
