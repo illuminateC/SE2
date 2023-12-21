@@ -181,7 +181,7 @@ const allEntitySortType = {
   "institutions": ["Relevance", "More Works", "Less Works", "Cited"],
   "concepts": ["Relevance", "More Works", "Less Works", "Cited"],
 };
-const pageSizeArray = [5, 10, 20];
+const pageSizeArray = [5, 10, 15, 20];
 </script>
 
 <script setup>
@@ -3405,13 +3405,13 @@ const AllTypeFilterList = reactive({
       stringArray: [],
       selectedArray: []
     },
-    {
-      group: "host_venue.id",
-      title: "文献来源 Host Venue",
-      objectArray: [],
-      stringArray: [],
-      selectedArray: []
-    },
+    // {
+    //   group: "host_venue.id",
+    //   title: "文献来源 Host Venue",
+    //   objectArray: [],
+    //   stringArray: [],
+    //   selectedArray: []
+    // },
     {
       // 可以不带有 authorships
       group: "authorships.author.id",
@@ -3554,8 +3554,8 @@ const handleAllTypeGroupSearch = (filterDOM, index) => {
         "filter": buildAllTypeFilterKey(),
         // 具体到当前搜索类型对应的筛选列表的某个筛选单元的标题
         "group_by": AllTypeFilterList[searchStore.searchType][index].group,
-        "page": 1,
-        "per_page": searchResPageSize.value,
+        // "page": 1,
+        // "per_page": searchResPageSize.value,
         "search" : searchStore.searchInputText,
         "sort": buildSortKey(),
       }
@@ -3565,7 +3565,7 @@ const handleAllTypeGroupSearch = (filterDOM, index) => {
     Search.getGroupDataList(data)
     .then((res) => {
       if (res.data.msgno === 1) {
-        let groupArray = res.data.groups_of_entity_data.group_by;
+        let groupArray = res.data.group_of_entity_data.group_by;
         // groupArray = getGroupDataList.group_of_entity_data.group_by;
 
         AllTypeFilterList[searchStore.searchType][index].objectArray = groupArray;

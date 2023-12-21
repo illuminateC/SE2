@@ -62,7 +62,7 @@ const handleSearch = (val) => {
   // console.log(val);
   inputSearchValue.value = val;
   if( val ) {
-    // searchStore.addHistory(val);
+    searchStore.addHistory(val);
     // 触发 searchText 的变化
     searchStore.setSearchInputText(val);
     // 触发 父组件进行搜索
