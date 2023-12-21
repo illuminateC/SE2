@@ -4,7 +4,7 @@
             <span>{{ this.title }}</span>
         </div>
         <div id="rank">
-            <RankingItem v-for="(item, i) in itemList" :information="item" :key="i" :type="itemType" />
+            <RankingItem v-for="(item, i) in itemList" :information="item" :key="i" :type="itemType" :rout="rout" />
         </div>
     </div>
 </template>
@@ -14,50 +14,81 @@ import axios from "axios";
 import RankingItem from "./RankingItem.vue";
 export default {
     name: "RankingList",
-    props: ["title", "type"],
+    props: ["title", "type", "rout"],
     components: {
         RankingItem,
     },
     data() {
         return {
             searchState: {},
-            itemList: [
-                {
-                    "papers": 1,
-                    "rank": 1,
-                    "title": "A Survey on Deep Learning for Named Entity Recognition",
-                    "Id": 1,
-                },
-                {
-                    "papers": 1,
-                    "rank": 2,
-                    "title": "A Survey on Deep Learning for Named Entity Recognition",
-                    "Id": 2,
-                },
-                {
-                    "papers": 1,
-                    "rank": 3,
-                    "title": "A Survey on Deep Learning for Named Entity Recognition",
-                    "Id": 3,
-                },
-                {
-                    "papers": 1,
-                    "rank": 4,
-                    "title": "A Survey on Deep Learning for Named Entity Recognition",
-                    "Id": 4,
-                },
-            ],
-            itemType: "Papers",
+            result: [],
+            itemList: [],
+            itemType: "",
         };
     },
     methods: {
         getHomepage() {
+            const that = this;
             axios({
                 method: 'post',
                 url: 'http://123.249.124.181/api/search/homepage',
             })
                 .then(function (res) {
-                    console.log(res.msg);
+                    if (that.title == 'Recommend') {
+                        that.result = res.data.newest_work[0].results
+                        that.itemList = that.result.slice(0, 4);
+                        for (let i = 0; i < that.itemList.length; i++) {
+                            that.itemList[i].rank = i + 1;
+                            that.itemList[i].papers = that.itemList[i].cited_by_count;
+                            var cutIndex = that.itemList[i].id.lastIndexOf("/") + 1;
+                            var Id = that.itemList[i].id.substring(cutIndex);
+                            that.itemList[i].Id = Id;
+                            if (that.itemList[i].title.length > 22) {
+                                that.itemList[i].title = that.itemList[i].title.slice(0, 22) + "...";
+                            }
+                        }
+                    }
+                    else if (that.title == 'Top Paper') {
+                        that.result = res.data.most_cited_work[0].results
+                        that.itemList = that.result.slice(0, 5);
+                        that.itemList.splice(3, 1);
+                        for (let i = 0; i < that.itemList.length; i++) {
+                            that.itemList[i].rank = i + 1;
+                            that.itemList[i].papers = that.itemList[i].cited_by_count;
+                            var cutIndex = that.itemList[i].id.lastIndexOf("/") + 1;
+                            var Id = that.itemList[i].id.substring(cutIndex);
+                            that.itemList[i].Id = Id;
+                            if (that.itemList[i].title.length > 20) {
+                                that.itemList[i].title = that.itemList[i].title.slice(0, 20) + "...";
+                            }
+                        }
+                    }
+                    else if (that.title == 'Top Author') {
+                        that.result = res.data.most_cited_authors[0].results
+                        that.itemList = that.result.slice(0, 4);
+                        console.log(that.itemList);
+                        for (let i = 0; i < that.itemList.length; i++) {
+                            that.itemList[i].rank = i + 1;
+                            that.itemList[i].title = that.itemList[i].display_name;
+                            that.itemList[i].papers = that.itemList[i].cited_by_count;
+                            var cutIndex = that.itemList[i].id.lastIndexOf("/") + 1;
+                            var Id = that.itemList[i].id.substring(cutIndex);
+                            that.itemList[i].Id = Id;
+                        }
+                    }
+                    else if (that.title == 'Top Affiliation') {
+                        that.result = res.data.most_cited_institutions[0].results
+                        that.itemList = that.result.slice(0, 4);
+                        console.log(that.itemList);
+                        for (let i = 0; i < that.itemList.length; i++) {
+                            that.itemList[i].rank = i + 1;
+                            that.itemList[i].title = that.itemList[i].display_name;
+                            that.itemList[i].papers = that.itemList[i].cited_by_count;
+                            if (that.itemList[i].title.length > 18) {
+                                that.itemList[i].title = that.itemList[i].title.slice(0, 18) + "...";
+                            }
+                        }
+                    }
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -65,13 +96,8 @@ export default {
         }
     },
     created() {
+        this.itemType = this.type;
         this.getHomepage();
-        console.log(this.type);
-        for (let i = 0; i < this.itemList.length; i++) {
-            if (this.itemList[i].title.length > 22) {
-                this.itemList[i].title = this.itemList[i].title.slice(0, 22) + "...";
-            }
-        }
     }
 }
 </script>

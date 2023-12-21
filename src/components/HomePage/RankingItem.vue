@@ -10,7 +10,16 @@
             <div id='up'>
 
                 <div style="font-weight: bold; white-space: nowrap;">
-                    <router-link class="link" :to="{path:'/article/:' + this.information.Id}" tag="a" target="_blank">
+                    <router-link v-if="rout == 1" class="link" :to="{path:'/article/' + this.information.Id}" tag="a" target="_blank">
+                        {{ this.information.title }}
+                    </router-link>
+                    <router-link v-if="rout == 2" class="link" :to="{path:'/article/' + this.information.Id}" tag="a" target="_blank">
+                        {{ this.information.title }}
+                    </router-link>
+                    <router-link v-if="rout == 3" class="link" :to="{path:'/author/' + this.information.Id}" tag="a" target="_blank">
+                        {{ this.information.title }}
+                    </router-link>
+                    <router-link v-if="rout == 4" class="link" @click.prevent :to="{path:'/article/' + this.information.Id}" tag="a" target="_blank">
                         {{ this.information.title }}
                     </router-link>
                 </div>
@@ -33,7 +42,7 @@
 import gsap from "gsap";
 export default {
     name: 'RankingItem',
-    props: ['information', 'type'],
+    props: ['information', 'type', 'rout'],
     data() {
         return {
             info: {

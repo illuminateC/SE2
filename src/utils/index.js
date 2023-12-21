@@ -41,7 +41,7 @@ const searchStore = useSearchStore();
 export function highlightText(text) {
   if (searchStore.searchInputText) {
     // 生成高亮标签
-    const highlightStr = `<span style="background: #ffd255">${searchStore.searchInputText}</span>`
+    const highlightStr = `<span style="color: #f73131">${searchStore.searchInputText}</span>`
     // 构建正则表达式
     const regModelStr = escapeRegExp(searchStore.searchInputText);
     const reg = new RegExp(regModelStr, 'gi');
