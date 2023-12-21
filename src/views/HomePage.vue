@@ -53,6 +53,11 @@ export default {
     mouseLeave() {
       gsap.to("#searchinput", { duration: 0.1, boxShadow: '0px 0px 8px 2px rgb(50,50,50,0.1)' })
     },
+    submit() {
+      if (this.input != '') {
+        this.$router.push({ path: '/search-detail', query: { countrySearch: this.input } })
+      }
+    }
   }
 }
 </script>
