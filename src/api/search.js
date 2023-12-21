@@ -1,10 +1,10 @@
 import service from "../http/request";
 const url = {
-    single: "/search/get_single_data_view",
+    single: "/search/entity/search/specific",
     getSearchDataList: "/search/entity/search/list",
-    getGroupDataList: "/search/get_groups_of_data_view",
-    getAssociateContent: "/search/associate_content_view",
-    postSearchHistory: "/history/update_history",
+    getGroupDataList: "/search/entity/search/group",
+    // getAssociateContent: "/search/associate_content_view",
+    postSearchHistory: "/searching_history/update_history",
     getDataView:"/search/get_index_data_view",
     getNumView: "search/get_open_alex_data_num_view",
     getRecommendedView: "search/get_recommended_data_view",

@@ -321,6 +321,8 @@ export default {
 
 .avatar-box img {
     height: 100%;
+    width: 100%;
+    contain: none;
 }
 
 
@@ -393,6 +395,7 @@ export default {
         font-size: 40px;
         font-family: sans-serif;
         font-style: italic;
+        color: white;
     }
 
     .message-box {}
