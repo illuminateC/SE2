@@ -92,12 +92,7 @@ export default {
     },
     methods: {
         back() {
-            const hasIdParam = this.$route.params.hasOwnProperty('id');
-            if (hasIdParam) {
-                const id = this.$route.params.id;
-                this.$router.push({ name: "otherUser", params: id })
-            }
-            else this.$router.push({ name: "currentUser" })
+            this.$router.go(-1)
         },
         handleOver() {
             anime({
@@ -119,7 +114,8 @@ export default {
         },
         jump(id) {
             const hasIdParam = this.$route.params.hasOwnProperty('id');
-            this.$router.push({ name: "starList", params: { starId: id }, query: { isVisitor: hasIdParam } })
+            console.log(hasIdParam)
+            //this.$router.push({ name: "starList", params: { starId: id, isVisitor: hasIdParam } })
         }
     },
 }
