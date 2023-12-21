@@ -34,7 +34,7 @@ export default {
     },
     data() {
         return {
-            messageNum: 30
+            messageNum: 99
         }
     },
     mounted() {
