@@ -18,8 +18,11 @@ import 'vue-cropper/dist/index.css'
 // import Swal from 'sweetalert2/dist/sweetalert2.js'
 // import 'sweetalert2/src/sweetalert2.scss'
 import * as echarts from 'echarts';
+import { createPinia } from 'pinia';
 // import 'echarts-gl'
 const app = createApp(App)
+const pinia = createPinia();
+app.use(pinia);
 app.use(router).use(store)
 app.use(VueAxios, axios)
 app.use(CookiesPlugin)
@@ -30,6 +33,7 @@ app.use(ElementPlus)
 app.use(VueCropper)
 app.use(naive)
 app.use(VueWechatTitle);
+app.provide('$axios',axios)
 app.use(echarts)
 
 gsap.registerPlugin(ScrollTrigger)
