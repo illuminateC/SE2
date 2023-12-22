@@ -6,23 +6,10 @@
 </template>
 
 <script>
-/**
- * Response Data Structure
- *
- * success: *response status <boolean>*,
- * data:
- * [
- *    {
- *      year: *year <int/str>*  // note: 都能处理
- *      published: *number of papers published in that year <int>*
- *      citation: *number of citations in that year <int>*
- *    }
- * ]
- */
 import * as echarts from "echarts";
 export default {
   name: "AuthorYearPaperChart",
-  props: ["numOfYearCitation", "numOfYearPaper"],
+  props: ["InformationByYear"],
   data() {
     const colors = ["#5793f3", "#d14a61"];
 
@@ -100,28 +87,13 @@ export default {
     myChart.setOption(this.option);
   },
   methods: {
-    getMinYear(a, b) {
-      if (a.from < b.from) return a.from;
-      return b.from;
-    },
-    getMaxYear(a, b) {
-      if (a.to > b.to) return a.to;
-      return b.to;
-    },
     getData() {
-      var numOfYearCitation = this.$props.numOfYearCitation;
-      var numOfYearPaper = this.$props.numOfYearPaper;
-      var min_year = this.getMinYear(numOfYearCitation, numOfYearPaper);
-      var max_year = this.getMaxYear(numOfYearCitation, numOfYearPaper);
-      for (let i = min_year; i <= max_year; i++) {
-        // console.log("citation of " + i.toString() + ": " + numOfYearCitation.list[i])
-        this.option.xAxis[0].data.push(i.toString());
-        if (numOfYearCitation.list[i - numOfYearCitation.from])
-          this.option.series[0].data.push(numOfYearCitation.list[i - numOfYearCitation.from]);
-        else this.option.series[0].data.push(0);
-        if (numOfYearPaper.list[i - numOfYearPaper.from])
-          this.option.series[1].data.push(numOfYearPaper.list[i - numOfYearPaper.from]);
-        else this.option.series[1].data.push(0);
+      var InformationByYear = this.$props.InformationByYear;
+      var len = InformationByYear.length;
+      for (let i = 0; i < len; i++) {
+        this.option.xAxis[0].data.push(InformationByYear[i].year.toString());
+        this.option.series[0].data.push(InformationByYear[i].cited_by_count.toString());
+        this.option.series[1].data.push(InformationByYear[i].works_count.toString());
       }
       this.option.yAxis[0].max =
         Math.ceil(Math.max(...this.option.series[0].data) / 10) * 10;

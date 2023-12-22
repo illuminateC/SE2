@@ -5,6 +5,40 @@
 </template>
 
 <script>
+
+// relationMapLinks: [{
+//   source: "1",
+//   sourceName: "Nishikigi Chisato",
+//   target: "6",
+//   targetName: "Dingzhen",
+//   cooperationNum: 3,
+//   value: 3
+// },{
+//   source: "1",
+//   sourceName: "Nishikigi Chisato",
+//   target: "4",
+//   targetName: "Mocha",
+//   cooperationNum: 1,
+//   value: 1
+// }],
+
+// relationMapNodes: [{
+//   name: "Nishikigi Chisato",
+//   id: 1,
+//   symbolSize: 30,
+//   value: 4,
+// },{
+//   name: "Dingzhen",
+//   id: 6,
+//   symbolSize: 10,
+//   value: 3,
+// },{
+//   name: "Mocha",
+//   id: 4,
+//   symbolSize: 5,
+//   value: 1,
+// }],
+
 import * as echarts from "echarts";
 export default {
   name: "AuthorRelationMap",
@@ -32,12 +66,12 @@ export default {
               );
             } else {
               return (
-                params.data.name + "</br>" + "h-index: " + params.data.value
+                params.data.name
               );
             }
           },
         },
-        animationDuration: 1500,
+        animationDuration: 100,
         animationEasingUpdate: "quinticInOut",
         series: [
           {
@@ -48,9 +82,11 @@ export default {
             links: [],
             roam: true,
             focusNodeAdjacency: true,
-            // symbolSize: (value, params) => {
-            //   return value * 3 + 1;
-            // },
+            // center: [300, 300],
+            // edgeLength: [1, 5],
+            symbolSize: (value, params) => {
+              return value * 3 + 1;
+            },
             itemStyle: {
               borderColor: "#fff",
               borderWidth: 1,
@@ -90,16 +126,13 @@ export default {
   },
   methods: {
     loadoption() {
-      var len = this.$props.nodes.length;
-      for (let i = 0 ; i < len ; i++){
-        this.$props.nodes[i].id = this.$props.nodes[i].id.toString();
-      }
       this.option.series[0].data = this.$props.nodes;
       this.option.series[0].links = this.$props.links;
 
-      for (let i = 0 ; i < len ; i++){ console.log("relation map's nodes:" + this.option.series[0].data[i].name + ", " + this.option.series[0].data[i].id); }
-      len = this.option.series[0].links.length;
-      for (let i = 0 ; i < len ; i++){ console.log("relation map's links:" + this.option.series[0].links[i].source + " to " + this.option.series[0].links[i].target); }
+      // Console.log
+      // for (let i = 0 ; i < len ; i++){ console.log("relation map's nodes:" + this.option.series[0].data[i].name + ", " + this.option.series[0].data[i].id); }
+      // len = this.option.series[0].links.length;
+      // for (let i = 0 ; i < len ; i++){ console.log("relation map's links:" + this.option.series[0].links[i].source + " to " + this.option.series[0].links[i].target); }
     },
   },
 };

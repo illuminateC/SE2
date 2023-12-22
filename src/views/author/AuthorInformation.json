@@ -1,0 +1,273 @@
+{
+  "id": "https://openalex.org/A5023888391",
+  "orcid": null,
+  "display_name": "Jason Priem",
+  "display_name_alternatives": ["Priem Jason", "Jason Priem"],
+  "works_count": 54,
+  "cited_by_count": 2209,
+  "summary_stats": {
+    "2yr_mean_citedness": 0.5,
+    "h_index": 16,
+    "i10_index": 17
+  },
+  "ids": { "openalex": "https://openalex.org/A5023888391" },
+  "affiliations": [
+    {
+      "institution": {
+        "id": "https://openalex.org/I4200000001",
+        "ror": "https://ror.org/02nr0ka47",
+        "display_name": "OurResearch",
+        "country_code": "CA",
+        "type": "nonprofit",
+        "lineage": ["https://openalex.org/I4200000001"]
+      },
+      "years": [2022, 2021, 2020, 2019]
+    },
+    {
+      "institution": {
+        "id": "https://openalex.org/I4210129766",
+        "ror": "https://ror.org/03np5z244",
+        "display_name": "DermResearch (United States)",
+        "country_code": "US",
+        "type": "company",
+        "lineage": ["https://openalex.org/I4210129766"]
+      },
+      "years": [2020]
+    },
+    {
+      "institution": {
+        "id": "https://openalex.org/I4210166736",
+        "ror": "https://ror.org/05ppvf150",
+        "display_name": "Impact Technology Development (United States)",
+        "country_code": "US",
+        "type": "company",
+        "lineage": ["https://openalex.org/I4210166736"]
+      },
+      "years": [2018, 2017, 2013]
+    },
+    {
+      "institution": {
+        "id": "https://openalex.org/I114027177",
+        "ror": "https://ror.org/0130frc33",
+        "display_name": "University of North Carolina at Chapel Hill",
+        "country_code": "US",
+        "type": "education",
+        "lineage": [
+          "https://openalex.org/I114027177",
+          "https://openalex.org/I4210158053"
+        ]
+      },
+      "years": [2014, 2013, 2012, 2011, 2010]
+    },
+    {
+      "institution": {
+        "id": "https://openalex.org/I4210161256",
+        "ror": "https://ror.org/05d9dsr70",
+        "display_name": "Impact",
+        "country_code": "CA",
+        "type": "nonprofit",
+        "lineage": ["https://openalex.org/I4210161256"]
+      },
+      "years": [2013]
+    },
+    {
+      "institution": {
+        "id": "https://openalex.org/I94062374",
+        "ror": "https://ror.org/010bgev76",
+        "display_name": "Florida College",
+        "country_code": "US",
+        "type": "education",
+        "lineage": ["https://openalex.org/I94062374"]
+      },
+      "years": [2008]
+    },
+    {
+      "institution": {
+        "id": "https://openalex.org/I33213144",
+        "ror": "https://ror.org/02y3ad647",
+        "display_name": "University of Florida",
+        "country_code": "US",
+        "type": "education",
+        "lineage": [
+          "https://openalex.org/I2801649442",
+          "https://openalex.org/I33213144"
+        ]
+      },
+      "years": [2008]
+    }
+  ],
+  "last_known_institution": {
+    "id": "https://openalex.org/I4200000001",
+    "ror": "https://ror.org/02nr0ka47",
+    "display_name": "OurResearch",
+    "country_code": "CA",
+    "type": "nonprofit",
+    "lineage": ["https://openalex.org/I4200000001"]
+  },
+  "x_concepts": [
+    {
+      "id": "https://openalex.org/C41008148",
+      "wikidata": "https://www.wikidata.org/wiki/Q21198",
+      "display_name": "Computer science",
+      "level": 0,
+      "score": 98.1
+    },
+    {
+      "id": "https://openalex.org/C136764020",
+      "wikidata": "https://www.wikidata.org/wiki/Q466",
+      "display_name": "World Wide Web",
+      "level": 1,
+      "score": 74.1
+    },
+    {
+      "id": "https://openalex.org/C17744445",
+      "wikidata": "https://www.wikidata.org/wiki/Q36442",
+      "display_name": "Political science",
+      "level": 0,
+      "score": 70.4
+    },
+    {
+      "id": "https://openalex.org/C161191863",
+      "wikidata": "https://www.wikidata.org/wiki/Q199655",
+      "display_name": "Library science",
+      "level": 1,
+      "score": 66.7
+    },
+    {
+      "id": "https://openalex.org/C199539241",
+      "wikidata": "https://www.wikidata.org/wiki/Q7748",
+      "display_name": "Law",
+      "level": 1,
+      "score": 63.0
+    },
+    {
+      "id": "https://openalex.org/C2522767166",
+      "wikidata": "https://www.wikidata.org/wiki/Q2374463",
+      "display_name": "Data science",
+      "level": 1,
+      "score": 57.4
+    },
+    {
+      "id": "https://openalex.org/C2778407487",
+      "wikidata": "https://www.wikidata.org/wiki/Q14565201",
+      "display_name": "Altmetrics",
+      "level": 2,
+      "score": 40.7
+    },
+    {
+      "id": "https://openalex.org/C111919701",
+      "wikidata": "https://www.wikidata.org/wiki/Q9135",
+      "display_name": "Operating system",
+      "level": 1,
+      "score": 35.2
+    },
+    {
+      "id": "https://openalex.org/C121332964",
+      "wikidata": "https://www.wikidata.org/wiki/Q413",
+      "display_name": "Physics",
+      "level": 0,
+      "score": 33.3
+    },
+    {
+      "id": "https://openalex.org/C144024400",
+      "wikidata": "https://www.wikidata.org/wiki/Q21201",
+      "display_name": "Sociology",
+      "level": 0,
+      "score": 31.5
+    },
+    {
+      "id": "https://openalex.org/C33923547",
+      "wikidata": "https://www.wikidata.org/wiki/Q395",
+      "display_name": "Mathematics",
+      "level": 0,
+      "score": 27.8
+    },
+    {
+      "id": "https://openalex.org/C86803240",
+      "wikidata": "https://www.wikidata.org/wiki/Q420",
+      "display_name": "Biology",
+      "level": 0,
+      "score": 25.9
+    },
+    {
+      "id": "https://openalex.org/C142362112",
+      "wikidata": "https://www.wikidata.org/wiki/Q735",
+      "display_name": "Art",
+      "level": 0,
+      "score": 25.9
+    },
+    {
+      "id": "https://openalex.org/C2778805511",
+      "wikidata": "https://www.wikidata.org/wiki/Q1713",
+      "display_name": "Citation",
+      "level": 2,
+      "score": 25.9
+    },
+    {
+      "id": "https://openalex.org/C124952713",
+      "wikidata": "https://www.wikidata.org/wiki/Q8242",
+      "display_name": "Literature",
+      "level": 1,
+      "score": 22.2
+    },
+    {
+      "id": "https://openalex.org/C127413603",
+      "wikidata": "https://www.wikidata.org/wiki/Q11023",
+      "display_name": "Engineering",
+      "level": 0,
+      "score": 22.2
+    },
+    {
+      "id": "https://openalex.org/C144133560",
+      "wikidata": "https://www.wikidata.org/wiki/Q4830453",
+      "display_name": "Business",
+      "level": 0,
+      "score": 22.2
+    },
+    {
+      "id": "https://openalex.org/C151719136",
+      "wikidata": "https://www.wikidata.org/wiki/Q3972943",
+      "display_name": "Publishing",
+      "level": 2,
+      "score": 22.2
+    },
+    {
+      "id": "https://openalex.org/C199360897",
+      "wikidata": "https://www.wikidata.org/wiki/Q9143",
+      "display_name": "Programming language",
+      "level": 1,
+      "score": 22.2
+    },
+    {
+      "id": "https://openalex.org/C124101348",
+      "wikidata": "https://www.wikidata.org/wiki/Q172491",
+      "display_name": "Data mining",
+      "level": 1,
+      "score": 20.4
+    },
+    {
+      "id": "https://openalex.org/C162324750",
+      "wikidata": "https://www.wikidata.org/wiki/Q8134",
+      "display_name": "Economics",
+      "level": 0,
+      "score": 20.4
+    }
+  ],
+  "counts_by_year": [
+    { "year": 2023, "works_count": 0, "cited_by_count": 179 },
+    { "year": 2022, "works_count": 2, "cited_by_count": 217 },
+    { "year": 2021, "works_count": 1, "cited_by_count": 230 },
+    { "year": 2020, "works_count": 5, "cited_by_count": 283 },
+    { "year": 2019, "works_count": 2, "cited_by_count": 236 },
+    { "year": 2018, "works_count": 3, "cited_by_count": 193 },
+    { "year": 2017, "works_count": 3, "cited_by_count": 167 },
+    { "year": 2016, "works_count": 2, "cited_by_count": 181 },
+    { "year": 2015, "works_count": 3, "cited_by_count": 214 },
+    { "year": 2014, "works_count": 4, "cited_by_count": 202 },
+    { "year": 2013, "works_count": 11, "cited_by_count": 155 },
+    { "year": 2012, "works_count": 11, "cited_by_count": 68 }
+  ],
+  "works_api_url": "https://api.openalex.org/works?filter=author.id:A5023888391",
+  "updated_date": "2023-12-18T14:26:10.618239",
+  "created_date": "2023-07-21"
+}
