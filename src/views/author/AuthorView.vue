@@ -113,7 +113,7 @@
 
           <div class="affname" v-if="type == 2">
             <span v-for="(org, index) in this.author.organizations" :key="index">
-              {{ org.name }}<br>
+              {{ org.institution.display_name }}<br>
             </span>
           </div>
 
@@ -156,8 +156,7 @@
       ></author-compare-chart>
       <author-year-paper-chart
         class="chart"
-        :numOfYearCitation="this.author.numOfYearCitation"
-        :numOfYearPaper="this.author.numOfYearPaper"
+        :InformationByYear="this.author.InformationByYear"
       ></author-year-paper-chart>
       <author-relation-map
         class="chart"
@@ -166,8 +165,7 @@
       ></author-relation-map>
       <related-author-chart
         class="chart"
-        :data="this.relationChartData"
-        :authorId="this.author.id"
+        :list="this.cooperationAuthorList"
       ></related-author-chart>
     </div>
 
@@ -225,27 +223,10 @@
             <div class="paperindex">
               {{ index + 1 }}
             </div>
-            <div style="width: 700px">{{ paper.name }}</div>
-            <div class="citation2">第{{ numToChar(paper.authorIndex) }}作者</div>
-            <div class="citation">被引{{ paper.numOfCitation }}次</div>
+            <div style="width: 700px">{{ paper.title }}</div>
+            <div class="citation2">第{{ getAuthorPosition(paper.authorships) }}作者</div>
+            <div class="citation">被引{{ paper.cited_by_count }}次</div>
           </router-link>
-          <!-- <router-link
-            class="link"
-            v-for="(pub, index) in this.author.pubs.slice(
-              (this.currentPage - 1) * this.eachPage,
-              this.currentPage * this.eachPage
-            )"
-            :key="pub.i"
-            :to="'/detail/main/' + pub.i"
-            tag="a"
-            target="_blank"
-          >
-            <div class="paperindex">
-              {{ index + 1 + (currentPage - 1) * eachPage }}
-            </div>
-            <div style="width: 700px">{{ pub.i }}</div>
-            <div class="citation">被引{{ pub.r }}次</div>
-          </router-link> -->
         </div>
 
         <center style="margin-top: 30px; margin-bottom: 30px">
@@ -319,17 +300,17 @@
     </div>
 
     <div id="authorColumn" v-if="issettled">这里是专栏</div>
-
     <div id="authorRecommend" v-if="issettled">这里是推荐</div>
   </div>
 </template>
 
 <script>
-import AuthorCompareChart from "../components/Charts/AuthorCompareChart.vue";
-import AuthorYearPaperChart from "../components/Charts/AuthorYearPaperChart.vue";
-import AuthorRelationMap from "../components/Charts/AuthorRelationMap.vue";
-import RelatedAuthorChart from "../components/Charts/RelatedAuthorChart.vue";
+import AuthorCompareChart from "@/components/Charts/AuthorCompareChart.vue";
+import AuthorYearPaperChart from "@/components/Charts/AuthorYearPaperChart.vue";
+import AuthorRelationMap from "@/components/Charts/AuthorRelationMap.vue";
+import RelatedAuthorChart from "@/components/Charts/RelatedAuthorChart.vue";
 import gsap from "gsap";
+import { Author } from '@/api/author';
 export default {
   name: "Author",
   components: {
@@ -346,98 +327,107 @@ export default {
         name: "Nishikigi Chisato",
         numOfPaper: 5,
         numOfCitation: 10086,
-        numOfYearPaper: {
-          from: 2013,
-          to: 2016,
-          list: [5, 3, 8, 7]
-        },
-        numOfYearCitation: {
-          from: 2013,
-          to: 2016,
-          list: [60, 45, 38, 48]
-        },
         hIndex: 20,
+        InformationByYear: [
+          { "year": 2023, "works_count": 0, "cited_by_count": 179 },
+          { "year": 2022, "works_count": 2, "cited_by_count": 217 },
+          { "year": 2021, "works_count": 1, "cited_by_count": 230 },
+          { "year": 2020, "works_count": 5, "cited_by_count": 283 },
+          { "year": 2019, "works_count": 2, "cited_by_count": 236 },
+          { "year": 2018, "works_count": 3, "cited_by_count": 193 },
+          { "year": 2017, "works_count": 3, "cited_by_count": 167 },
+          { "year": 2016, "works_count": 2, "cited_by_count": 181 },
+          { "year": 2015, "works_count": 3, "cited_by_count": 214 },
+          { "year": 2014, "works_count": 4, "cited_by_count": 202 },
+          { "year": 2013, "works_count": 11, "cited_by_count": 155 },
+          { "year": 2012, "works_count": 11, "cited_by_count": 68 }
+        ],
         organizations: [{
-          name: "Tsinghua University"
+          "institution": {
+            "id": "https://openalex.org/I4200000001",
+            "ror": "https://ror.org/02nr0ka47",
+            "display_name": "Tsinghua University",
+            "country_code": "CA",
+            "type": "nonprofit",
+            "lineage": ["https://openalex.org/I4200000001"]
+          },
+          "years": [2022, 2021, 2020, 2019]
         }, {
-          name: "Beihang University"
+          "institution": {
+            "id": "https://openalex.org/I4200000001",
+            "ror": "https://ror.org/02nr0ka47",
+            "display_name": "Beihang University",
+            "country_code": "CA",
+            "type": "nonprofit",
+            "lineage": ["https://openalex.org/I4200000001"]
+          },
+          "years": [2022, 2021, 2020, 2019]
         }, {
-          name: "Massachusetts Institute of Technology"
+          "institution": {
+            "id": "https://openalex.org/I4200000001",
+            "ror": "https://ror.org/02nr0ka47",
+            "display_name": "Massachusetts Institute of Technology",
+            "country_code": "CA",
+            "type": "nonprofit",
+            "lineage": ["https://openalex.org/I4200000001"]
+          },
+          "years": [2022, 2021, 2020, 2019]
         }]
       },
       papers: [
         {
           id: 0,
-          name: "Make BUAA Great Again!",
-          numOfCitation: 102,
+          title: "Make BUAA Great Again!",
+          cited_by_count: 102,
           authorIndex: 1
         }, {
           id: 1,
-          name: "Great, needless to say",
-          numOfCitation: 369,
+          title: "Great, needless to say",
+          cited_by_count: 369,
           authorIndex: 3
         }, {
           id: 2,
-          name: "Uzi, The eternal god",
-          numOfCitation: 1020,
+          title: "Uzi, The eternal god",
+          cited_by_count: 1020,
           authorIndex: 2
-        }
+        }, 
       ],
-      relationChartData: [{
-        author1Name: "Nishikigi Chisato",
-        author1Id: 1,
-        author2Name: "Dingzhen",
-        author2Id: 6,
-        cooperationNum: 3
-      },{
-        author1Name: "Nishikigi Chisato",
-        author1Id: 1,
-        author2Name: "Mocha",
-        author2Id: 4,
-        cooperationNum: 1
-      }],
-      relationMapLinks: [{
-        source: "1",
-        sourceName: "Nishikigi Chisato",
-        target: "6",
-        targetName: "Dingzhen",
-        cooperationNum: 3,
-        value: 3
-      },{
-        source: "1",
-        sourceName: "Nishikigi Chisato",
-        target: "4",
-        targetName: "Mocha",
-        cooperationNum: 1,
-        value: 1
-      }],
-      relationMapNodes: [{
-        name: "Nishikigi Chisato",
-        id: 1,
-        symbolSize: 30,
-        value: 4,
-      },{
-        name: "Dingzhen",
-        id: 6,
-        symbolSize: 10,
-        value: 3,
-      },{
-        name: "Mocha",
-        id: 4,
-        symbolSize: 5,
-        value: 1,
-      }]
+      relationMapLinks: [],
+      relationMapNodes: [],
+      cooperationAuthorList: [{
+        author_name: "Shuntai Zhou",
+        author_id: "A5081889727",
+        cooperation_author_count: 33,
+        work_list: []
+      }, {
+        author_name: "Myron S. Cohen",
+        author_id: "A5024262342",
+        cooperation_author_count: 19,
+        work_list: []
+      }, {
+        author_name: "Sarah Joseph",
+        author_id: "A5056145693",
+        cooperation_author_count: 18,
+        work_list: []
+      },]
     }
   },
   mounted() {
+    this.author.id = this.$route.params.authorId;
     this.initAnimation();
+    this.initAuthorInformation();
   },
   methods: {
-    numToChar(n) {
-      if (n === 1) return "一"
-      if (n === 2) return "二"
-      if (n === 3) return "三"
-      return "其他"
+    getAuthorPosition(list) {
+      var len = list.length;
+      for (let i = 0; i < len; i++) {
+        if (list[i].author.id.split("org/")[1] === this.author.id) {
+          if (list[i].author_position === "first") return "一";
+          if (list[i].author_position === "middle") return "二";
+          if (list[i].author_position === "last") return "三";
+        }
+      }
+      console.log("作者等级获取错误");
     },
     initAnimation() {
       gsap.to("#authorHeader", {
@@ -493,6 +483,79 @@ export default {
           end: "+=200px",
           scrub: 0.7,
         },
+      });
+    },
+    initAuthorInformation() {
+      var data = {
+        "entity_type": "authors",
+        "params": {
+          "id": this.author.id
+        }
+      };
+      console.log("请求获取学者门户，openAlex的id为" + this.author.id);
+      Author.getAuthorInformation(data)
+      .then((res) => {
+        if (res.data.msgno === 1) { // TODO: msgno === 1
+          this.author.name = res.data.display_name;
+          this.author.numOfPaper = res.data.works_count;
+          this.author.numOfCitation = res.data.cited_by_count;
+          this.author.hIndex = res.data.summary_stats.h_index;s
+          this.author.organizations = res.data.affiliations;
+          this.author.InformationByYear = res.data.counts_by_year;
+          // 根据返回的URl获取作者的论文
+          getAuthorPapers(res.data.works_api_url);
+          getAuthorRelations();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    },
+    getAuthorPapers(url) {
+      Author.getAuthorPaper(url)
+      .then((res) => {
+        this.papers = res.data.results;
+      })
+      .catch((err) => {
+        console.log("Get paperList failed\n");
+      });
+    },
+    getAuthorRelations() {
+      var data = {
+        "author_id": this.author.id
+      };
+      console.log("请求获取学者关系");
+      Author.getAuthorRelation(data)
+      .then((res) => {
+        if (res.data.result === 1) {
+          this.cooperationAuthorList = res.data.cooperation_author_list;
+          var len = this.cooperationAuthorList.length;
+          this.relationMapNodes.push({
+            name: this.author.name,
+            id: this.author.id,
+            symbolSize: this.cooperationAuthorList[0].cooperation_author_count,
+            value: this.cooperationAuthorList[0].cooperation_author_count,
+          });
+          for (let i = 0; i < len; i++) {
+            this.relationMapNodes.push({
+              name: this.cooperationAuthorList[i].author_name,
+              id: this.cooperationAuthorList[i].author_id,
+              symbolSize: this.cooperationAuthorList[i].cooperation_author_count,
+              value: this.cooperationAuthorList[i].cooperation_author_count,
+            });
+            this.relationMapLinks.push({
+              source: this.author.id,
+              sourceName: this.author.name,
+              target: this.cooperationAuthorList[i].author_id,
+              targetName: this.cooperationAuthorList[i].author_name,
+              cooperationNum: this.cooperationAuthorList[i].cooperation_author_count,
+              value: this.cooperationAuthorList[i].cooperation_author_count,
+            });
+          }
+        }
+      })
+      .catch((err) => {
+        console.log(err);
       });
     }
   }

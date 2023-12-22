@@ -8,7 +8,7 @@
 import * as echarts from "echarts";
 export default {
   name: "RelatedPaperChart",
-  props: ["data", "authorId"],
+  props: ["list"],
   data() {
     return {
       option: {
@@ -72,26 +72,32 @@ export default {
   },
   methods: {
     loadoption() {
-      var data = this.$props.data;
-      var id = this.$props.authorId;
-      var len = data.length < 10 ? data.length : 10;
+      var list = this.$props.list;
+      var len = list.length < 10 ? list.length : 10;
       var i;
       for (i = 0; i < len; i++) {
-        if (id == data[i].author2Id) {
-          this.option.legend.data.push(data[i].author1Name);
-          this.option.series[0].data.push({
-            value: data[i].cooperationNum,
-            name: data[i].author1Name,
-            url: "/author/" + data[i].author1Id,
+        this.option.legend.data.push(list[i].author_name);
+        this.option.series[0].data.push({
+            value: list[i].cooperation_author_count,
+            name: list[i].author_name,
+            url: "/author/" + list[i].author_id,
           });
-        } else {
-          this.option.legend.data.push(data[i].author2Name);
-          this.option.series[0].data.push({
-            value: data[i].cooperationNum,
-            name: data[i].author2Name,
-            url: "/author/" + data[i].author2Id,
-          });
-        }
+
+        // if (id == data[i].author2Id) {
+        //   this.option.legend.data.push(data[i].author1Name);
+        //   this.option.series[0].data.push({
+        //     value: data[i].cooperationNum,
+        //     name: data[i].author1Name,
+        //     url: "/author/" + data[i].author1Id,
+        //   });
+        // } else {
+        //   this.option.legend.data.push(data[i].author2Name);
+        //   this.option.series[0].data.push({
+        //     value: data[i].cooperationNum,
+        //     name: data[i].author2Name,
+        //     url: "/author/" + data[i].author2Id,
+        //   });
+        // }
       }
     },
   },
