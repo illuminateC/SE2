@@ -35,7 +35,8 @@
                   @click="handleAllTypeGroupSearch(filterUnitDOM[index], index)"
                 >
                   <div class="colored-block-title-context">{{item.title}}</div>
-                  <i class="iconfont icon-arrowup colored-block-icon"></i>
+                  <el-icon class="iconfont icon-arrowup colored-block-icon"><ArrowUpBold /></el-icon>
+<!--                  <i class="iconfont icon-arrowup colored-block-icon"></i>-->
                 </div>
                 <!-- 折叠栏 -->
                 <div class="colored-block-content">
@@ -76,7 +77,7 @@
               <!-- 搜索结果顶部信息 -->
               <div class="search-result__info">
                 <div class="search-num-info">
-                  <span class="left-border-span"></span>
+<!--                  <span class="left-border-span"></span>-->
                   <div class="search-num-info-detail">
                     <span class="hitlength">{{toThousands(totalSearchResNum)}}</span>
                     <span> Results</span>
@@ -180,7 +181,7 @@ const allEntitySortType = {
   "institutions": ["Relevance", "More Works", "Less Works", "Cited"],
   "concepts": ["Relevance", "More Works", "Less Works", "Cited"],
 };
-const pageSizeArray = [5, 10, 20];
+const pageSizeArray = [5, 10, 15, 20];
 </script>
 
 <script setup>
@@ -196,6 +197,7 @@ import AuthorsResCard from './AuthorsResCard.vue';
 import VenuesResCard from './VenuesResCard.vue';
 import InstitutionsResCard from './InstitutionsResCard.vue';
 import ConceptsResCard from './ConceptsResCard.vue';
+import {ArrowDownBold, ArrowUpBold} from "@element-plus/icons-vue";
 
 
 onMounted(() => {
@@ -3153,104 +3155,104 @@ const getdatalistres= {
         }
     ]
 }
-const getGroupDataList = {
-    "msgno": 1,
-    "msg": "论文列表分组成功",
-    "group_of_entity_data": {
-        "meta": {
-            "count": 65721,
-            "db_response_time_ms": 97,
-            "page": 1,
-            "per_page": 200,
-            "groups_count": 11
-        },
-        "group_by": [
-            {
-                "key": "article",
-                "key_display_name": "article",
-                "count": 64303
-            },
-            {
-                "key": "book-chapter",
-                "key_display_name": "book-chapter",
-                "count": 797
-            },
-            {
-                "key": "book",
-                "key_display_name": "book",
-                "count": 448
-            },
-            {
-                "key": "report",
-                "key_display_name": "report",
-                "count": 107
-            },
-            {
-                "key": "other",
-                "key_display_name": "other",
-                "count": 44
-            },
-            {
-                "key": "dissertation",
-                "key_display_name": "dissertation",
-                "count": 8
-            },
-            {
-                "key": "paratext",
-                "key_display_name": "paratext",
-                "count": 6
-            },
-            {
-                "key": "letter",
-                "key_display_name": "letter",
-                "count": 4
-            },
-            {
-                "key": "erratum",
-                "key_display_name": "erratum",
-                "count": 2
-            },
-            {
-                "key": "editorial",
-                "key_display_name": "editorial",
-                "count": 1
-            },
-            {
-                "key": "reference-entry",
-                "key_display_name": "reference-entry",
-                "count": 1
-            },
-            {
-                "key": "dataset",
-                "key_display_name": "dataset",
-                "count": 0
-            },
-            {
-                "key": "peer-review",
-                "key_display_name": "peer-review",
-                "count": 0
-            },
-            {
-                "key": "standard",
-                "key_display_name": "standard",
-                "count": 0
-            },
-            {
-                "key": "grant",
-                "key_display_name": "grant",
-                "count": 0
-            }
-        ]
-    }
+const getGroupDataList ={
+  "msgno": 1,
+  "msg": "论文列表分组成功",
+  "group_of_entity_data": {
+    "meta": {
+      "count": 65721,
+      "db_response_time_ms": 97,
+      "page": 1,
+      "per_page": 200,
+      "groups_count": 11
+    },
+    "group_by": [
+      {
+        "key": "article",
+        "key_display_name": "article",
+        "count": 64303
+      },
+      {
+        "key": "book-chapter",
+        "key_display_name": "book-chapter",
+        "count": 797
+      },
+      {
+        "key": "book",
+        "key_display_name": "book",
+        "count": 448
+      },
+      {
+        "key": "report",
+        "key_display_name": "report",
+        "count": 107
+      },
+      {
+        "key": "other",
+        "key_display_name": "other",
+        "count": 44
+      },
+      {
+        "key": "dissertation",
+        "key_display_name": "dissertation",
+        "count": 8
+      },
+      {
+        "key": "paratext",
+        "key_display_name": "paratext",
+        "count": 6
+      },
+      {
+        "key": "letter",
+        "key_display_name": "letter",
+        "count": 4
+      },
+      {
+        "key": "erratum",
+        "key_display_name": "erratum",
+        "count": 2
+      },
+      {
+        "key": "editorial",
+        "key_display_name": "editorial",
+        "count": 1
+      },
+      {
+        "key": "reference-entry",
+        "key_display_name": "reference-entry",
+        "count": 1
+      },
+      {
+        "key": "dataset",
+        "key_display_name": "dataset",
+        "count": 0
+      },
+      {
+        "key": "peer-review",
+        "key_display_name": "peer-review",
+        "count": 0
+      },
+      {
+        "key": "standard",
+        "key_display_name": "standard",
+        "count": 0
+      },
+      {
+        "key": "grant",
+        "key_display_name": "grant",
+        "count": 0
+      }
+    ]
+  }
 }
-const searchDataList = ref([]);
-searchDataList.value = getdatalistres.list_of_entity_data[0].results;
-var totalSearchResNum = ref(0);
-totalSearchResNum = getdatalistres.list_of_entity_data[0].meta.count;
-// 搜索结果数据列表
 // const searchDataList = ref([]);
-// // 搜索结果总数
+// searchDataList.value = getdatalistres.list_of_entity_data[0].results;
 // var totalSearchResNum = ref(0);
+// totalSearchResNum = getdatalistres.list_of_entity_data[0].meta.count;
+//搜索结果数据列表
+const searchDataList = ref([]);
+// 搜索结果总数
+var totalSearchResNum = ref(0);
 /**
  * 当前需要的搜索结果是第几页。
  * 注意，除了“页数更改搜索”外，“过滤搜索”、“排序搜索”、“页尺寸更改搜索”都会重置当前页数为第1页。
@@ -3286,7 +3288,7 @@ const handlePageIndexChangeSearch = () => {
   console.log(data);
   Search.getSearchDataList(data)
   .then((res) => {
-    if (res.data.result === 1) {
+    if (res.data.msgno === 1) {
       searchDataList.value = res.data.list_of_entity_data[0].results;
       totalSearchResNum.value = res.data.list_of_entity_data[0].meta.count;
       console.log(searchDataList);
@@ -3358,7 +3360,7 @@ const handlePageSizeChangeSearch = (sizeIndex) => {
   console.log(data);
   Search.getSearchDataList(data)
   .then((res) => {
-    if (res.data.result === 1) {
+    if (res.data.msgno === 1) {
       searchDataList.value = res.data.list_of_entity_data[0].results;
       totalSearchResNum.value = res.data.list_of_entity_data[0].meta.count;
       console.log(searchDataList);
@@ -3403,13 +3405,13 @@ const AllTypeFilterList = reactive({
       stringArray: [],
       selectedArray: []
     },
-    {
-      group: "host_venue.id",
-      title: "文献来源 Host Venue",
-      objectArray: [],
-      stringArray: [],
-      selectedArray: []
-    },
+    // {
+    //   group: "host_venue.id",
+    //   title: "文献来源 Host Venue",
+    //   objectArray: [],
+    //   stringArray: [],
+    //   selectedArray: []
+    // },
     {
       // 可以不带有 authorships
       group: "authorships.author.id",
@@ -3552,8 +3554,8 @@ const handleAllTypeGroupSearch = (filterDOM, index) => {
         "filter": buildAllTypeFilterKey(),
         // 具体到当前搜索类型对应的筛选列表的某个筛选单元的标题
         "group_by": AllTypeFilterList[searchStore.searchType][index].group,
-        "page": 1,
-        "per_page": searchResPageSize.value,
+        // "page": 1,
+        // "per_page": searchResPageSize.value,
         "search" : searchStore.searchInputText,
         "sort": buildSortKey(),
       }
@@ -3562,8 +3564,9 @@ const handleAllTypeGroupSearch = (filterDOM, index) => {
     console.log(data);
     Search.getGroupDataList(data)
     .then((res) => {
-      if (res.data.result === 1) {
-        let groupArray = res.data.groups_of_entity_data.group_by;
+      if (res.data.msgno === 1) {
+        let groupArray = res.data.group_of_entity_data.group_by;
+        // groupArray = getGroupDataList.group_of_entity_data.group_by;
 
         AllTypeFilterList[searchStore.searchType][index].objectArray = groupArray;
         // 这是每个筛选单元要呈现在页面中的 选项文本
@@ -3640,7 +3643,7 @@ const handleAllTypeFilterSearch = () => {
   console.log(data);
   Search.getSearchDataList(data)
   .then((res) => {
-    if (res.data.result === 1) {
+    if (res.data.msgno === 1) {
       searchDataList.value = res.data.list_of_entity_data[0].results;
       totalSearchResNum.value = res.data.list_of_entity_data[0].meta.count;
       // console.log(searchDataList);
@@ -3812,7 +3815,7 @@ const handleAllTypeSortSearch = async (newSortType) => {
     console.log(data);
     Search.getSearchDataList(data)
     .then((res) => {
-      if (res.data.result === 1) {
+      if (res.data.msgno === 1) {
         searchDataList.value = res.data.list_of_entity_data[0].results;
         totalSearchResNum.value = res.data.list_of_entity_data[0].meta.count;
         // console.log(searchDataList);
@@ -3865,7 +3868,7 @@ const handleFinalSearch = (searchText, searchEntityType) => {
     }
     Search.getSearchDataList(data)
     .then((res) => {
-      if (res.data.result === 1) {
+      if (res.data.msgno === 1) {
         // console.log(res.data.list_of_data);
         searchDataList.value = res.data.list_of_entity_data[0].results;
         totalSearchResNum.value = res.data.list_of_entity_data[0].meta.count;

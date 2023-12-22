@@ -1,6 +1,6 @@
 <template>
     <div class="profile-box">
-        <div class="avatar-box">
+        <div class="avatar-box" ref="avatar" @mouseover="changeStyle($refs.avatar, 'pointer')">
             <img class="avatar" :src="user.avatarUrl" @click="uploadAvatar">
             <input type="file" accept="image/*" ref="fileInput" @change="changeUpload">
             <div v-if="this.$props.isVisitor" class="follow-box">
@@ -10,7 +10,8 @@
 
         <div class="personal-info">
             <p>个人简介</p>
-            <span>{{ user.personalInfo }}</span>
+            <span ref="info" @mouseover="changeStyle($refs.info, 'pointer')" @click="changeInfo">{{ user.personalInfo
+            }}</span>
         </div>
         <div class="instruction">
             <el-icon size="large" style="top: 3px;color:#b0b0b0">
@@ -29,7 +30,7 @@
     </div>
     <div class="head-box">
         <div class="headbottom-container">
-            <div class="name-box">
+            <div class="name-box" ref="name" @mouseover="changeStyle($refs.name, 'pointer')" @click="changeName">
                 <p>{{ user.nickName }}</p>
 
             </div>
@@ -54,6 +55,8 @@
 import MessageBox from './MessageBox.vue'
 import 'cropperjs/dist/cropper.css';
 import Cropper from 'cropperjs';
+import Swal from 'sweetalert2';
+import userAPI from '@/api/user';
 export default {
     props: {
         isVisitor: {
@@ -76,13 +79,22 @@ export default {
                 starNum: "123",
                 nickName: "nick name",
                 instruction: "BUAA",
+                id: "",
             },
             hasIdParam: false
         }
     },
     mounted() {
-        this.$data.user.avatarUrl = require('@/assets/avatar.jpg');
+        // this.$data.user.avatarUrl = require('@/assets/avatar.jpg');
         this.$data.hasIdParam = this.$route.params.hasOwnProperty('id');
+        if (this.$store.getters.getAvatar != null) {
+            this.user.avatarUrl = this.$store.getters.getAvatar
+        }
+        else {
+            this.getAvatar()
+        }
+
+
     },
     created() {
 
@@ -145,8 +157,103 @@ export default {
             }
             else
                 this.$router.push({ name: 'star' })
+        },
+        changeStyle(element, cursorType) {
+
+            if (!this.isVisitor) {
+                // 直接操作DOM来修改样式
+                element.style.cursor = cursorType;
+            }
+        },
+        changeName() {
+            if (this.isVisitor) return;
+            Swal.fire({
+                title: "请输入一个新昵称",
+                input: "text",
+                inputAttributes: {
+                    maxlength: "15",
+                    autocapitalize: "off",
+                },
+                showCancelButton: true,
+                confirmButtonText: "确认",
+                preConfirm: async (nickName) => {
+                    try {
+                        const data = new FormData()
+                        data.append("id", this.$data.user.id)
+                        data.append("nickName", nickName)
+                        const response = await this.axios.post('', data)
+                        if (!response.data.success) {
+                            return Swal.showValidationMessage(response.data.message)
+                        }
+                        this.$data.user.nickName = nickName
+                        return response.data.nickName;
+                    } catch (error) {
+                        Swal.showValidationMessage(`Request failed: ${error}`);
+                    }
+
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "昵称修改成功",
+                        icon: 'success'
+                    })
+                }
+            })
+        },
+        changeInfo() {
+            if (this.isVisitor) return;
+            Swal.fire({
+                inputPlaceholder: "Type your message here...",
+                input: "textarea",
+                inputLabel: "简介",
+                inputAttributes: {
+                    maxlength: "100",
+                    autocapitalize: "off",
+                    "aria-label": "Type your message here"
+                },
+                showCancelButton: true,
+                confirmButtonText: "确认",
+                preConfirm: async (info) => {
+                    try {
+                        const data = new FormData()
+                        data.append("id", this.$data.user.id)
+                        data.append("introduction", info)
+                        const response = await this.axios.post('', data)
+                        if (!response.data.success) {
+                            return Swal.showValidationMessage(response.data.message)
+                        }
+                        this.$data.user.personalInfo = info
+                        return response.data.info;
+                    } catch (error) {
+                        Swal.showValidationMessage(`Request failed: ${error}`);
+                    }
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "简介修改成功",
+                        icon: 'success'
+                    })
+                }
+            })
+        },
+        async getAvatar() {
+            try {
+                const data = { "user_id": 1 }
+                const response = await userAPI.getAvatar(data)
+                this.$data.user.avatarUrl = response.data.avatar_url;
+                // console.log(response.data.msgno)
+                this.$store.dispatch('updateAvatar', this.$data.user.avatarUrl);
+            } catch (error) {
+                console.error(response.data.msg)
+            }
         }
+
     },
+
 }
 </script>
 
@@ -165,6 +272,7 @@ export default {
 
     .personal-info {
         margin: 15% 10% 15% 10%;
+        height: 20vh;
     }
 
     .personal-info p {
@@ -235,11 +343,11 @@ export default {
 
 .avatar-box img {
     height: 100%;
+    width: 100%;
+    contain: none;
 }
 
-.avatar-box img:hover {
-    cursor: pointer;
-}
+
 
 .avatar-box input {
     opacity: 0;
@@ -300,13 +408,16 @@ export default {
     transition: left 0.5s;
 
     .name-box {
-        flex: 0 0 80%
+        margin-right: 40%;
+
+
     }
 
     .name-box p {
-        font-size: 40px;
+        font-size: 50px;
         font-family: sans-serif;
         font-style: italic;
+        color: white;
     }
 
     .message-box {}

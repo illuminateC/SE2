@@ -1,8 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
 import Aboutview from '../views/AboutView.vue'
+
 import Cookies from 'js-cookie';
 import AuthorView from '../views/author/AuthorView.vue'
+
+
 
 const routes = [
   {
@@ -56,7 +59,9 @@ const routes = [
     beforeEnter: (to, from, next) => {
       const userId = to.params.id;
       if (getCookie()) {
-        if (getCookie() === userId) {
+        console.log(userId)
+        console.log(getCookie())
+        if (getCookie() == userId) {
           next({ path: '/user' })
         } else
           next()
@@ -106,20 +111,26 @@ const routes = [
     path: '/author/:authorId',
     name: 'Author',
     component: AuthorView,
-    meta: {title: "XpertiseScholar 作者主页"}
+    meta: { title: "XpertiseScholar 作者主页" }
   },
   // 搜索详情页面，后续可能会调整其位置
   {
     path: '/search-detail',
     name: 'SearchDetail',
-    component: ()=>import('../views/search/SearchDetail.vue'),
+    component: () => import('../views/search/SearchDetail.vue'),
   },
   // 高级搜索详情页面，后续可能会调整其位置
   {
     path: '/advance-search-detail',
     name: 'AdvanceSearchDetail',
-    component: ()=>import('../views/search/AdvSearchDetail.vue'),
+    component: () => import('../views/search/AdvSearchDetail.vue'),
   },
+  {
+    path: '/starlist/:starId',
+    name: 'starList',
+    component: () => import('../views/user/UserStarDetail.vue'),
+    props: true
+  }
 ]
 
 const router = createRouter({
@@ -130,7 +141,7 @@ function getCookie() {
   const user_info = Cookies.get('user_info');
   if (user_info) {
     const user = JSON.parse(user_info)
-    return user.username
+    return user.id
   } else return false
 }
 export default router;

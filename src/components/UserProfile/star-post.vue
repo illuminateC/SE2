@@ -9,12 +9,11 @@
             <div>
                 <div class="grid">
                     <div v-for="item in  currentPageData" :key="item.id">
-                        <div class="each" @mouseover="setHoveredId(item.id)" @mouseleave="resetHoverId()">
-                            <collectionicon></collectionicon>
+                        <div class="each" @mouseover="setHoverId(item.id)" @mouseleave="resetHoverId()">
+                            <work></work>
                             <li @click="jump(item.id)">{{ item.name }}</li>
-                            <div class="changeicon" v-show="hoveredId === item.id && !isVisitor">
-                                <changeicon @click="changename(item.id)"></changeicon>
-                                <deleteicon @click="deletecollect(item.id)"></deleteicon>
+                            <div class="cancelicon" v-show="hoveredId === item.id && !isVisitor">
+                                <cancelicon @click="cancel(item.id)"></cancelicon>
                             </div>
 
                         </div>
@@ -32,14 +31,23 @@
 
 <script>
 import { ref } from "vue";
+import Swal from "sweetalert2";
 import back from '../back.vue'
 import anime from 'animejs';
-import collectionicon from "./collection.vue";
+import cancelicon from "./cancel.vue"
 import collectionAPI from "@/api/collection";
-import changeicon from "./change.vue";
-import Swal from "sweetalert2";
-import deleteicon from "./deleteicon.vue";
+import work from "./work.vue";
 export default {
+    mounted() {
+        const isVisitor = this.$route.params.isVisitor;
+        if (isVisitor !== undefined) {
+            this.$data.isVisitor = isVisitor;
+            this.$data.collection_id = this.$route.params.starId
+        } else {
+            this.$data.isPost = true
+        }
+        this.getList(this.$data.isPost, this.$data.collection_id)
+    },
     setup() {
         return {
             page: ref(1),
@@ -47,19 +55,39 @@ export default {
     },
     components: {
         back,
-        collectionicon,
-        changeicon,
-        deleteicon
+        cancelicon,
+        work,
     },
     data() {
         return {
+            collection_id: null,
+            hoveredId: null,
             isVisitor: false,
+            isPost: false,
             currentPage: 1,
             itemsPerPage: 10,
             height: 30,
             width: 30,
-            starList: [],
-            hoveredId: null
+            starList: [
+                { "id": "1", "name": "123", },
+                { "id": "2", "name": "333", },
+                { "id": "3", "name": "123", },
+                { "id": "5", "name": "123", },
+                { "id": "6", "name": "333", },
+                { "id": "7", "name": "123", },
+                { "id": "8", "name": "123", },
+                { "id": "9", "name": "333", },
+                { "id": "10", "name": "123", },
+                { "id": "11", "name": "123", },
+                { "id": "12", "name": "333" },
+                { "id": "13", "name": "123", },
+                { "id": "14", "name": "123", },
+                { "id": "15", "name": "333", },
+                { "id": "16", "name": "123", },
+                { "id": "17", "name": "123", },
+                { "id": "18", "name": "333", },
+                { "id": "4", "name": "123", },
+            ]
 
         }
     },
@@ -84,22 +112,9 @@ export default {
         }
 
     },
-    mounted() {
-        const hasIdParam = this.$route.params.hasOwnProperty('id');
-        this.$data.isVisitor = hasIdParam;
-        this.getList()
-    },
-    created() {
-        this.getList()
-    },
     methods: {
         back() {
-            const hasIdParam = this.$route.params.hasOwnProperty('id');
-            if (hasIdParam) {
-                const id = this.$route.params.id;
-                this.$router.push({ name: "otherUser", params: id })
-            }
-            else this.$router.push({ name: "currentUser" })
+            this.$router.go(-1)
         },
         handleOver() {
             anime({
@@ -121,79 +136,43 @@ export default {
         },
         jump(id) {
             const hasIdParam = this.$route.params.hasOwnProperty('id');
-            this.$router.push({ name: "starList", params: { starId: id }, query: { isVisitor: hasIdParam } })
+            console.log(hasIdParam)
+            //this.$router.push({ name: "starList", params: { starId: id, isVisitor: hasIdParam } })
         },
-        async getList() {
-            const response = await collectionAPI.collectionGetAll()
-            // console.log(response.data)
-            this.$data.starList = response.data.package_list
-            console.log(response.data)
-        },
-        setHoveredId(id) {
+        setHoverId(id) {
             this.$data.hoveredId = id
         },
         resetHoverId() {
             this.$data.hoveredId = null
         },
-        async changename(id) {
-            Swal.fire({
-                title: "请输入一个新名称",
-                input: "text",
-                inputAttributes: {
-                    maxlength: "15",
-                    autocapitalize: "off",
-                },
-                showCancelButton: true,
-                confirmButtonText: "确认",
-                preConfirm: async (name) => {
-                    try {
-                        const data = {
-                            "package_name": name,
-                            "package_id": id
-                        }
-                        // const data = new FormData()
-                        const response = await collectionAPI.changePackageName(data)
-
-                        if (response.data.result == -1) {
-                            throw new Error("名称不能为空")
-                        }
-                        const starToUpdate = this.$data.starList.find(star => star.id === id)
-                        if (starToUpdate) {
-                            starToUpdate.name = name
-                        }
-                        return name;
-                    } catch (error) {
-                        Swal.showValidationMessage(error);
-                    }
-
-                },
-                allowOutsideClick: () => !Swal.isLoading()
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        title: "名称修改成功",
-                        icon: 'success'
-                    })
-                }
-            })
+        async getList(flag, id) {
+            if (!flag) {
+                const data = { "id": id }
+                const response = await collectionAPI.collectionGetEach(data)
+                this.$data.starList = response.data
+            }
         },
-        async deletecollect(id) {
+        async cancel(work_id) {
             Swal.fire({
-                title: "确定删除该收藏夹?",
+                title: "确定取消该收藏?",
                 text: "注意：该操作不可逆!",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-                confirmButtonText: "确认删除!",
-                cancelButtonText: "取消"
+                confirmButtonText: "确认！",
+                cancelButtonText: "否"
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    const data = { "package_id_list": [id] }
-                    const response = await collectionAPI.deleteCollectionPackage(data)
-                    this.$data.starList = this.$data.starList.filter(star => star.id !== id);
+                    const data = {
+                        "work_id_list": [work_id],
+                        "package_id": this.$data.collection_id
+                    }
+                    const response = await collectionAPI.cancelWork(data)
+                    this.$data.starList = this.$data.starList.filter(star => star.id !== work_id);
                     Swal.fire({
-                        title: "收藏夹已删除！",
+                        title: "您已取消收藏",
+                        text: "",
                         icon: "success"
                     });
                 }
@@ -251,27 +230,28 @@ export default {
 
     .each {
         display: flex;
-        cursor: pointer;
-        width: 27vw;
+        width: 25vw;
     }
 
     .each:hover {
         color: rgba(41, 146, 252, 0.9);
+
     }
 
     .each li {
         display: flex;
-        font-size: 20px;
+        font-size: 22px;
         cursor: pointer;
-        margin-left: 25px;
         justify-content: center;
         align-items: center;
-
     }
 
-    .changeicon {
-        margin-left: auto
-    }
+}
 
+.cancelicon {
+    display: flex;
+    margin-left: auto;
+    justify-content: center;
+    align-items: center;
 }
 </style>
