@@ -9,8 +9,13 @@
             <div>
                 <div class="grid">
                     <div v-for="item in  currentPageData" :key="item.id">
-                        <div class="each">
+                        <div class="each" @mouseover="setHoverId(item.id)" @mouseleave="resetHoverId()">
+                            <work></work>
                             <li @click="jump(item.id)">{{ item.name }}</li>
+                            <div class="cancelicon" v-show="hoveredId === item.id && !isVisitor">
+                                <cancelicon @click="cancel(item.id)"></cancelicon>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -25,10 +30,24 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { ref } from "vue";
+import Swal from "sweetalert2";
 import back from '../back.vue'
 import anime from 'animejs';
+import cancelicon from "./cancel.vue"
+import collectionAPI from "@/api/collection";
+import work from "./work.vue";
 export default {
+    mounted() {
+        const isVisitor = this.$route.params.isVisitor;
+        if (isVisitor !== undefined) {
+            this.$data.isVisitor = isVisitor;
+            this.$data.collection_id = this.$route.params.starId
+        } else {
+            this.$data.isPost = true
+        }
+        this.getList(this.$data.isPost, this.$data.collection_id)
+    },
     setup() {
         return {
             page: ref(1),
@@ -36,9 +55,15 @@ export default {
     },
     components: {
         back,
+        cancelicon,
+        work,
     },
     data() {
         return {
+            collection_id: null,
+            hoveredId: null,
+            isVisitor: false,
+            isPost: false,
             currentPage: 1,
             itemsPerPage: 10,
             height: 30,
@@ -87,9 +112,6 @@ export default {
         }
 
     },
-    mounted() {
-
-    },
     methods: {
         back() {
             this.$router.go(-1)
@@ -116,6 +138,45 @@ export default {
             const hasIdParam = this.$route.params.hasOwnProperty('id');
             console.log(hasIdParam)
             //this.$router.push({ name: "starList", params: { starId: id, isVisitor: hasIdParam } })
+        },
+        setHoverId(id) {
+            this.$data.hoveredId = id
+        },
+        resetHoverId() {
+            this.$data.hoveredId = null
+        },
+        async getList(flag, id) {
+            if (!flag) {
+                const data = { "id": id }
+                const response = await collectionAPI.collectionGetEach(data)
+                this.$data.starList = response.data
+            }
+        },
+        async cancel(work_id) {
+            Swal.fire({
+                title: "确定取消该收藏?",
+                text: "注意：该操作不可逆!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "确认！",
+                cancelButtonText: "否"
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const data = {
+                        "work_id_list": [work_id],
+                        "package_id": this.$data.collection_id
+                    }
+                    const response = await collectionAPI.cancelWork(data)
+                    this.$data.starList = this.$data.starList.filter(star => star.id !== work_id);
+                    Swal.fire({
+                        title: "您已取消收藏",
+                        text: "",
+                        icon: "success"
+                    });
+                }
+            });
         }
     },
 }
@@ -169,6 +230,7 @@ export default {
 
     .each {
         display: flex;
+        width: 25vw;
     }
 
     .each:hover {
@@ -177,10 +239,19 @@ export default {
     }
 
     .each li {
-
-        font-size: 20px;
+        display: flex;
+        font-size: 22px;
         cursor: pointer;
+        justify-content: center;
+        align-items: center;
     }
 
+}
+
+.cancelicon {
+    display: flex;
+    margin-left: auto;
+    justify-content: center;
+    align-items: center;
 }
 </style>

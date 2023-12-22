@@ -59,7 +59,9 @@ const routes = [
     beforeEnter: (to, from, next) => {
       const userId = to.params.id;
       if (getCookie()) {
-        if (getCookie() === userId) {
+        console.log(userId)
+        console.log(getCookie())
+        if (getCookie() == userId) {
           next({ path: '/user' })
         } else
           next()
@@ -139,7 +141,7 @@ function getCookie() {
   const user_info = Cookies.get('user_info');
   if (user_info) {
     const user = JSON.parse(user_info)
-    return user.username
+    return user.id
   } else return false
 }
 export default router;

@@ -9,8 +9,8 @@
         <swiper-slide>Slide 8</swiper-slide><swiper-slide>Slide 9</swiper-slide>
     </swiper>
 
-<button @click="login">login</button>
-<button @click="logout">logout</button>
+    <button @click="login">login</button>
+    <button @click="logout">logout</button>
 </template>
 <script>
 // Import Swiper Vue.js components
@@ -39,13 +39,17 @@ export default {
     },
     methods: {
         login() {
-            this.$Cookies.set('token',"s@7pgk)vt7nc_j+dpeb4(hl3(48rgmp6#!(4566piv8ggwdp53")
+            let valueData = JSON.stringify({
+                id: 2,
+            });
+            this.$Cookies.set('user_info', valueData, { expires: 30 });
+            // this.$Cookies.set('token', "4!p7t7)mo5sg=m45+dc)epwre$45ltko_x*m1=g#sv*2f4$+!b")
         },
-        async logout(){
+        async logout() {
 
-const response=await userAPI.logout()
-this.$Cookies.remove('token')
-alert(response.data.msg)
+            const response = await userAPI.logout()
+            this.$Cookies.remove('token')
+            alert(response.data.msg)
 
         }
     },

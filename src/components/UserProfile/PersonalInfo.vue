@@ -87,10 +87,17 @@ export default {
     mounted() {
         // this.$data.user.avatarUrl = require('@/assets/avatar.jpg');
         this.$data.hasIdParam = this.$route.params.hasOwnProperty('id');
-   
+        if (this.$store.getters.getAvatar != null) {
+            this.user.avatarUrl = this.$store.getters.getAvatar
+        }
+        else {
+            this.getAvatar()
+        }
+
+
     },
     created() {
-        this.getAvatar()
+
     },
     components: {
         MessageBox,
@@ -233,19 +240,20 @@ export default {
                 }
             })
         },
-        async getAvatar(){
-        try{
-            const data={"user_id":1}
-            const response=await userAPI.getAvatar(data)
-            this.$data.user.avatarUrl="http://123.249.124.181"+response.data.avatar_url;
-            console.log(response.data.msgno)
-        }catch(error){
-            console.error(response.data.msg)
+        async getAvatar() {
+            try {
+                const data = { "user_id": 1 }
+                const response = await userAPI.getAvatar(data)
+                this.$data.user.avatarUrl = response.data.avatar_url;
+                // console.log(response.data.msgno)
+                this.$store.dispatch('updateAvatar', this.$data.user.avatarUrl);
+            } catch (error) {
+                console.error(response.data.msg)
+            }
         }
-    }
 
     },
-    
+
 }
 </script>
 
@@ -406,7 +414,7 @@ export default {
     }
 
     .name-box p {
-        font-size: 40px;
+        font-size: 50px;
         font-family: sans-serif;
         font-style: italic;
         color: white;

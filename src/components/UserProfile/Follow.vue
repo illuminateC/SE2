@@ -10,10 +10,11 @@
                 <div class="grid">
                     <div v-for="item in  currentPageData " :key="item.id">
                         <div class="avatar">
-                            <div class="avatar-box"><img :src="item.src" alt="" @click="jump(item.id)"> </div>
+                            <div class="avatar-box"><img :src="item.avatar" alt="" @click="jump(item.id)"> </div>
                         </div>
                         <div class=" name">
-                            <p @click="jump(item.id)">{{ item.name }}</p>
+                            <p @click="jump(item.id)">{{ item.username }}</p>
+                            <p>{{ item.works }}</p>
                         </div>
                     </div>
                 </div>
@@ -29,6 +30,8 @@
 
 <script>
 import { defineComponent, ref } from "vue";
+import followAPI from "@/api/follow";
+import Swal from "sweetalert2";
 import back from '../back.vue'
 import anime from 'animejs';
 export default {
@@ -42,30 +45,12 @@ export default {
     },
     data() {
         return {
+            user_id: null,
             currentPage: 1,
             itemsPerPage: 15,
             height: 30,
             width: 30,
-            followList: [
-                { "id": "1", "name": "123", src: "../../assets/logo.png" },
-                { "id": "2", "name": "333", src: "" },
-                { "id": "3", "name": "123", src: "../../assets/logo.png" },
-                { "id": "5", "name": "123", src: "../../assets/logo.png" },
-                { "id": "6", "name": "333", src: "" },
-                { "id": "7", "name": "123", src: "../../assets/logo.png" },
-                { "id": "8", "name": "123", src: "../../assets/logo.png" },
-                { "id": "9", "name": "333", src: "" },
-                { "id": "10", "name": "123", src: "../../assets/logo.png" },
-                { "id": "11", "name": "123", src: "../../assets/logo.png" },
-                { "id": "12", "name": "333", src: "" },
-                { "id": "13", "name": "123", src: "../../assets/logo.png" },
-                { "id": "14", "name": "123", src: "../../assets/logo.png" },
-                { "id": "15", "name": "333", src: "" },
-                { "id": "16", "name": "123", src: "../../assets/logo.png" },
-                { "id": "17", "name": "123", src: "../../assets/logo.png" },
-                { "id": "18", "name": "333", src: "" },
-                { "id": "4", "name": "123", src: "../../assets/logo.png" },
-            ]
+            followList: []
 
         }
     },
@@ -91,7 +76,21 @@ export default {
 
     },
     mounted() {
-        this.$data.followList[0].src = require("../../assets/logo.png")
+        const hasIdParam = this.$route.params.hasOwnProperty('id');
+        if (hasIdParam) {
+            this.$data.user_id = this.$route.params.id
+        } else {
+            const userInfoString = this.$Cookies.get('user_info');
+            if (userInfoString) {
+                // 如果获取到了cookie字符串，解析为对象
+                const userInfo = JSON.parse(userInfoString);
+                this.$data.user_id = userInfo.id
+            } else {
+                alert("请先登录")
+            }
+        }
+        this.getList();
+        // this.$data.followList[0].src = require("../../assets/logo.png")
     },
     methods: {
         back() {
@@ -122,6 +121,12 @@ export default {
         },
         jump(id) {
 
+        },
+        async getList() {
+            const data = { "user_id": this.$data.user_id }
+            const response = await followAPI.followList(data)
+            this.$data.followList = response.data.following_list
+            console.log(this.$data.followList)
         }
     },
 }
