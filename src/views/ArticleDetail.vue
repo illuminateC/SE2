@@ -33,8 +33,8 @@
             <p>{{ this.article.abstract }}</p> <br/>
           </div>
           <div >
-            <h3 class="detail_abstract">年份</h3>
-            <p>{{ this.article.year }}</p><br/>
+            <h3 class="detail_abstract">发表时间</h3>
+            <p>{{ this.article.date }}</p><br/>
           </div>
           <div>
             <h3 class="detail_abstract">引用次数</h3>
@@ -44,9 +44,10 @@
             class="detail_keywords"
           >
             <h3 class="detail_abstract">关键字</h3>
-            <span >
-             {{this.article.keywords}}
-            </span><br/><br/>
+            <span v-for="(keyword, index) in this.article.keywords" :key="index">
+             {{ keyword.keyword}}&nbsp;&nbsp;
+            </span>
+            <br/><br/>
           </div>
           <div
             
@@ -63,12 +64,14 @@
           </div>
           <div>
             <h3 class="detail_abstract">期刊/会议</h3>
-            <p>{{this.article.venue}}</p><br/>
+            <span v-for="(keyword, index) in this.article.venue" :key="index">
+             [{{ index+1 }}]{{ keyword}}<br/>
+            </span><br/>
           </div>
-          <div>
+          <!-- <div>
             <h3 class="detail_abstract">刊号</h3>
             <p>{{this.article.issn}}</p><br/>
-          </div>
+          </div> -->
           
           <!-- <div>
             <h3 class="detail_abstract">ISSN</h3>
@@ -81,13 +84,15 @@
         </div>
         <div class="result_detail_statistics_area" >
           <div class="citation_stat" >
-            <h3>Year Citation</h3>
+            <!-- <h3>Year Citation</h3> -->
+            <h3>年引用量</h3>
             <paper-citation>
               <div id="yearCitation" style="width: 600px;height:300px;"></div>
             </paper-citation>
           </div>
           <div>
-            <h3>Reference Graph</h3>
+            <!-- <h3>Reference Graph</h3> -->
+            <h3>关系图</h3>
             <reference-chart >
               <div id="reference" style="width: 600px;height:300px;"></div>
             </reference-chart>
@@ -116,6 +121,7 @@
             <el-button
               type="primary"
               plain
+              @click="seeArticle()"
             ><el-icon style="margin-right: 10%;"><View /></el-icon>查看原文
             </el-button
             >
@@ -164,7 +170,7 @@
             <h3>相关文章</h3>
             <br/>
             <related-paper-chart>
-              <div id="relatedArticle" style="width: 400px;height:300px;"></div>
+              <div id="relatedArticle" style="width: 400px;height:400px;"></div>
             </related-paper-chart>
           </div>
         </div>
@@ -274,7 +280,7 @@
 
 <script>
 import CommentSection from "../components/comment/CommentSection";
-
+import { Article } from '@/api/article';
 import clipboard from 'clipboard';
 import * as echarts from 'echarts';
 import { ElMessage } from 'element-plus'
@@ -287,21 +293,26 @@ export default {
     return {
       article: {
         paper_id: "",
-        title: "114",
+        title: "",
         authors: [],
-        abstract: "在大规模数据中心中，硬盘使用规模已经达到百万级别。盘类故障问题频发，会导致服务器甚至整个IT基础设施稳定性、可靠性的下降，最终对业务SLA带来负面影响。能否提前准确预测硬盘故障已经成为大规模数据中心和云计算时代工业界需要研究和解决的重要问题之一。本课题聚焦解决大规模生产系统中的硬盘故障预测问题，解决数据噪声、正负样本不均衡等技术问题，并通过构建机器学习模型，在一定时间范围内（30天）对将要故障的磁盘作出预警；对于已发生故障的磁盘，也应将其检测出来",
-        year: "2023",
-        keywords: "这是关键字",
-        citationNum: 0,
-        pageNum: 0,
-        language:"中文",
-        venue: "无",
-        issn: "0",
+        abstract: "",
+        date:"",
+        keywords: [],
+        citationNum: "",
+        pageNum: "",
+        language:"",
+        venue: [],
+        issn: [],
         doi: "",
         citationMessage:"test",
         starred:false,
         listed:false,
+        link:"",
       },
+      citationGraph:{},
+      searchState: {},
+      years: [],
+      citedByCounts: [],
       recommendForm: {
         username: "",
         name: "",
@@ -311,35 +322,35 @@ export default {
       columnForm: {
         name: "",
       },
-      data1:[
-              {
-                value: 335,
-                name: 'A'
-              },
-              {
-                value: 234,
-                name: 'B'
-              },
-              {
-                value: 1548,
-                name: 'C'
-              },
-              {
-                value: 514,
-                name: 'D'
-              },
-              {
-                value: 114,
-                name: 'E'
-              }
-            ],
+      // data1:[
+      //         {
+      //           value: 335,
+      //           name: 'A'
+      //         },
+      //         {
+      //           value: 234,
+      //           name: 'B'
+      //         },
+      //         {
+      //           value: 1548,
+      //           name: 'C'
+      //         },
+      //         {
+      //           value: 514,
+      //           name: 'D'
+      //         },
+      //         {
+      //           value: 114,
+      //           name: 'E'
+      //         }
+      //       ],
+      data1:[],
       docid: "",
       type: "",
       option: "",
       related_papers: [],
       referencedata: [],
       columnList: [],
-      searchState: {},
       driverlink: "", // 控制es结果赋值
       referenceloaded: false, // 控制引用图谱显示
       articleloaded: false, // 控制整个页面显示
@@ -353,20 +364,86 @@ export default {
     };
   },
   mounted() {
+    
     this.getData();
-    this.drawRelatedArticleChart();
-    this.drawYearCitationChart();
-    this.drawReferenceChart();
+    
     
   },
   methods: {
+    getData(){
+      var data = {
+        "entity_type": "works",
+        "params": {
+          "id":"W2741809807",
+        }
+      };
+      Article.articleMess(data)
+      .then((res) => {
+        if (res.data.msgno === 1) {
+          console.log(res.data);
+          this.article.keywords=res.data.specific_entity_data.keywords;
+          this.article.date=res.data.specific_entity_data.publication_date;
+          this.article.citationNum=res.data.specific_entity_data.cited_by_count;
+          this.article.abstract=res.data.specific_entity_data.abstract;
+          this.article.title=res.data.specific_entity_data.title;
+          this.article.pageNum=res.data.specific_entity_data.biblio.volume;
+          this.citationGraph=res.data.specific_entity_data.counts_by_year;
+          this.citationGraph.sort((a, b) => a.year - b.year);
+          this.years = this.citationGraph.map(item => item.year);
+          this.citedByCounts = this.citationGraph.map(item => item.cited_by_count);
+          this.data1=res.data.specific_entity_data.sustainable_development_goals.map((goal) => {
+            return {
+              value: goal.score,
+              name: goal.display_name,
+            };
+          });
+          this.article.venue=res.data.specific_entity_data.locations.map(location => location.source.display_name);
+          this.article.issn=res.data.specific_entity_data.locations.map(location => location.source.id);
+          this.article.link=res.data.specific_entity_data.locations[0].pdf_url;
+          if(res.data.specific_entity_data.language=="en"){
+            this.article.language="English";
+          }else if(res.data.specific_entity_data.language=="zh"){
+            this.article.language="中文";
+          }else{
+            this.article.language="其它";
+          }
+          // searchDataList.value = res.data.list_of_entity_data[0].results;
+          // totalSearchResNum.value = res.data.list_of_entity_data[0].meta.count;
+          // console.log(searchDataList);
+          // ElNotification({
+          //   title: "恭喜您",
+          //   message: `搜索成功，用时 ${res.data.list_of_entity_data[0].meta.db_response_time_ms / 1000} s`,
+          //   type: "success",
+          //   duration: 3000
+          // });
+          this.drawRelatedArticleChart();
+          this.drawYearCitationChart();
+          this.drawReferenceChart();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    },
     copyCitationToClipboard() {
       // clipboard.writeText(this.article.citationMessage);
-      const citation = this.article.citationMessage;
-  
+      var info = "";
+      for (let i = 0; i < this.article.authors.length; i++) {
+        info += this.article.authors[i].name + ",";
+      }
+      info  +=
+        "(" +
+        this.article.date.slice(0, 4) +
+        ")." +
+        this.article.title +
+        "." +
+        this.article.venue[0] +
+        "," +
+        this.article.pageNum +
+        ".";
       // 创建一个临时的 textarea 元素
       const textarea = document.createElement('textarea');
-      textarea.value = citation;
+      textarea.value = info;
       
       // 将 textarea 添加到 DOM 中
       document.body.appendChild(textarea);
@@ -386,25 +463,6 @@ export default {
     },
     removeFromFav(){
       this.article.starred=false;
-    },
-    getData(){
-      var art={
-        "entity_type": "works",
-        "params": {
-          "id": "W2741809807"
-        }
-      }
-      axios({
-        url:'http://123.249.124.181/api/search/entity/search/specific',
-        method:'post',
-        data: art,  //这里json对象会转换成json格式字符串发送
-        header:{
-        'Content-Type':'application/json'  //如果写成contentType会报错,如果不写这条也报错
-        //Content type 'application/x-www-form-urlencoded;charset=UTF-8'...
-        }
-                
-      })
-
     },
     drawReferenceChart(){
       var myChart = echarts.init(document.getElementById('reference'));
@@ -492,18 +550,47 @@ export default {
         ]
       });
     },
+    seeArticle(){
+      window.location.href = this.article.link;
+    },
     drawRelatedArticleChart() {
       var myChart = echarts.init(document.getElementById('relatedArticle'));
       myChart.setOption({
+        // title: {
+        //   left: 'center',
+        //   top: 'center'
+        // },
+        // series:[
+        //   {
+        //     type: 'pie',
+        //     data: this.data1,
+        //     radius: ['40%', '70%']
+        //   }
+        // ]
         title: {
+          top: 'center',
           left: 'center',
-          top: 'center'
         },
-        series:[
+        tooltip: {
+          trigger: 'item'
+        },
+        legend: {
+          orient: 'vertical',
+          left: 'left'
+        },
+        series: [
           {
+            name: 'Access From',
             type: 'pie',
+            radius: '50%',
             data: this.data1,
-            radius: ['40%', '70%']
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+              }
+            }
           }
         ]
       });
@@ -526,7 +613,8 @@ export default {
         xAxis: [
           {
             type: 'category',
-            data: [2016, 2017, 2018, 2019, 2020, 2021,2022],
+            // data: [2016, 2017, 2018, 2019, 2020, 2021,2022],
+            data:this.years,
             axisTick: {
               alignWithLabel: true
             }
@@ -542,7 +630,8 @@ export default {
             name: 'Direct',
             type: 'bar',
             barWidth: '60%',
-            data: [10, 52, 200, 334, 390, 330, 220]
+            // data: [10, 52, 200, 334, 390, 330, 220],
+            data: this.citedByCounts,
           }
         ]
       });
@@ -575,7 +664,7 @@ export default {
 
 .result_detail_title_area {
   width: 85vw;
-  padding: 0px 20px 20px;
+  padding: 0px 0px 0px;
 }
 
 .result_detail_main_area {
