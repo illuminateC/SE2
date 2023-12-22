@@ -14,10 +14,10 @@
       </el-icon>
     </div>
     <div id='rankinglist'> 
-      <RankingList class='list' title="Recommend" type="main"/>
-      <RankingList class='list' title='Top Paper' type='main'/>
-      <RankingList class='list' title='Top Author' type='main'/>
-      <RankingList class='list' title='Top Affiliation' type='main'/>
+      <RankingList class='list' title="Recommend" type="citations" rout="1"/>
+      <RankingList class='list' title='Top Paper' type='citations' rout="2"/>
+      <RankingList class='list' title='Top Author' type='citations' rout="3"/>
+      <RankingList class='list' title='Top Affiliation' type='citations' rout="4"/>
     </div>
     <div>
       <TotalPaperChart id = 'paper-chart'></TotalPaperChart>

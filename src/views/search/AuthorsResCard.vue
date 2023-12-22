@@ -179,8 +179,8 @@ const props = defineProps({
   console.log(openAlexAuthorId);
   if (openAlexAuthorId) {
     const newPage = router.resolve({
-      name: 'OpenAlexAuthorDetail',
-      params: {tokenid: openAlexAuthorId},
+      name: 'Author',
+      params: {authorId: openAlexAuthorId},
     });
     window.open(newPage.href, '_blank');
   }
