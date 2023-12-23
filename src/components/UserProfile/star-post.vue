@@ -1,27 +1,41 @@
 <template>
     <div class="right-box">
         <div class="right">
-            <div class="head">
-                <div class="backButton" @click="back">
-                    <back :height="height" :width="width" @mouseover="handleOver" @mouseout="handleOut"></back>
+            <div v-if="isLoading" class="svg">
+                <div class="svgcontain">
+                    <loading></loading>
+                    <p>加载中，请稍候。</p>
                 </div>
             </div>
-            <div>
-                <div class="grid">
-                    <div v-for="item in  currentPageData" :key="item.id">
-                        <div class="each" @mouseover="setHoverId(item.id)" @mouseleave="resetHoverId()">
-                            <work></work>
-                            <li @click="jump(item.id)">{{ item.name }}</li>
-                            <div class="cancelicon" v-show="hoveredId === item.id && !isVisitor">
-                                <cancelicon @click="cancel(item.id)"></cancelicon>
-                            </div>
+            <div v-else>
+                <div class="head">
+                    <div class="backButton" @click="back">
+                        <back :height="height" :width="width" @mouseover="handleOver" @mouseout="handleOut"></back>
+                    </div>
+                </div>
+                <div v-if="starList && starList.length">
+                    <div class="grid">
+                        <div v-for="item in  currentPageData" :key="item.id">
+                            <div class="each" @mouseover="setHoverId(item.id)" @mouseleave="resetHoverId()">
+                                <work></work>
+                                <li @click="jump(item.id)">{{ item.name }}</li>
+                                <div class="cancelicon" v-show="hoveredId === item.id && !isVisitor">
+                                    <cancelicon @click="cancel(item.id)"></cancelicon>
+                                </div>
 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom">
+                        <div class="changePage">
+                            <n-pagination v-model:page="currentPage" :page-count="totalPages" :page-slot="7" />
                         </div>
                     </div>
                 </div>
-                <div class="bottom">
-                    <div class="changePage">
-                        <n-pagination v-model:page="currentPage" :page-count="totalPages" :page-slot="7" />
+                <div v-else class="svg">
+                    <div class="svgcontain">
+                        <none></none>
+                        <p>请先收藏论文再来吧！</p>
                     </div>
                 </div>
             </div>
@@ -37,14 +51,21 @@ import anime from 'animejs';
 import cancelicon from "./cancel.vue"
 import collectionAPI from "@/api/collection";
 import work from "./work.vue";
+import loading from "./loading.vue";
+import "./svg.css"
+import none from "./None.vue";
 export default {
     mounted() {
-        const isVisitor = this.$route.params.isVisitor;
-        if (isVisitor !== undefined) {
-            this.$data.isVisitor = isVisitor;
-            this.$data.collection_id = this.$route.params.starId
-        } else {
-            this.$data.isPost = true
+        const hasIdParam = this.$route.params.hasOwnProperty('id');
+        if (hasIdParam) {
+            this.$data.user_id = this.$route.params.id
+            const userInfoString = this.$Cookies.get('user_info');
+            if (userInfoString) {
+                const userInfo = JSON.parse(userInfoString);
+                if (this.$data.user_id != userInfo.id) this.$data.isVisitor = true;
+            } else {
+                this.$data.isVisitor = true;
+            }
         }
         this.getList(this.$data.isPost, this.$data.collection_id)
     },
@@ -57,38 +78,22 @@ export default {
         back,
         cancelicon,
         work,
+        loading,
+        none,
     },
     data() {
         return {
+            isLoading: false,
             collection_id: null,
             hoveredId: null,
             isVisitor: false,
             isPost: false,
             currentPage: 1,
-            itemsPerPage: 10,
+            itemsPerPage: 5,
             height: 30,
             width: 30,
-            starList: [
-                { "id": "1", "name": "123", },
-                { "id": "2", "name": "333", },
-                { "id": "3", "name": "123", },
-                { "id": "5", "name": "123", },
-                { "id": "6", "name": "333", },
-                { "id": "7", "name": "123", },
-                { "id": "8", "name": "123", },
-                { "id": "9", "name": "333", },
-                { "id": "10", "name": "123", },
-                { "id": "11", "name": "123", },
-                { "id": "12", "name": "333" },
-                { "id": "13", "name": "123", },
-                { "id": "14", "name": "123", },
-                { "id": "15", "name": "333", },
-                { "id": "16", "name": "123", },
-                { "id": "17", "name": "123", },
-                { "id": "18", "name": "333", },
-                { "id": "4", "name": "123", },
-            ]
-
+            starList: [],
+            user_id: ""
         }
     },
     computed: {
@@ -114,7 +119,7 @@ export default {
     },
     methods: {
         back() {
-            this.$router.go(-1)
+            this.$router.push({ name: 'star', params: { id: this.$data.user_id } });
         },
         handleOver() {
             anime({
@@ -141,15 +146,28 @@ export default {
         },
         setHoverId(id) {
             this.$data.hoveredId = id
+            const value = this.$data.isVisitor
         },
         resetHoverId() {
             this.$data.hoveredId = null
         },
         async getList(flag, id) {
             if (!flag) {
-                const data = { "id": id }
-                const response = await collectionAPI.collectionGetEach(data)
-                this.$data.starList = response.data
+                try {
+                    this.$data.isLoading = true
+                    const data = { "collection_package_id": id }
+                    const response = await collectionAPI.collectionGetEach(data)
+                    this.$data.starList = response.data.work_list.flatMap((item) => {
+                        return {
+                            id: item.specific_entity_data.id,
+                            name: item.specific_entity_data.title
+                        }
+                    })
+                } catch (error) {
+                    console.error("Error fetching data:", error);
+                } finally {
+                    this.$data.isLoading = false
+                }
             }
         },
         async cancel(work_id) {
@@ -225,12 +243,12 @@ export default {
     height: 45vh;
     display: grid;
     grid-template-rows: repeat(5, 1fr);
-    /* 三行，每行等高 */
-    grid-template-columns: repeat(2, 1fr);
+
+
 
     .each {
         display: flex;
-        width: 25vw;
+
     }
 
     .each:hover {

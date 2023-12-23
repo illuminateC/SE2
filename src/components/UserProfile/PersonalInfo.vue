@@ -1,40 +1,39 @@
 <template>
     <div class="profile-box">
         <div class="avatar-box" ref="avatar" @mouseover="changeStyle($refs.avatar, 'pointer')">
-            <img class="avatar" :src="user.avatarUrl" @click="uploadAvatar">
+            <img class="avatar" :src="user.avatar" @click="uploadAvatar">
             <input type="file" accept="image/*" ref="fileInput" @change="changeUpload">
-            <div v-if="this.$props.isVisitor" class="follow-box">
+            <div v-if="this.$data.isVisitor" class="follow-box">
                 <button class="follow-button" @click="follow">FOLLOW</button>
             </div>
         </div>
-
         <div class="personal-info">
             <p>个人简介</p>
-            <span ref="info" @mouseover="changeStyle($refs.info, 'pointer')" @click="changeInfo">{{ user.personalInfo
+            <span ref="info" @mouseover="changeStyle($refs.info, 'pointer')" @click="changeInfo">{{ user.introduction
             }}</span>
         </div>
         <div class="instruction">
             <el-icon size="large" style="top: 3px;color:#b0b0b0">
                 <OfficeBuilding />
             </el-icon>
-            <span>{{ user.instruction }}</span>
+            <span>{{ user.institution }}</span>
         </div>
         <div class="moveDiv" @click="jumpFollow">
             <p>关注</p>
-            <span> {{ user.followNum }}</span>
+            <span> {{ user.follows }}</span>
         </div>
         <div class="moveDiv" @click="jumpStar">
             <p>收藏</p>
-            <span> {{ user.starNum }}</span>
+            <span> {{ user.collections }}</span>
         </div>
     </div>
     <div class="head-box">
         <div class="headbottom-container">
             <div class="name-box" ref="name" @mouseover="changeStyle($refs.name, 'pointer')" @click="changeName">
-                <p>{{ user.nickName }}</p>
+                <p>{{ user.nickname }}</p>
 
             </div>
-            <div v-if="!this.$props.isVisitor" class="message-box" @click="jumpMessage">
+            <div v-if="!this.$data.isVisitor" class="message-box" @click="jumpMessage">
                 <MessageBox :isIn="this.$props.isIn"></MessageBox>
             </div>
         </div>
@@ -49,6 +48,7 @@
             <div class="upload"><button class="upload-button" @click="upload">上传</button></div>
         </div>
     </el-dialog>
+    <router-view></router-view>
 </template>
 
 <script>
@@ -59,10 +59,10 @@ import Swal from 'sweetalert2';
 import userAPI from '@/api/user';
 export default {
     props: {
-        isVisitor: {
-            type: Boolean,
-            default: false
-        },
+        // isVisitor: {
+        //     type: Boolean,
+        //     default: false
+        // },
         isIn: {
             type: Boolean,
             default: false
@@ -73,28 +73,61 @@ export default {
             isVisible: false,
             cropperInstance: null,
             user: {
-                avatarUrl: "",
-                personalInfo: "个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介个人简介",
-                followNum: "123",
-                starNum: "123",
-                nickName: "nick name",
-                instruction: "BUAA",
-                id: "",
+                user_id: "",
+                username: "",
+                nickname: "",
+                email: "",
+                introduction: "",
+                follows: "",
+                collections: "",
+                name: "",
+                gateway_id: "",
+                institution: "",
+                avatar: ""
             },
-            hasIdParam: false
+            loginId: "",
+            currentId: "",
+            hasIdParam: false,
+            isVisitor: false,
         }
     },
     mounted() {
-        // this.$data.user.avatarUrl = require('@/assets/avatar.jpg');
+        const hasIdParam = this.$route.params.hasOwnProperty('id');
+        if (hasIdParam) {
+            this.$data.currentId = this.$route.params.id;
+            const userInfoString = this.$Cookies.get('user_info');
+            this.getInfo(this.$data.currentId)
+            if (userInfoString) {
+                const userInfo = JSON.parse(userInfoString);
+                this.$data.currentId = userInfo.id
+                this.$data.loginId = userInfo.id
+                if (this.$data.loginId != this.$data.currentId) this.$data.isVisitor = true;
+            } else {
+                this.$data.isVisitor = true;
+            }
+        }
         this.$data.hasIdParam = this.$route.params.hasOwnProperty('id');
-        if (this.$store.getters.getAvatar != null) {
-            this.user.avatarUrl = this.$store.getters.getAvatar
+        if (this.$data.hasIdParam) {
+            this.$data.currentId = this.$route.params.id
+            this.getInfo(this.$data.currentId)
+        } else {
+            const userInfoString = this.$Cookies.get('user_info');
+            if (userInfoString) {
+                // 如果获取到了cookie字符串，解析为对象
+                const userInfo = JSON.parse(userInfoString);
+                this.$data.currentId = userInfo.id
+                this.$data.loginId = userInfo.id
+                this.getInfo(this.$data.currentId)
+            } else {
+                alert("请先登录")
+            }
         }
-        else {
-            this.getAvatar()
-        }
-
-
+        // if (this.$store.getters.getAvatar != null) {
+        //     this.user.avatar = this.$store.getters.getAvatar
+        // }
+        // else {
+        //     this.getAvatar()
+        // }
     },
     created() {
 
@@ -123,7 +156,6 @@ export default {
                     minContainerHeight: 20,
                     dragMode: 'move',
                     preview: [document.querySelector('.previewBox')]
-
                 })
             }
         },
@@ -242,15 +274,21 @@ export default {
         },
         async getAvatar() {
             try {
-                const data = { "user_id": 1 }
+                const data = { "user_id": this.$data.currentId }
                 const response = await userAPI.getAvatar(data)
-                this.$data.user.avatarUrl = response.data.avatar_url;
+                this.$data.user.avatar = response.data.avatar_url;
                 // console.log(response.data.msgno)
-                this.$store.dispatch('updateAvatar', this.$data.user.avatarUrl);
+                this.$store.dispatch('updateAvatar', this.$data.user.avatar);
             } catch (error) {
                 console.error(response.data.msg)
             }
-        }
+        },
+        async getInfo(id) {
+            const data = { "user_id": id }
+            const response = await userAPI.getInfo(data)
+            this.$data.user = response.data.result
+        },
+
 
     },
 
@@ -363,17 +401,20 @@ export default {
     bottom: 0;
     height: 20%;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     .follow-button {
-        padding: 0.5vh 10%;
+        display: flex;
         font-size: 16px;
         font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         background-color: aliceblue;
         opacity: 70%;
         color: black;
         cursor: pointer;
-        margin-left: 3vw;
-        border-radius: 8px;
+
+        border-radius: 12px;
 
         transition: opacity 1.0s ease, box-shadow 0.5s ease, transform 0.7s ease,
             padding 0.5s ease, font-size 0.5s ease;

@@ -28,13 +28,96 @@ const routes = [
       return import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
     }
   },
+  // {
+  //   path: '/user/:id',
+  //   name: 'otherUser',
+  //   component: function () {
+  //     return import('../views/user/User.vue')
+  //   },
+  //   beforeEnter: (to, from, next) => {
+  //     const userId = to.params.id;
+  //     if (getCookie()) {
+  //       console.log(userId)
+  //       console.log(getCookie())
+  //       if (getCookie() == userId) {
+  //         next({ path: '/user' })
+  //       } else {
+  //         next()
+  //       }
+  //     }
+  //     else next()
+  //   },
+  //   children: [
+  //     {
+  //       path: '', component: function () {
+  //         return import('../components/UserProfile/MapProfile.vue')
+  //       }
+  //     },
+  //     {
+  //       path: '/user/:id/follow',
+  //       name: 'otherFollow',
+  //       component: function () {
+  //         return import('../components/UserProfile/Follow.vue')
+  //       }
+  //     },
+  //     {
+  //       path: '/user/:id/star',
+  //       name: 'otherStar',
+  //       component: function () {
+  //         return import('../components/UserProfile/Star.vue')
+  //       }
+  //     },
+  //   ]
+  // },
   {
-    path: '/user',
-    name: 'currentUser',
+    path: '/user/:id',
+    name: 'user',
+    key: route => route.params.id,
     component: function () {
-      return import('../views/user/UserProfile.vue')
+      return import('../views/user/User.vue')
     },
     props: route => ({ isVisitor: false }),
+    children: [
+      {
+        name: 'map',
+        path: '',
+        component: function () {
+          return import('../components/UserProfile/MapProfile.vue')
+        },
+        key: route => route.params.id,
+      },
+      {
+        name: 'follow',
+        path: 'follow',
+        component: function () {
+          return import('../components/UserProfile/Follow.vue')
+        },
+        key: route => route.params.id,
+      },
+      {
+        path: 'star',
+        name: 'star',
+        component: function () {
+          return import('../components/UserProfile/Star.vue')
+        },
+        props: route => ({ isVisitor: false }),
+        key: route => route.params.id,
+      },
+      {
+        path: 'message',
+        name: 'message',
+        component: function () {
+          return import('../components/UserProfile/Message.vue')
+        },
+        key: route => route.params.id,
+      },
+      {
+        path: 'starlist/:starId',
+        name: 'starList',
+        component: () => import('../components/UserProfile/star-post.vue'),
+        props: true
+      }
+    ]
   },
   {
     path: '/test',
@@ -50,63 +133,32 @@ const routes = [
       return import('../views/ArticleDetail.vue')
     }
   },
-  {
-    path: '/user/:id',
-    name: 'otherUser',
-    component: function () {
-      return import('../views/user/UserProfile.vue')
-    },
-    beforeEnter: (to, from, next) => {
-      const userId = to.params.id;
-      if (getCookie()) {
-        console.log(userId)
-        console.log(getCookie())
-        if (getCookie() == userId) {
-          next({ path: '/user' })
-        } else
-          next()
-      }
-      else next()
-    }
-  },
-  {
-    path: '/user/message',
-    name: 'message',
-    component: function () {
-      return import('../views/user/UserMessage.vue')
-    },
 
-  },
-  {
-    path: '/user/follow',
-    name: 'follow',
-    component: function () {
-      return import('../views/user/UserFollow.vue')
-    },
-    props: route => ({ isVisitor: false })
-  },
-  {
-    path: '/user/:id/follow',
-    name: 'otherFollow',
-    component: function () {
-      return import('../views/user/UserFollow.vue')
-    }
-  },
-  {
-    path: '/user/star',
-    name: 'star',
-    component: function () {
-      return import('../views/user/UserStar.vue')
-    },
-    props: route => ({ isVisitor: false })
-  },
-  {
-    path: '/user/:id/star',
-    name: 'otherStar',
-    component: function () {
-      return import('../views/user/UserStar.vue')
-    }
-  },
+
+  // {
+  //   path: '/user/follow',
+  //   name: 'follow',
+  //   component: function () {
+  //     return import('../views/user/UserFollow.vue')
+  //   },
+  //   props: route => ({ isVisitor: false })
+  // },
+
+  // {
+  //   path: '/user/star',
+  //   name: 'star',
+  //   component: function () {
+  //     return import('../views/user/UserStar.vue')
+  //   },
+  //   props: route => ({ isVisitor: false })
+  // },
+  // {
+  //   path: '/user/:id/star',
+  //   name: 'otherStar',
+  //   component: function () {
+  //     return import('../views/user/UserStar.vue')
+  //   }
+  // },
   {
     path: '/author/:authorId',
     name: 'Author',
@@ -125,12 +177,12 @@ const routes = [
     name: 'AdvanceSearchDetail',
     component: () => import('../views/search/AdvSearchDetail.vue'),
   },
-  {
-    path: '/starlist/:starId',
-    name: 'starList',
-    component: () => import('../views/user/UserStarDetail.vue'),
-    props: true
-  }
+  // {
+  //   path: '/starlist/:starId',
+  //   name: 'starList',
+  //   component: () => import('../views/user/UserStarDetail.vue'),
+  //   props: true
+  // }
 ]
 
 const router = createRouter({

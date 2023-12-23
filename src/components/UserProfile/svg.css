@@ -1,0 +1,18 @@
+.svg {
+    display: flex;
+    justify-content: center;
+
+    .svgcontain {
+        display: flex;
+        flex-direction: column;
+        /* 设置主轴方向为竖直方向 */
+        align-items: center;
+        /* 居中对齐项目，可以根据需要调整 */
+        justify-content: center;
+
+    }
+
+    .svgcontain p {
+        font-size: larger;
+    }
+}
