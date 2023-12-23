@@ -326,7 +326,7 @@ body {
 
     .personal-info {
         margin: 15% 10% 15% 10%;
-        height: 15vh;
+        height: auto;
     }
 
     .personal-info p {
@@ -339,8 +339,8 @@ body {
         margin-top: 10%;
         font-size: 13px;
         color: #9b9b9b;
-        height: 15vh;
-        white-space: normal;
+        height: auto;
+        word-wrap: break-word;
     }
 
     .mailbox {
