@@ -21,7 +21,6 @@
     </div>
     <div>
       <TotalPaperChart id = 'paper-chart'></TotalPaperChart>
-      <StaticRelationMap id = 'paper-chart'></StaticRelationMap>
     </div>
   </div>
 </template>
@@ -30,7 +29,6 @@
 import StartPageInfo from "../components/HomePage/StartPageInfo.vue";
 import RankingList from "../components/HomePage/RankingList.vue";
 import TotalPaperChart from "../components/HomePage/TotalPaperChart";
-import StaticRelationMap from "../components/HomePage/StaticRelationMap";
 import gsap from "gsap";
 export default {
   name: 'HomePage',
@@ -38,8 +36,7 @@ export default {
   components: {
     StartPageInfo,
     RankingList,
-    TotalPaperChart,
-    StaticRelationMap
+    TotalPaperChart
   },
   data() {
     return {

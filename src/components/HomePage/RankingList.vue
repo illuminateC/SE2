@@ -66,7 +66,6 @@ export default {
                     else if (that.title == 'Top Author') {
                         that.result = res.data.most_cited_authors[0].results
                         that.itemList = that.result.slice(0, 4);
-                        console.log(that.itemList);
                         for (let i = 0; i < that.itemList.length; i++) {
                             that.itemList[i].rank = i + 1;
                             that.itemList[i].title = that.itemList[i].display_name;
@@ -79,7 +78,6 @@ export default {
                     else if (that.title == 'Top Affiliation') {
                         that.result = res.data.most_cited_institutions[0].results
                         that.itemList = that.result.slice(0, 4);
-                        console.log(that.itemList);
                         for (let i = 0; i < that.itemList.length; i++) {
                             that.itemList[i].rank = i + 1;
                             that.itemList[i].title = that.itemList[i].display_name;
