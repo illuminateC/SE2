@@ -100,9 +100,9 @@
         </div>
         <div class="result_detail_statistics_area" >
             <h3 class="detail_abstract">评论</h3>
-            <CommentSection :id="this.$route.params.docid" :paper="this.article" ref="comment_child"/>  
+            <CommentSection :id="this.work_id" :paper="this.article" ref="comment_child"/>  
         </div>
-        
+    
       </div>
       <div class="result_detail_side_area">
         <div class="result_detail_side_container">
@@ -309,6 +309,7 @@ export default {
         listed:false,
         link:"",
       },
+      work_id:"",
       citationGraph:{},
       searchState: {},
       years: [],
@@ -364,12 +365,27 @@ export default {
     };
   },
   mounted() {
-    
     this.getData();
-    
+    // this.getComments();
     
   },
   methods: {
+    getComments(){
+      this.work_id="8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v";
+      this.$Cookies.set('token', "8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v");
+      var data = {
+        "work_id": "https://openalex.org/W2741809807",
+      }
+      Article.articleComment(data)
+      .then((res) => {
+        if (res.data) {
+          
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    },
     getData(){
       var data = {
         "entity_type": "works",
@@ -409,7 +425,7 @@ export default {
           }
           // searchDataList.value = res.data.list_of_entity_data[0].results;
           // totalSearchResNum.value = res.data.list_of_entity_data[0].meta.count;
-          // console.log(searchDataList);
+          
           // ElNotification({
           //   title: "恭喜您",
           //   message: `搜索成功，用时 ${res.data.list_of_entity_data[0].meta.db_response_time_ms / 1000} s`,

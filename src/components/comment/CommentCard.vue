@@ -1,45 +1,44 @@
 <template>
-    <div class = "comment_card">
-      <el-card shadow="hover">
-        <template v-slot:header>
-            <div  class="comment_header_area">
-                <div class="comment_head">
-                <div class="comment_avatar"><i class="el-icon-success" v-if=this.comment.on_top>置顶 </i>
-                    <i class="el-icon-user"/></div>
-                    <div class="comment_username" v-if="judgeSettle">  {{ this.comment.author_name }} </div>
-                    <div class="comment_username" v-else>  {{ this.comment.username }}</div>
-                    <br/>
-                <div class="comment_create_time">{{ this.comment.create_time }}</div></div>
-                <div class="comment_actions">
-                <el-button-group>
-                    <el-button  :type="getLikeType()" @click="dislikeOrLikeComment(1)"><el-icon style="margin-right: 10px;" ><Top /></el-icon>顶 {{this.getLikeCount()}}</el-button>
-                    <el-button  :type="getDislikeType()" @click="dislikeOrLikeComment(2)"><el-icon style="margin-right: 10px;"><Bottom /></el-icon>踩 {{this.getDislikeCount()}}</el-button>
-                    <el-button  @click="operateComment(1)" v-if="this.commentOperate">置顶</el-button>
-                    <el-button  @click="operateComment(3)" v-if=this.commentOperate>删除</el-button>
-                </el-button-group>
-                
-            </div></div>
-        </template>
-        <div class="card_info">
-          <span>
-            {{ this.comment.content }}
-          </span>
-        </div>
-      </el-card>
-    </div>
-  </template>
+  <div class = "comment_card">
+    <el-card shadow="hover">
+      <template v-slot:header>
+          <div  class="comment_header_area">
+              <div class="comment_head">
+              <div class="comment_avatar"><i class="el-icon-success" v-if=this.comment.on_top>置顶 </i>
+                  <i class="el-icon-user"/></div>
+                  <div class="comment_username" v-if="judgeSettle">  {{ this.comment.author_name }} </div>
+                  <div class="comment_username" v-else>  {{ this.comment.username }}</div>
+                  <br/>
+              <div class="comment_create_time">{{ this.comment.created_time.split('T')[0] }}</div></div>
+              <div class="comment_actions">
+              <el-button-group>
+                  <el-button  :type="getLikeType()" @click="dislikeOrLikeComment(1)"><el-icon style="margin-right: 10px;" ><Top /></el-icon>顶 {{this.getLikeCount()}}</el-button>
+                  <el-button  :type="getDislikeType()" @click="dislikeOrLikeComment(2)"><el-icon style="margin-right: 10px;"><Bottom /></el-icon>踩 {{this.getDislikeCount()}}</el-button>
+                  <el-button  @click="operateComment(1)" v-if="this.commentOperate">置顶</el-button>
+                  <el-button  @click="operateComment(3)" v-if=this.commentOperate>删除</el-button>
+              </el-button-group>
+              
+          </div></div>
+      </template>
+      <div class="card_info">
+        <span>
+          {{ this.comment.content }}
+        </span>
+      </div>
+    </el-card>
+  </div>
+</template>
   <script>
   import axios from 'axios'
   const testurl = "https://go-service-296709.df.r.appspot.com/api/v1/branch/comment/give_a_like_or_dislike"
   const opeurl = "https://go-service-296709.df.r.appspot.com/api/v1/branch/comment/operate"
   export default {
     name: "Drawer",
-    // props: {
-    //   comment: Object,
-    // },
+    props: {
+      comment: Object,
+    },
     mounted() {
-      console.log(this.comment.author_name);
-      console.log(114);
+      console.log(this.comment);
       let list = JSON.parse(localStorage.getItem("paper_info"));
       if(list === null) return
       for(let i = 0; i < list.length; i++) {
@@ -104,17 +103,17 @@
     data() {
       return {
         short_abstract: "",
-        comment:{
-          on_top:true,
-          author_name:"田所浩二",
-          username: "",
-          create_time:"2020-12-18 20:23:23",
-          content:"this is an example comment",
-          paper_id:114,
-          like:114,
-          dislike:514,
-          status:'该条评论该用户已点赞',
-        },
+        // comment:{
+        //   on_top:true,
+        //   author_name:"田所浩二",
+        //   username: "",
+        //   create_time:"2020-12-18 20:23:23",
+        //   content:"this is an example comment",
+        //   paper_id:114,
+        //   like:114,
+        //   dislike:514,
+        //   status:'该条评论该用户已点赞',
+        // },
         commentOperate:false,
         vote:0,
       };
@@ -137,6 +136,9 @@
   </script>
   
   <style scoped>
+  .comment_card{
+    margin-bottom: 10px;
+  }
   .comment_header_area{
     display: flex; justify-content: "space-between"
   }
