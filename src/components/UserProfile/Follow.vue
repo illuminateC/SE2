@@ -1,39 +1,69 @@
 <template>
     <div class="right-box">
         <div class="right">
-            <div class="head">
-                <div class="backButton" @click="back">
-                    <back :height="height" :width="width" @mouseover="handleOver" @mouseout="handleOut"></back>
+            <div v-if="isLoading" class="svg">
+                <div class="svgcontain">
+                    <loading></loading>
+                    <p>加载中，请稍候。</p>
                 </div>
+
             </div>
-            <div>
-                <div class="grid">
-                    <div v-for="item in  currentPageData " :key="item.id">
-                        <div class="avatar">
-                            <div class="avatar-box"><img :src="item.avatar" alt="" @click="jump(item.id)"> </div>
+            <div v-else>
+                <div class="head">
+                    <div class="backButton" @click="back">
+                        <back :height="height" :width="width" @mouseover="handleOver" @mouseout="handleOut"></back>
+                    </div>
+                </div>
+                <div v-if="followList && followList.length">
+                    <div class="grid">
+                        <div class="each" v-for="item in  currentPageData " :key="item.user_id">
+                            <div class="avatar">
+                                <div class="avatar-box"><img :src="item.avatar" alt="" @click="jump(item.user_id)"> </div>
+                            </div>
+                            <div class="word">
+                                <div class="wordcontain">
+                                    <div class="name">
+                                        <p @click="jump(item.user_id)">{{ item.username }}</p>
+                                    </div>
+                                    <div class="works" @click="jump(item.user_id)">
+                                        <p>作品数：{{ item.works }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="unfollowicon" v-show="!isVisitor">
+                                <unfollow style="cursor: pointer;" @click="unfollow(item.user_id)"></unfollow>
+                            </div>
                         </div>
-                        <div class=" name">
-                            <p @click="jump(item.id)">{{ item.username }}</p>
-                            <p>{{ item.works }}</p>
+                    </div>
+                    <div class="bottom">
+                        <div class="changePage">
+                            <n-pagination v-model:page="currentPage" :page-count="totalPages" :page-slot="7" />
                         </div>
                     </div>
                 </div>
-                <div class="bottom">
-                    <div class="changePage">
-                        <n-pagination v-model:page="currentPage" :page-count="totalPages" :page-slot="7" />
+                <div v-else class="svg">
+                    <div class="svgcontain">
+                        <none></none>
+                        <p>请先关注用户再来吧！</p>
                     </div>
+
                 </div>
             </div>
+
         </div>
     </div>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue";
+import unfollow from "./unfollow.vue";
 import followAPI from "@/api/follow";
 import Swal from "sweetalert2";
 import back from '../back.vue'
 import anime from 'animejs';
+import none from './None.vue';
+import loading from "./loading.vue";
+import "./svg.css"
 export default {
     setup() {
         return {
@@ -42,16 +72,20 @@ export default {
     },
     components: {
         back,
+        unfollow,
+        none,
+        loading,
     },
     data() {
         return {
+            isLoading: true,
             user_id: null,
+            isVisitor: false,
             currentPage: 1,
-            itemsPerPage: 15,
+            itemsPerPage: 8,
             height: 30,
             width: 30,
             followList: []
-
         }
     },
     computed: {
@@ -79,27 +113,19 @@ export default {
         const hasIdParam = this.$route.params.hasOwnProperty('id');
         if (hasIdParam) {
             this.$data.user_id = this.$route.params.id
-        } else {
             const userInfoString = this.$Cookies.get('user_info');
             if (userInfoString) {
-                // 如果获取到了cookie字符串，解析为对象
                 const userInfo = JSON.parse(userInfoString);
-                this.$data.user_id = userInfo.id
+                if (this.$data.user_id != userInfo.id) this.$data.isVisitor = true;
             } else {
-                alert("请先登录")
+                this.$data.isVisitor = true;
             }
         }
         this.getList();
-        // this.$data.followList[0].src = require("../../assets/logo.png")
     },
     methods: {
         back() {
-            const hasIdParam = this.$route.params.hasOwnProperty('id');
-            if (hasIdParam) {
-                const id = this.$route.params.id;
-                this.$router.push({ name: "otherUser", params: id })
-            }
-            else this.$router.push({ name: "currentUser" })
+            this.$router.push({ name: 'map', params: { id: this.$data.user_id } });
         },
         handleOver() {
             anime({
@@ -120,13 +146,49 @@ export default {
             })
         },
         jump(id) {
-
+            const routePath = `/user/${id}`
+            window.open(routePath, '_blank');
+            // this.$router.push({ name: "user", params: { id: id }, target: '_blank' })
         },
         async getList() {
-            const data = { "user_id": this.$data.user_id }
-            const response = await followAPI.followList(data)
-            this.$data.followList = response.data.following_list
-            console.log(this.$data.followList)
+            try {
+                this.$data.isLoading = true; // 开始加载，显示 loading 状态
+                const data = { "user_id": this.$data.user_id };
+                const response = await followAPI.followList(data);
+                // 等待实际数据加载完成，然后更新列表和 loading 状态
+                this.$data.followList = response.data.following_list;
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                // 处理错误情况
+            } finally {
+                this.$data.isLoading = false; // 数据加载完成，隐藏 loading 状态
+            }
+        },
+        async unfollow(id) {
+            Swal.fire({
+                title: "确定取关该用户?",
+                text: "注意：该操作不可逆!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "确认！",
+                cancelButtonText: "否"
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const data = {
+                        "author_id": id
+                    }
+                    const response = await followAPI.unFollow(data)
+                    this.$data.followList = this.$data.followList.filter(user => user.user_id !== id);
+                    this.$store.commit('setFollows', this.$data.followList.length)
+                    Swal.fire({
+                        title: "您已取关该用户",
+                        text: "",
+                        icon: "success"
+                    });
+                }
+            });
         }
     },
 }
@@ -174,14 +236,23 @@ export default {
 .grid {
     height: 45vh;
     display: grid;
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
     /* 三行，每行等高 */
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    grid-column-gap: 3vw;
+    grid-row-gap: 1vh;
+
+    .each {
+        display: flex;
+        border-radius: 10px;
+        border: 1px solid grey;
+        padding-left: 2vw;
+        padding-right: 2vw;
+    }
 
     .avatar {
-        height: 90px;
+        height: auto;
         display: flex;
-        justify-content: center;
         align-items: center;
 
         .avatar-box {
@@ -207,11 +278,16 @@ export default {
 
     }
 
+    .word {
+        margin-left: 2vw;
+        display: flex;
+        align-items: center;
+    }
+
     .name {
         display: flex;
         height: 3vh;
-        justify-content: center;
-        align-items: center;
+        margin-top: auto;
     }
 
     .name p {
@@ -227,5 +303,26 @@ export default {
     .name p:hover {
         font-size: 20px;
     }
+
+
+
+    .works {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .works p {
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    .unfollowicon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+    }
+
 }
 </style>

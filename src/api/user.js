@@ -8,7 +8,7 @@ const url = {
     changePassword: "/user/changepassword",
     uploadAvatar: "/user/avatar/upload",
     getAvatar: "/user/avatar/get",
-
+    getInfo: "/user/searchbyid",
 }
 const userAPI = {
     async register(data) {
@@ -34,6 +34,9 @@ const userAPI = {
         return service(url.changeInfo, {
             method: "post",
             data,
+            headers: {
+                Authorization: getToken(),
+            }
         });
     },
     async changepassword(data) {
@@ -53,11 +56,17 @@ const userAPI = {
             method: "post",
             data,
             headers: {
-                ContentType: "application/form-data",
+                // ContentType: "application/form-data",
                 Authorization: getToken()
             }
         })
     },
+    async getInfo(data) {
+        return service(url.getInfo, {
+            method: "post",
+            data,
+        })
+    }
 
 
 

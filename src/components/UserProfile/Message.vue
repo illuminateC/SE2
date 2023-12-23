@@ -71,7 +71,7 @@ export default defineComponent({
         }
     },
     methods: {
-        back() { this.$router.push({ name: "currentUser" }) },
+        back() { this.$router.go(-1) },
         read(messageId) {
             // this.isDialog = true
             console.log("delete" + messageId)
