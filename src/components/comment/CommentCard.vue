@@ -9,13 +9,14 @@
                   <div class="comment_username" v-if="judgeSettle">  {{ this.comment.author_name }} </div>
                   <div class="comment_username" v-else>  {{ this.comment.username }}</div>
                   <br/>
-              <div class="comment_create_time">{{ this.comment.created_time.split('T')[0] }}</div></div>
+              <!-- <div class="comment_create_time">{{ this.comment.created_time.split('T')[0] }}</div></div> -->
+              <div class="comment_create_time">{{ this.comment.created_time }}</div></div>
               <div class="comment_actions">
               <el-button-group>
                   <el-button  :type="getLikeType()" @click="dislikeOrLikeComment(1)"><el-icon style="margin-right: 10px;" ><Top /></el-icon>顶 {{this.getLikeCount()}}</el-button>
                   <el-button  :type="getDislikeType()" @click="dislikeOrLikeComment(2)"><el-icon style="margin-right: 10px;"><Bottom /></el-icon>踩 {{this.getDislikeCount()}}</el-button>
                   <el-button  @click="operateComment(1)" v-if="this.commentOperate">置顶</el-button>
-                  <el-button  @click="operateComment(3)" v-if=this.commentOperate>删除</el-button>
+                  <el-button  @click="deleteComment()" >删除</el-button>
               </el-button-group>
               
           </div></div>
@@ -30,6 +31,7 @@
 </template>
   <script>
   import axios from 'axios'
+  import { Article } from '@/api/article';
   const testurl = "https://go-service-296709.df.r.appspot.com/api/v1/branch/comment/give_a_like_or_dislike"
   const opeurl = "https://go-service-296709.df.r.appspot.com/api/v1/branch/comment/operate"
   export default {
@@ -49,6 +51,21 @@
       this.judgeSettle = this.comment.author_name.length > 0;
     },
     methods: {
+      deleteComment() {
+        var data = {
+          "comment_id": this.comment.id,
+        }
+        Article.deleteComment(data)
+        .then((res) => {
+          if (res.data) {
+            console.log(res.data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+        // this.getCommentList();
+      },
       getLikeCount(){return this.comment.like + (this.vote === 1?1:0);},
       getDislikeCount(){return this.comment.dislike + (this.vote === 2?1:0);},
       getLikeType(){

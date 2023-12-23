@@ -90,13 +90,13 @@
               <div id="yearCitation" style="width: 600px;height:300px;"></div>
             </paper-citation>
           </div>
-          <div>
-            <!-- <h3>Reference Graph</h3> -->
+          <!-- <div>
+            
             <h3>关系图</h3>
             <reference-chart >
               <div id="reference" style="width: 600px;height:300px;"></div>
             </reference-chart>
-          </div>
+          </div> -->
         </div>
         <div class="result_detail_statistics_area" >
             <h3 class="detail_abstract">评论</h3>
@@ -125,12 +125,18 @@
             ><el-icon style="margin-right: 10%;"><View /></el-icon>查看原文
             </el-button
             >
-            
-            <el-button
-              type="warning"
-              plain v-if="this.article.starred === false" @click="addToFav"
-            ><el-icon style="margin-right: 10px;" ><Star /></el-icon>收藏
-            </el-button>
+            <el-dropdown v-if="this.article.starred === false">
+              <el-button
+                type="warning"
+                plain  
+              ><el-icon style="margin-right: 10px;" ><Star /></el-icon>收藏
+              </el-button>
+              <template #dropdown>
+                <el-dropdown-menu v-for="(collection, index) in collections" :key="index" :collection="collection" :index="index">
+                  <el-dropdown-item @click="addToFav(collection.id)">{{collection.name}}</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
             <el-button
               type="warning" v-else @click="removeFromFav"
             ><el-icon style="margin-right: 10px;" ><StarFilled /></el-icon>已收藏
@@ -153,7 +159,7 @@
             > -->
           </div>
           <br/>
-          <el-button-group style="padding-top:10px">
+          <!-- <el-button-group style="padding-top:10px">
             <el-button
               type="primary"
             >
@@ -164,8 +170,8 @@
             >
               放入专栏
             </el-button>
-          </el-button-group>
-          <br/><br/>
+          </el-button-group> -->
+          <!-- <br/><br/> -->
           <div class="statistics_citation">
             <h3>相关文章</h3>
             <br/>
@@ -309,6 +315,8 @@ export default {
         listed:false,
         link:"",
       },
+      fav:"",
+      collections:[],
       work_id:"",
       citationGraph:{},
       searchState: {},
@@ -346,6 +354,7 @@ export default {
       //         }
       //       ],
       data1:[],
+
       docid: "",
       type: "",
       option: "",
@@ -367,14 +376,32 @@ export default {
   mounted() {
     this.getData();
     // this.getComments();
+    this.getCollection();
     
   },
   methods: {
+    getCollection(){
+      this.$Cookies.set('token', "8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v");
+      var data = {
+        "user_id": 2,
+      }
+      Article.getCollection(data)
+      .then((res) => {
+        if (res.data) {
+          // this.collections=res.data.package_list.map(item => item.id);
+          this.collections=res.data.package_list;
+          console.log(this.collections);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    },
     getComments(){
       this.work_id="8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v";
       this.$Cookies.set('token', "8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v");
       var data = {
-        "work_id": "https://openalex.org/W2741809807",
+        "work_id": "W2741809807",
       }
       Article.articleComment(data)
       .then((res) => {
@@ -434,7 +461,7 @@ export default {
           // });
           this.drawRelatedArticleChart();
           this.drawYearCitationChart();
-          this.drawReferenceChart();
+          // this.drawReferenceChart();
         }
       })
       .catch((err) => {
@@ -474,11 +501,40 @@ export default {
       document.body.removeChild(textarea);
       ElMessage.success('已复制到剪贴板');
     },
-    addToFav(){
-      this.article.starred=true;
+    addToFav(a){
+      this.$Cookies.set('token', "8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v");
+      var data = {
+        "work_id": "W2741809807",
+        "package_id": a,
+      }
+      Article.addToFav(data)
+      .then((res) => {
+        if (res.data) {
+          this.article.starred=true;
+          this.fav=a;
+          console.log(res.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+      
     },
     removeFromFav(){
-      this.article.starred=false;
+      var data = {
+        "work_id_list": "W2741809807",
+        "package_id": this.fav,
+      }
+      Article.addToFav(data)
+      .then((res) => {
+        if (res.data) {
+          this.article.starred=false;
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+      
     },
     drawReferenceChart(){
       var myChart = echarts.init(document.getElementById('reference'));
