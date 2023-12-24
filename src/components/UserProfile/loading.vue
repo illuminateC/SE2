@@ -1,6 +1,6 @@
 <template>
-    <svg height="400" node-id="1" sillyvg="true" template-height="400" template-width="400" version="1.1"
-        viewBox="0 0 400 400" width="400" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <svg height="300" node-id="1" sillyvg="true" template-height="400" template-width="400" version="1.1"
+        viewBox="0 0 400 400" width="300" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <defs node-id="192">
         <linearGradient gradientUnits="userSpaceOnUse" id="未命名的渐变_33" node-id="8" spreadMethod="pad" x1="211.23"
             x2="196.65" y1="148.22" y2="395.01">
