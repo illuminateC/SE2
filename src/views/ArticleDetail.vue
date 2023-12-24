@@ -623,7 +623,12 @@ export default {
       });
     },
     seeArticle(){
-      window.location.href = this.article.link;
+      if(this.article.link){
+        window.location.href = this.article.link;
+      }else{
+        ElMessage.error("暂无该文章原文");
+      }
+      
     },
     drawRelatedArticleChart() {
       var myChart = echarts.init(document.getElementById('relatedArticle'));
