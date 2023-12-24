@@ -43,7 +43,7 @@ export default {
                 id: 2,
             });
             this.$Cookies.set('user_info', valueData, { expires: 30 });
-            this.$Cookies.set('token', "6k(8_$k6==gevz)0r+si%g3nn=9ep)!%&zk+=eniqs@)^lr)xb")
+            this.$Cookies.set('token', "+e@34e4pq@b+a(sfsjw8soib57oie17=6aapg1)_w$ztgiu+d3")
         },
         async logout() {
 

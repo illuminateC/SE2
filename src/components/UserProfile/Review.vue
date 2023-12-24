@@ -14,20 +14,13 @@
                         <back :height="height" :width="width" @mouseover="handleOver" @mouseout="handleOut"></back>
                     </div>
                 </div>
-                <div v-if="messageList && messageList.length">
-                    <div class="message-box">
-                        <div class="message" v-for="item in currentPageData" :key="item.id" @click="read(item.id)">
+                <div v-if="reviewList && reviewList.length">
+                    <div class="review-box">
+                        <div class="review" v-for="item in currentPageData" :key="item.id" @click="read(item.id)">
                             <div class="each" @mouseover="setHoveredId(item.id)" @mouseleave="resetHoverId()">
-                                <div v-show="item.is_read === false">
-                                    <unread style="display: flex; margin-left: 1vw;"></unread>
-                                </div>
-
                                 <div style="display: flex; width: 80%;">
-                                    <div class="title">{{ item.sender_name }}</div>
+                                    <div class="title">{{ item.name }}</div>
                                     <div class="time">{{ new Date(item.time).toLocaleString() }}</div>
-                                </div>
-                                <div class="delete" v-show="hoveredId === item.id" style="display: flex; margin-left: 3vw;">
-                                    <deleteicon @click.stop="delete_message(item.id)"></deleteicon>
                                 </div>
                             </div>
 
@@ -42,7 +35,7 @@
                 <div v-else class="svg">
                     <div class="svgcontain">
                         <none></none>
-                        <p>您还没有收到信息！</p>
+                        <p>您还没有收到需要审核的信息！</p>
                     </div>
 
                 </div>
@@ -59,16 +52,12 @@ import anime from "animejs";
 import loading from "./loading.vue";
 import none from "./None.vue";
 import './svg.css'
-import messageAPI from "@/api/message";
-import unread from "./unread.vue"
-import deleteicon from "./deleteicon.vue";
+import reviewAPI from "@/api/review";
 export default defineComponent({
     components: {
         back,
         loading,
         none,
-        unread,
-        deleteicon
     },
     setup() {
         return {
@@ -79,7 +68,7 @@ export default defineComponent({
         return {
             currentPage: 1, // 当前页码
             itemsPerPage: 5, // 每页显示的条目数量
-            messageList: [],
+            reviewList: [],
             isDialog: false,
             height: 30,
             width: 30,
@@ -90,7 +79,7 @@ export default defineComponent({
     },
     computed: {
         totalItems() {
-            return this.messageList.length;
+            return this.reviewList.length;
         },
         totalPages() {
             return Math.ceil(this.totalItems / this.itemsPerPage);
@@ -98,7 +87,7 @@ export default defineComponent({
         currentPageData() {
             const start = (this.currentPage - 1) * this.itemsPerPage;
             const end = start + this.itemsPerPage;
-            return this.messageList.slice(start, end);
+            return this.reviewList.slice(start, end);
         },
         visiblePages() {
             const pages = [];
@@ -127,12 +116,8 @@ export default defineComponent({
     },
     methods: {
         back() { this.$router.push({ name: "map", params: { id: this.$data.user_id } }) },
-        async read(messageId) {
-            const message = this.messageList.find(item => item.id == messageId)
-            message.is_read = JSON.parse('true');
-            Swal.fire(message.content);
-            const data = { "id": messageId }
-            const response = await messageAPI.readMeaage(data)
+        async read(id) {
+
 
         },
         handleOver() {
@@ -162,10 +147,10 @@ export default defineComponent({
         async getList() {
             try {
                 this.$data.isLoading = true;
-                const data = { "receiver_id": this.$data.user_id }
-                const response = await messageAPI.getMessageList(data);
-                this.$data.messageList = response.data.message_list;
-
+                const data = { "status": 0 }
+                const response = await reviewAPI.read(data);
+                this.$data.reviewList = response.data.application_list;
+                console.log(this.$data.reviewList)
             }
             catch (error) {
                 console.error("Error fetching data:", error);
@@ -174,29 +159,11 @@ export default defineComponent({
                 this.$data.isLoading = false; // 数据加载完成，隐藏 loading 状态
             }
         },
-        async delete_message(id) {
-            Swal.fire({
-                title: "确定删除该消息?",
-                text: "注意：该操作不可逆!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "确认删除!",
-                cancelButtonText: "取消"
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    const data = { "id": id }
-                    const response = await messageAPI.delete_message(data)
-                    this.$data.messageList = this.$data.messageList.filter(message => message.id !== id);
-                    Swal.fire({
-                        title: "该消息已删除！",
-                        icon: "success"
-                    });
-                }
-            });
-        }
+        async handle(id, op) {
+            const data = { "id": id, "op": op }
+            const response = await reviewAPI.review(data);
 
+        }
     }
 })
 </script>
@@ -256,7 +223,7 @@ export default defineComponent({
     transform: translate(-2px, -2px);
 }
 
-.message-box {
+.review-box {
     margin: 0 7% 2vh 7%;
     width: 86%;
     height: 47vh;
@@ -271,11 +238,11 @@ export default defineComponent({
     justify-content: center;
 }
 
-.message-box li {
+.review-box li {
     grid-row: span 1;
 }
 
-.message {
+.review {
     border: 1px solid grey;
     border-radius: 10px;
 
@@ -287,7 +254,7 @@ export default defineComponent({
 
     .title {
         display: flex;
-        margin-left: 2vw;
+        margin-left: 4vw;
         font-size: 15px;
         font-weight: bold;
     }
@@ -300,7 +267,7 @@ export default defineComponent({
 
 
 
-.message:hover {
+.review:hover {
     background-color: wheat;
     cursor: pointer;
 }

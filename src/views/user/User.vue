@@ -34,6 +34,9 @@
                 <p>收藏</p>
                 <span> {{ collections }}</span>
             </div>
+            <div class="moveDiv" v-show="isAdmin" @click="jumpReview">
+                <p>前往审核信息</p>
+            </div>
         </div>
         <div class="head-box">
             <video autoplay muted loop>
@@ -87,6 +90,7 @@ export default {
         return {
             isVisible: false,
             cropperInstance: null,
+            isAdmin: true,
             user: {
                 user_id: "",
                 username: "",
@@ -190,6 +194,9 @@ export default {
         jumpStar() {
             this.$router.push({ name: 'star' })
         },
+        jumpReview() {
+            this.$router.push({ name: 'review' })
+        },
         changeStyle(element, cursorType) {
 
             if (!this.isVisitor) {
@@ -292,7 +299,7 @@ export default {
             this.$data.user = response.data.result
             this.$store.commit('setFollows', this.$data.user.follows)
             this.$store.commit('setCollections', this.$data.user.collections)
-            this.$store.commit('setUnreads',this.$data.user.unread_message_count)
+            this.$store.commit('setUnreads', this.$data.user.unread_message_count)
             data = { "user_id": this.$data.loginId, "author_id": id }
             response = await followAPI.isFollow(data)
             this.$data.isFollow = response.data.is_follow
@@ -372,9 +379,7 @@ body {
         align-items: center;
     }
 
-    .mailbox span {
-        
-    }
+    .mailbox span {}
 
     .instruction {
         margin: 0 10% 0vh 10%;

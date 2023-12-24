@@ -125,6 +125,13 @@ const routes = [
         name: 'starList',
         component: () => import('../components/UserProfile/star-post.vue'),
         props: true
+      }, {
+        path: 'review',
+        name: 'review',
+        component: function () {
+          return import('../components/UserProfile/Review.vue')
+        },
+        key: route => route.params.id,
       }
     ]
   },
@@ -143,31 +150,6 @@ const routes = [
     }
   },
 
-
-  // {
-  //   path: '/user/follow',
-  //   name: 'follow',
-  //   component: function () {
-  //     return import('../views/user/UserFollow.vue')
-  //   },
-  //   props: route => ({ isVisitor: false })
-  // },
-
-  // {
-  //   path: '/user/star',
-  //   name: 'star',
-  //   component: function () {
-  //     return import('../views/user/UserStar.vue')
-  //   },
-  //   props: route => ({ isVisitor: false })
-  // },
-  // {
-  //   path: '/user/:id/star',
-  //   name: 'otherStar',
-  //   component: function () {
-  //     return import('../views/user/UserStar.vue')
-  //   }
-  // },
   {
     path: '/author/:authorId',
     name: 'Author',
@@ -181,14 +163,6 @@ const routes = [
     name: 'SearchDetail',
     component: () => import('../views/search/SearchDetail.vue'),
   },
-
-  // },
-  // {
-  //   path: '/starlist/:starId',
-  //   name: 'starList',
-  //   component: () => import('../views/user/UserStarDetail.vue'),
-  //   props: true
-  // }
 ]
 
 const router = createRouter({
