@@ -25,14 +25,18 @@
         </div>
         <!-- 按钮 -->
         <div class="dialog-btn-wrapper">
-          <button class="dialog-cancel-btn" @click="onCancel" style="margin-right: 8px;">
+<!--          <button class="dialog-cancel-btn" @click="onCancel" style="margin-right: 8px;">-->
+          <el-button @click="onCancel" type="primary" round style="margin-right: 12px;border: black;font-size: 20px">
             {{ cancelText }}
             <span></span>
-          </button>
-          <button class="dialog-confirm-btn" @click="onConfirm" style="margin-right: 8px;">
+          </el-button>
+<!--          </button>-->
+<!--          <button class="dialog-confirm-btn" @click="onConfirm" style="margin-right: 8px;">-->
+          <el-button @click="onConfirm" type="primary" round style="margin-right: 12px;border: black ;font-size: 20px">
             {{ confirmText }}
             <span></span>
-          </button>
+          </el-button>
+<!--          </button>-->
         </div>
       </div>
     </transition>
@@ -176,8 +180,8 @@ const onClose = () => {
   transform: translate(-50%, -50%);
   z-index: 10000;
   padding: 6px 8px;
-  border-radius: 2px;
-  border: 4px solid black;
+  border: 1px solid black ;
+  border-radius: 20px;
   cursor: pointer;
   background-color: white;
   @media (min-width: 1280px) {
@@ -192,7 +196,7 @@ const onClose = () => {
 .dialog-title {
   font-size: 22px;
   line-height: 26px;
-  font-weight: 700;
+  font-weight: 500;
   margin-bottom: 20px;
 }
 .dark.dialog-title {
@@ -256,7 +260,7 @@ const onClose = () => {
   width: 100%;
   background: black;
 }
-.dialog-confirm-btn:hover, 
+.dialog-confirm-btn:hover,
 .dialog-confirm-btn:focus {
   color: white;
 }
@@ -302,7 +306,7 @@ const onClose = () => {
   width: 8%;
   background: white;
 }
-.dialog-cancel-btn:hover, 
+.dialog-cancel-btn:hover,
 .dialog-cancel-btn:focus {
   color: black;
 }

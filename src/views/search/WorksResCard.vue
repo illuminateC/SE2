@@ -29,22 +29,22 @@
             <img class="author-avator" src="https://dl.acm.org/pb-assets/icons/DOs/default-profile-1543932446943.svg"/>
             <span>{{ author.author.display_name }}</span>
           </a>
-          <span>, </span>
+<!--          <span>, </span>-->
         </li>
       </ul>
 
       <!-- 论文的信息：来源（期刊会议）host_venue、发行日期、类型、doi网址 -->
       <div class="card-simple-info" v-if="notInCollection">
         <!-- 跳转到对应的host_venue主页 -->
-        <span
-          class="epub-section__title"
-          v-if="item.host_venue"
-        >
-<!--          @click="jumpToVenuePage(item.host_venue.id-->
-<!--            ? item.host_venue.id.slice(21)-->
-<!--            : '')"-->
-          {{ item.host_venue.display_name }}
-        </span>
+<!--        <span-->
+<!--          class="epub-section__title"-->
+<!--          v-if="item.host_venue"-->
+<!--        >-->
+<!--&lt;!&ndash;          @click="jumpToVenuePage(item.host_venue.id&ndash;&gt;-->
+<!--&lt;!&ndash;            ? item.host_venue.id.slice(21)&ndash;&gt;-->
+<!--&lt;!&ndash;            : '')"&ndash;&gt;-->
+<!--          {{ item.host_venue.display_name }}-->
+<!--        </span>-->
         <!-- 这里由于伪元素位置的影响，必须span里面嵌套一个span -->
         <span class="dot-separator">
           <span>{{ item.publication_date }},&nbsp;&nbsp;</span>
@@ -93,7 +93,7 @@
                 <li>
                   <span class="metric">
                     <span style="margin: 5px ;color: #0f5de5">  下载 </span>
-                    <span style="margin: 5px ;color:#191919;">{{ toThousands(item["2022_cited_count"]) }}</span>
+                    <span style="margin: 5px ;color:#191919;">{{ toThousands(item["2023_cited_count"]) }}</span>
                   </span>
                 </li>
               </ul>
@@ -690,7 +690,9 @@ a:focus {
   /* 15px */
   margin-top: .9375rem;
   padding: .9375rem;
-  box-shadow: 0 0.3125rem 0.5rem rgb(0 0 0 / 10%);
+  //box-shadow: '--el-box-shadow-dark';
+  border: 1px solid ;
+  border-radius: 20px;
   background: #fff;
   word-break: break-word;
 }
@@ -739,7 +741,7 @@ a:focus {
 .card-title {
   color: #0077c2;
   font-weight: 500;
-  font-family: 'Times New Roman', Times, "Microsoft YaHei", serif;
+  font-family: "阿里妈妈方圆体 VF Regular",serif;
   font-size: 1.25rem;
   margin-bottom: .625rem;
   cursor: pointer;
@@ -764,7 +766,7 @@ a:focus {
 }
 
 .card-author-list a {
-  text-decoration: underline;
+  //text-decoration: underline;
   color: inherit;
   cursor: pointer;
   background-color: transparent;

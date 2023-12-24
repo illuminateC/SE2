@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="search-history-title">
-      <span>最近搜索</span>
+      <span>搜索历史</span>
 <!--      <svg-->
 <!--        aria-hidden="true"-->
 <!--        class="search-history-icon-delete"-->
