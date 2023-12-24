@@ -401,6 +401,7 @@ export default {
             this.$Cookies.set('token', res.data.token);
             this.$Cookies.set('user_info', valueData,{expires:30});
             ElMessage.success("登录成功！");
+            this.$router.push('/');
         }
       })
       .catch((err) => {

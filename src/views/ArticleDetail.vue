@@ -38,13 +38,10 @@
             </span>
             <br/><br/>
           </div>
-          <div
-            
-            class="detail_page_start"
-          >
+          <!-- <div class="detail_page_start">
             <h3 class="detail_abstract">页面数</h3>
             <p>{{ this.article.pageNum }}</p><br/>
-          </div>
+          </div> -->
           <div
           >
             <h3 class="detail_abstract">语言</h3>
