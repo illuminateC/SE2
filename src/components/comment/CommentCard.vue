@@ -7,15 +7,15 @@
               <div class="comment_avatar"><i class="el-icon-success" v-if=this.comment.on_top>置顶 </i>
                   <i class="el-icon-user"/></div>
                   <div class="comment_username" v-if="judgeSettle">  {{ this.comment.author_name }} </div>
-                  <div class="comment_username" v-else>  {{ this.comment.username }}</div>
+                  <div class="comment_username" v-else>  {{ this.comment.user_name }}</div>
                   <br/>
               <!-- <div class="comment_create_time">{{ this.comment.created_time.split('T')[0] }}</div></div> -->
               <div class="comment_create_time">{{ this.comment.created_time }}</div></div>
               <div class="comment_actions">
               <el-button-group>
-                  <el-button  :type="getLikeType()" @click="dislikeOrLikeComment(1)"><el-icon style="margin-right: 10px;" ><Top /></el-icon>顶 {{this.getLikeCount()}}</el-button>
-                  <el-button  :type="getDislikeType()" @click="dislikeOrLikeComment(2)"><el-icon style="margin-right: 10px;"><Bottom /></el-icon>踩 {{this.getDislikeCount()}}</el-button>
-                  <el-button  @click="operateComment(1)" v-if="this.commentOperate">置顶</el-button>
+                  <el-button  :type="getLikeType()" @click="likeComment()"><el-icon style="margin-right: 10px;" ><Top /></el-icon>赞同 {{this.getLikeCount()}}</el-button>
+                  <!-- <el-button  :type="getDislikeType()" @click="dislikeOrLikeComment(2)"><el-icon style="margin-right: 10px;"><Bottom /></el-icon>踩 {{this.getDislikeCount()}}</el-button>
+                  <el-button  @click="operateComment(1)" v-if="this.commentOperate">置顶</el-button> -->
                   <el-button  @click="deleteComment()" >删除</el-button>
               </el-button-group>
               
@@ -51,6 +51,36 @@
       this.judgeSettle = this.comment.author_name.length > 0;
     },
     methods: {
+      likeComment(){
+        var data = {
+          "comment_id": this.comment.id,
+        }
+        if(this.vote==0){
+          Article.likeComment(data)
+          .then((res) => {
+            if (res.data) {
+              console.log(res.data);
+              this.vote=1;
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        }else if(this.vote==1){
+          Article.dislikeComment(data)
+          .then((res) => {
+            if (res.data) {
+              console.log(res.data);
+              this.vote=0;
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        }
+        
+        
+      },
       deleteComment() {
         var data = {
           "comment_id": this.comment.id,
@@ -66,7 +96,7 @@
         });
         // this.getCommentList();
       },
-      getLikeCount(){return this.comment.like + (this.vote === 1?1:0);},
+      getLikeCount(){return this.comment.like_count + (this.vote === 1?1:0);},
       getDislikeCount(){return this.comment.dislike + (this.vote === 2?1:0);},
       getLikeType(){
         if(this.vote==1)return "success";

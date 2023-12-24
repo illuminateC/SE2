@@ -8,7 +8,9 @@ const url = {
     deleteComment:"/comment/delete_comment",
     getCollection:"/collection/get_another_collection_package_list",
     addToFav:"/collection/collect_work",
-    removeFromFav:"/collection/cancel_work"
+    removeFromFav:"/collection/cancel_work",
+    likeComment:"/comment/like_comment",
+    dislikeComment:"/comment/dislike_comment",
 }
 export class Article{
     static async articleMess(data) {
@@ -64,6 +66,24 @@ export class Article{
     }
     static async removeFromFav(data) {
         return service(url.removeFromFav, {
+            method: "POST",
+            data,
+            headers: {
+                Authorization: getToken()
+            },
+          });
+    }
+    static async likeComment(data) {
+        return service(url.likeComment, {
+            method: "POST",
+            data,
+            headers: {
+                Authorization: getToken()
+            },
+          });
+    }
+    static async dislikeComment(data) {
+        return service(url.dislikeComment, {
             method: "POST",
             data,
             headers: {

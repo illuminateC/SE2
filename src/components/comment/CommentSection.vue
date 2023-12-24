@@ -53,7 +53,7 @@
         this.commentList = [];
         // let that = this;
         var data = {
-          "work_id": "W2741809807",
+          "work_id": this.$route.params.articleId,
         }
         Article.articleComment(data)
         .then((res) => {
@@ -68,19 +68,23 @@
       },
       submitComment() {
         var data = {
-          "work_id": "W2741809807",
+          "work_id": this.$route.params.articleId,
           "content":this.textarea,
         }
         Article.createComment(data)
         .then((res) => {
           if (res.data) {
             console.log(res.data);
+            this.textarea="";
           }
         })
         .catch((err) => {
           console.log(err);
         });
-        this.getCommentList();
+        setTimeout(() => {
+          this.getCommentList();
+        }, 100);
+        ElMessage.success("评论成功！");
       },
     },
   

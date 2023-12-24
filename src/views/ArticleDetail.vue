@@ -401,7 +401,7 @@ export default {
       this.work_id="8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v";
       this.$Cookies.set('token', "8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v");
       var data = {
-        "work_id": "W2741809807",
+        "work_id": "this.$route.params.articleId",
       }
       Article.articleComment(data)
       .then((res) => {
@@ -417,7 +417,7 @@ export default {
       var data = {
         "entity_type": "works",
         "params": {
-          "id":"W2741809807",
+          "id":this.$route.params.articleId,
         }
       };
       Article.articleMess(data)
@@ -504,7 +504,7 @@ export default {
     addToFav(a){
       this.$Cookies.set('token', "8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v");
       var data = {
-        "work_id": "W2741809807",
+        "work_id": this.$route.params.articleId,
         "package_id": a,
       }
       Article.addToFav(data)
@@ -522,7 +522,7 @@ export default {
     },
     removeFromFav(){
       var data = {
-        "work_id_list": "W2741809807",
+        "work_id_list": this.$route.params.articleId,
         "package_id": this.fav,
       }
       Article.addToFav(data)
