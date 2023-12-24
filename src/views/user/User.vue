@@ -5,7 +5,10 @@
                 <img class="avatar" :src="user.avatar" @click="uploadAvatar">
                 <input type="file" accept="image/*" ref="fileInput" @change="changeUpload">
                 <div v-if="this.$data.isVisitor" class="follow-box">
-                    <button class="follow-button" @click="follow">FOLLOW</button>
+                    <button class="follow-button" @click="follow">
+                        <div v-if="this.$data.isFollow == 'false'">FOLLOW</div>
+                        <div v-else>UNFOLLOW</div>
+                    </button>
                 </div>
             </div>
             <div class="personal-info">
@@ -66,6 +69,7 @@ import 'cropperjs/dist/cropper.css';
 import Cropper from 'cropperjs';
 import Swal from 'sweetalert2';
 import userAPI from '@/api/user';
+import followAPI from '@/api/follow'
 import { mapState } from 'vuex';
 import mailbox from '@/components/UserProfile/mailbox.vue'
 export default {
@@ -100,7 +104,8 @@ export default {
             loginId: "",
             currentId: "",
             isVisitor: "",
-            hasIdParam: false
+            hasIdParam: false,
+            isFollow: false,
         }
     },
     computed: {
@@ -282,16 +287,32 @@ export default {
             }
         },
         async getInfo(id) {
-            const data = { "user_id": id }
-            const response = await userAPI.getInfo(data)
+            var data = { "user_id": id }
+            var response = await userAPI.getInfo(data)
             this.$data.user = response.data.result
             this.$store.commit('setFollows', this.$data.user.follows)
             this.$store.commit('setCollections', this.$data.user.collections)
+            data = { "user_id": this.$data.loginId, "author_id": id }
+            response = await followAPI.isFollow(data)
+            this.$data.isFollow = response.data.is_follow
+            console.log(this.$data.isFollow)
         },
         updateFollowCount(newCount) {
             this.user.follows = newCount;
         },
+        async follow() {
+            if (this.$data.isFollow == 'false') {
+                this.$data.isFollow = 'true'
+                const data = { author_id: this.$data.currentId }
+                const response = await followAPI.follow(data)
 
+            }
+            else {
+                this.$data.isFollow = 'false'
+                const data = { author_id: this.$data.currentId }
+                const response = await followAPI.unFollow(data)
+            }
+        }
 
     },
 
