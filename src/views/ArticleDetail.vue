@@ -5,29 +5,18 @@
         <div class="result_detail_title">
           {{ this.article.title }}
         </div>
-        <!-- <div class="result_detail_author_container">
-          <router-link
-            tag="a"
-            target="_blank"
-            :to="'/author/' + $route.params.type + '/' + 1"
-            class="result_detail_author"
-            
-            :key="1"
-          >
-            114
-            114 ,
-            <div
-              style="display: inline"
-              
-            >
-              ,
-            </div>
-          </router-link>
-        </div> -->
       </div>
       <div class="result_detail_main_area">
         <div class="result_detail_article_area">
-          <br/>
+          <div>
+            <h3 class="detail_abstract">作者</h3>
+            <!-- <p>{{ this.authors }}</p> <br/> -->
+            <span v-for="(author, index) in this.authors" :key="index" @click="this.$router.push('/author/'+ author.id.match(/\/([^/]+)$/)[1])" class="author-link">
+             {{ author.display_name}}&nbsp;&nbsp;&nbsp;&nbsp;
+             
+            </span><br/><br/>
+            <!-- {{ author.id.match(/\/([^/]+)$/)[1]}} -->
+          </div>
           <div>
             <h3 class="detail_abstract">摘要</h3>
             <p>{{ this.article.abstract }}</p> <br/>
@@ -300,7 +289,6 @@ export default {
       article: {
         paper_id: "",
         title: "",
-        authors: [],
         abstract: "",
         date:"",
         keywords: [],
@@ -315,6 +303,7 @@ export default {
         listed:false,
         link:"",
       },
+      authors: [],
       fav:"",
       collections:[],
       work_id:"",
@@ -443,6 +432,7 @@ export default {
           this.article.venue=res.data.specific_entity_data.locations.map(location => location.source.display_name);
           this.article.issn=res.data.specific_entity_data.locations.map(location => location.source.id);
           this.article.link=res.data.specific_entity_data.locations[0].pdf_url;
+          this.authors=res.data.specific_entity_data.authorships.map(item => item.author);
           if(res.data.specific_entity_data.language=="en"){
             this.article.language="English";
           }else if(res.data.specific_entity_data.language=="zh"){
@@ -828,5 +818,9 @@ export default {
 
 .detail_abstract{
   margin-bottom: 10px;
+}
+
+.author-link {
+  cursor: pointer;
 }
 </style>

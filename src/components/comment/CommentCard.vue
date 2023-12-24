@@ -94,7 +94,11 @@
         .catch((err) => {
           console.log(err);
         });
-        // this.getCommentList();
+        setTimeout(() => {
+          this.getCommentList();
+        }, 100);
+        ElMessage.success("评论成功！");
+       
       },
       getLikeCount(){return this.comment.like_count + (this.vote === 1?1:0);},
       getDislikeCount(){return this.comment.dislike + (this.vote === 2?1:0);},
