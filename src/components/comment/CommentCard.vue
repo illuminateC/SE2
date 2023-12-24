@@ -30,6 +30,7 @@
   </div>
 </template>
   <script>
+  import { ElMessage } from 'element-plus'
   import axios from 'axios'
   import { Article } from '@/api/article';
   const testurl = "https://go-service-296709.df.r.appspot.com/api/v1/branch/comment/give_a_like_or_dislike"
@@ -95,9 +96,9 @@
           console.log(err);
         });
         setTimeout(() => {
-          this.getCommentList();
+          this.$parent.getCommentList();
         }, 100);
-        ElMessage.success("评论成功！");
+        ElMessage.success("删除成功！");
        
       },
       getLikeCount(){return this.comment.like_count + (this.vote === 1?1:0);},
