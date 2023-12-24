@@ -1,30 +1,57 @@
 <template>
-    <div class="messagecontainer">
+    <div class="right-box">
+        <div class="right">
+            <div v-if="isLoading" class="svg">
+                <div class="svgcontain">
+                    <loading></loading>
+                    <p>加载中，请稍候。</p>
+                </div>
 
-        <div class="button" @click="back">
-            <back :height="30" :width="30"></back>
-        </div>
-        <div class="message-box">
-            <div class="message" v-for="item in currentPageData" :key="item.id" @click="read(item.id)">
-                <li>{{ item.text }}</li>
             </div>
+            <div v-else>
+                <div class="head">
+                    <div class="backButton" @click="back">
+                        <back :height="height" :width="width" @mouseover="handleOver" @mouseout="handleOut"></back>
+                    </div>
+                </div>
+                <div v-if="messageList && messageList.length">
+                    <div class="message-box">
+                        <div class="message" v-for="item in currentPageData" :key="item.id" @click="read(item.id)">
+                            <li>{{ item.content }}</li>
+                        </div>
+                    </div>
+                    <div class="bottom">
+                        <div class="changePage">
+                            <n-pagination v-model:page="currentPage" :page-count="totalPages" :page-slot="7" />
+                        </div>
+                    </div>
+                </div>
+                <div v-else class="svg">
+                    <div class="svgcontain">
+                        <none></none>
+                        <p>您还没有收到信息！</p>
+                    </div>
 
+                </div>
+            </div>
         </div>
-        <div class="changePage">
-            <n-pagination v-model:page="currentPage" :page-count="100" :page-slot="7" />
-        </div>
-
     </div>
-    <el-dialog v-model="isDialog"></el-dialog>
 </template>
 
 <script>
 import { defineComponent, ref } from "vue";
 import Swal from 'sweetalert2'
 import back from "../back.vue";
+import anime from "animejs";
+import loading from "./loading.vue";
+import none from "./None.vue";
+import './svg.css'
+import messageAPI from "@/api/message";
 export default defineComponent({
     components: {
         back,
+        loading,
+        none
     },
     setup() {
         return {
@@ -35,24 +62,18 @@ export default defineComponent({
         return {
             currentPage: 1, // 当前页码
             itemsPerPage: 5, // 每页显示的条目数量
-            allData: [{ "id": 1, "text": "消息1" },
-            { "id": 2, "text": "消息2" },
-            { "id": 3, "text": "消息3" },
-            { "id": 4, "text": "消息4" },
-            { "id": 5, "text": "消息5" },
-            { "id": 6, "text": "消息6" },
-            { "id": 7, "text": "消息7" },
-            { "id": 8, "text": "消息8" },
-            { "id": 9, "text": "消息9" },
-            { "id": 20, "text": "消息10" },
-            { "id": 11, "text": "消息11" }],
+            messageList: [],
             isDialog: false,
-
+            height: 30,
+            width: 30,
+            isLoading: false,
+            user_id: "",
+            isVisitor: ""
         };
     },
     computed: {
         totalItems() {
-            return this.allData.length;
+            return this.messageList.length;
         },
         totalPages() {
             return Math.ceil(this.totalItems / this.itemsPerPage);
@@ -60,7 +81,7 @@ export default defineComponent({
         currentPageData() {
             const start = (this.currentPage - 1) * this.itemsPerPage;
             const end = start + this.itemsPerPage;
-            return this.allData.slice(start, end);
+            return this.messageList.slice(start, end);
         },
         visiblePages() {
             const pages = [];
@@ -69,27 +90,107 @@ export default defineComponent({
             }
             return pages;
         }
+
+    },
+    mounted() {
+        const hasIdParam = this.$route.params.hasOwnProperty('id');
+        if (hasIdParam) {
+            this.$data.user_id = this.$route.params.id
+            const userInfoString = this.$Cookies.get('user_info');
+            if (userInfoString) {
+                const userInfo = JSON.parse(userInfoString);
+                if (this.$data.user_id != userInfo.id) this.$data.isVisitor = true;
+            } else {
+                this.$data.isVisitor = true;
+            }
+        }
+        this.getList();
     },
     methods: {
-        back() { this.$router.go(-1) },
+        back() { this.$router.push({ name: "map", params: { id: this.$data.user_id } }) },
         read(messageId) {
             // this.isDialog = true
             console.log("delete" + messageId)
-            const message = this.allData.find(item => item.id === messageId).text
+            const message = this.messageList.find(item => item.id === messageId).content
             Swal.fire(message);
         },
-    },
-    mounted() {
-        // 模拟从后端获取数据
-        // 这里使用随机生成的邮箱作为示例数据
-        // for (let i = 0; i < 100; i++) {
-        //     this.allData.push({ id: i + 1, email: `user${i + 1}@example.com` });
-        // }
-    },
+        handleOver() {
+            anime({
+                targets: this.$data,
+                height: 40,
+                width: 40,
+                duration: 300, // 过渡动画的持续时间
+                easing: 'easeInOutQuad' // 缓动函数
+            })
+        },
+        handleOut() {
+            anime({
+                targets: this.$data,
+                height: 30,
+                width: 30,
+                duration: 300, // 过渡动画的持续时间
+                easing: 'easeInOutQuad' // 缓动函数
+            })
+        },
+        async getList() {
+            try {
+                this.$data.isLoading = true;
+                const data = { "receiver_id": this.$data.user_id }
+                const response = await messageAPI.getMessageList(data);
+                this.$data.messageList = response.data.message_list;
+
+            }
+            catch (error) {
+                console.error("Error fetching data:", error);
+                // 处理错误情况
+            } finally {
+                this.$data.isLoading = false; // 数据加载完成，隐藏 loading 状态
+            }
+        },
+
+    }
 })
 </script>
 
 <style  scoped>
+.right-box {
+    display: flex;
+    margin-top: 3vh;
+
+    .right {
+        margin-left: 3vw;
+        width: 90%;
+        height: 60vh;
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 4px 3px 5px rgba(0, 0, 0, 0.5);
+        padding-left: 2vw;
+        padding-right: 2vw;
+        padding-top: 2vh;
+        padding-bottom: 2vh;
+        display: flex;
+        flex-flow: column wrap;
+
+        .head {
+            height: 5vh;
+            display: flex;
+        }
+
+        .backButton {
+            cursor: pointer;
+        }
+
+        .bottom {
+            margin-top: auto;
+
+            .changePage {
+                display: flex;
+                justify-content: center;
+            }
+        }
+    }
+}
+
 .button {
     display: flex;
     align-items: center;
@@ -106,27 +207,13 @@ export default defineComponent({
     transform: translate(-2px, -2px);
 }
 
-.messagecontainer {
-    position: relative;
-    width: 55vw;
-    height: 65vh;
-    margin-left: 30vw;
-    background-color: whitesmoke;
-    padding-top: 10px;
-    border-radius: 10px;
-    box-shadow: 4px 3px 5px rgba(0, 0, 0, 0.5);
-}
-
 .message-box {
-    margin: 2vh 7% 2vh 7%;
+    margin: 0 7% 2vh 7%;
     width: 86%;
-    height: 50vh;
-    border-radius: 8px;
-    background-color: rgb(230, 230, 230);
+    height: 47vh;
     display: grid;
     grid-template-rows: repeat(5, 1fr);
-    border: 1px solid #ccc;
-    box-shadow: 10px 10px 1px #ddd;
+    grid-row-gap: 1vh;
 }
 
 .changePage {
@@ -139,7 +226,13 @@ export default defineComponent({
     grid-row: span 1;
 }
 
-.message {}
+.message {
+    border: 1px solid grey;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+}
+
 
 
 .message:hover {

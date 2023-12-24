@@ -5,6 +5,7 @@ const url = {
     follow: "/follow/follow",
     unFollow: "/follow/unfollow",
     followList: "/follow/getfollowlist",
+    isFollow: "/follow/getisfollow"
 }
 
 const followAPI = {
@@ -28,6 +29,15 @@ const followAPI = {
     },
     async followList(data) {
         return service(url.followList, {
+            method: "post",
+            data,
+            headers: {
+                Authorization: getToken()
+            }
+        })
+    },
+    async isFollow(data) {
+        return service(url.isFollow, {
             method: "post",
             data,
             headers: {
