@@ -10,7 +10,7 @@
       <el-button style="margin-top:10px" type="primary" @click="this.submitComment()">提交评论</el-button>
       <el-divider v-if="commentList!=null&&commentList.length<1" content-position="left">暂无评论</el-divider>
       <el-divider v-else content-position="left">评论列表</el-divider>
-      <div v-if="commentList.length > 0">
+      <div v-if="commentList!=null&&commentList.length > 0">
         <CommentCard v-for="(comment, index) in commentList" :key="index" :comment="comment" :index="index"></CommentCard>
       </div>
       <!-- <CommentCard></CommentCard> -->
@@ -49,7 +49,7 @@
     },
     methods: {
       getCommentList() {
-        this.$Cookies.set('token', "8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v");
+        // this.$Cookies.set('token', "8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v");
         this.commentList = [];
         // let that = this;
         var data = {

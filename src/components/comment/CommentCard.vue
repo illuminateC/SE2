@@ -43,7 +43,7 @@
       console.log(this.comment);
       let list = JSON.parse(localStorage.getItem("paper_info"));
       if(list === null) return
-      for(let i = 0; i < list.length; i++) {
+      for(let i = 0; list&&i < list.length; i++) {
         let tmpt = JSON.parse(list[i]);
         if(tmpt.id == this.comment.paper_id)
           this.commentOperate = true;

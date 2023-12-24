@@ -38,13 +38,10 @@
             </span>
             <br/><br/>
           </div>
-          <div
-            
-            class="detail_page_start"
-          >
+          <!-- <div class="detail_page_start">
             <h3 class="detail_abstract">页面数</h3>
             <p>{{ this.article.pageNum }}</p><br/>
-          </div>
+          </div> -->
           <div
           >
             <h3 class="detail_abstract">语言</h3>
@@ -370,16 +367,15 @@ export default {
   },
   methods: {
     getCollection(){
-      this.$Cookies.set('token', "8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v");
+      // this.$Cookies.set('token', "8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v");
       var data = {
         "user_id": 2,
       }
       Article.getCollection(data)
       .then((res) => {
         if (res.data) {
-          // this.collections=res.data.package_list.map(item => item.id);
           this.collections=res.data.package_list;
-          console.log(this.collections);
+          console.log(res.data);
         }
       })
       .catch((err) => {
@@ -388,7 +384,7 @@ export default {
     },
     getComments(){
       this.work_id="8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v";
-      this.$Cookies.set('token', "8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v");
+      // this.$Cookies.set('token', "8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v");
       var data = {
         "work_id": "this.$route.params.articleId",
       }
@@ -461,7 +457,7 @@ export default {
     copyCitationToClipboard() {
       // clipboard.writeText(this.article.citationMessage);
       var info = "";
-      for (let i = 0; i < this.article.authors.length; i++) {
+      for (let i = 0; this.article.authors&&i < this.article.authors.length; i++) {
         info += this.article.authors[i].name + ",";
       }
       info  +=
@@ -492,7 +488,7 @@ export default {
       ElMessage.success('已复制到剪贴板');
     },
     addToFav(a){
-      this.$Cookies.set('token', "8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v");
+      // this.$Cookies.set('token', "8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v");
       var data = {
         "work_id": this.$route.params.articleId,
         "package_id": a,
@@ -511,11 +507,13 @@ export default {
       
     },
     removeFromFav(){
+      var myArray = [];
+      myArray.push(this.$route.params.articleId);
       var data = {
-        "work_id_list": this.$route.params.articleId,
+        "work_id_list": myArray,
         "package_id": this.fav,
       }
-      Article.addToFav(data)
+      Article.removeFromFav(data)
       .then((res) => {
         if (res.data) {
           this.article.starred=false;
