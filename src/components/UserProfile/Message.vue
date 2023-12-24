@@ -1,21 +1,4 @@
 <template>
-    <!-- <div class="messagecontainer">
-
-        <div class="button" @click="back">
-            <back :height="30" :width="30"></back>
-        </div>
-        <div class="message-box">
-            <div class="message" v-for="item in currentPageData" :key="item.id" @click="read(item.id)">
-                <li>{{ item.text }}</li>
-            </div>
-
-        </div>
-        <div class="changePage">
-            <n-pagination v-model:page="currentPage" :page-count="100" :page-slot="7" />
-        </div>
-
-    </div>
-    <el-dialog v-model="isDialog"></el-dialog> -->
     <div class="right-box">
         <div class="right">
             <div v-if="isLoading" class="svg">
@@ -124,11 +107,11 @@ export default defineComponent({
         this.getList();
     },
     methods: {
-        back() { this.$router.push },
+        back() { this.$router.push({ name: "map", params: { id: this.$data.user_id } }) },
         read(messageId) {
             // this.isDialog = true
             console.log("delete" + messageId)
-            const message = this.messageList.find(item => item.id === messageId).text
+            const message = this.messageList.find(item => item.id === messageId).content
             Swal.fire(message);
         },
         handleOver() {
@@ -228,12 +211,9 @@ export default defineComponent({
     margin: 0 7% 2vh 7%;
     width: 86%;
     height: 47vh;
-    border-radius: 8px;
-    background-color: rgb(230, 230, 230);
     display: grid;
     grid-template-rows: repeat(5, 1fr);
-    border: 1px solid #ccc;
-    box-shadow: 10px 10px 1px #ddd;
+    grid-row-gap: 1vh;
 }
 
 .changePage {
@@ -246,7 +226,13 @@ export default defineComponent({
     grid-row: span 1;
 }
 
-.message {}
+.message {
+    border: 1px solid grey;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+}
+
 
 
 .message:hover {
