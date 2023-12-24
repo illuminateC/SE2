@@ -61,7 +61,7 @@ import loading from "./loading.vue";
 import none from "./None.vue";
 import './svg.css'
 import messageAPI from "@/api/message";
-import unread from "@/components/UserProfile/unread.vue"
+import unread from "./unread.vue"
 import deleteicon from "./deleteicon.vue";
 export default defineComponent({
     components: {
