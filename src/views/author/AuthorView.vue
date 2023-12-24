@@ -26,6 +26,7 @@
           >
             <div v-if="authorLoaded">{{ this.author.name }}</div>
           </router-link>
+          <el-button id="authentication" text @click="this.dialogVisible = true" v-if="authenticationAccessible">认领</el-button>
         </div>
 
         <div id="authorNameFake">
@@ -121,6 +122,47 @@
       </div>
     </div>
 
+    <el-dialog
+      v-model="dialogVisible"
+      title="认领学者门户"
+      width="30%"
+      :before-close="handleDialogClose"
+    >
+      <el-input v-model="this.inputMessage" placeholder="请输入相关的验证信息" />
+      <span> 请上传相应的图片（） </span>
+      <el-upload 
+        action="#" 
+        list-type="picture-card" 
+        :auto-upload="false" 
+        v-model:file-list="this.fileList" 
+        :limit="2"
+        accept=".png, .jpg, .jpeg"
+      >
+        <el-icon><Plus /></el-icon>
+        <template #file="{ file }">
+          <div>
+            <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
+            <span class="el-upload-list__item-actions">
+              <span
+                class="el-upload-list__item-delete"
+                @click="handlePictureRemove(file)"
+              >
+                <el-icon><Delete /></el-icon>
+              </span>
+            </span>
+          </div>
+        </template>
+      </el-upload>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="handleDialogClose">取消</el-button>
+          <el-button type="primary" @click="sendAuthenticationApply">
+            发送
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
+
     <div style="height: 390px"></div>
 
     <div id="charts">
@@ -161,7 +203,7 @@
         v-if="authorLoaded"
       ></author-year-paper-chart>
       <author-relation-map
-        class="map"
+        class="chart"
         :nodes="this.relationMapNodes"
         :links="this.relationMapLinks"
         v-if="relationLoaded"
@@ -199,33 +241,57 @@
             class="link"
             v-for="(paper, index) in this.papers"
             :key="paper.id"
-            :to="'/detail/main/' + paper.id"
+            :to="'/article/' + paper.id"
             tag="a"
             target="_blank"
           >
             <div class="paperindex">
-              {{ index + 1 }}
+              {{ index + 1 + (currentPage - 1) * this.pageSize }}
             </div>
             <div style="width: 700px">{{ paper.title }}</div>
             <div class="citation2">第{{ getAuthorPosition(paper.authorships) }}作者</div>
             <div class="citation">被引{{ paper.cited_by_count }}次</div>
           </router-link>
+          <div>  
+            <el-pagination 
+              background
+              layout="prev, pager, next"
+              :total="this.author.numOfPaper"
+              :page-size="25"
+              v-model:current-page="this.currentPage"
+              @current-change="this.handleCurrentChange"
+              :pager-count="5"
+              :hide-on-single-page="true"
+              style="margin-left: 30%;"
+            />
+          </div>
+          <!-- <el-pagination
+            background
+            layout="prev, pager, next"
+            :total="this.papers.length"
+            :page-size="25"
+            v-model:current-page="this.currentPage"
+            @current-change="this.handleCurrentChange"
+            :pager-count="5"
+            :hide-on-single-page="true"
+          >
+          </el-pagination> -->
         </div>
 
         <!-- <center style="margin-top: 30px; margin-bottom: 30px">
           <el-pagination
             background
             layout="prev, pager, next"
-            :total="total"
-            :page-size="eachPage"
+            :total="this.papers.length"
+            :page-size="25"
             @current-change="handleCurrentChange"
             :hide-on-single-page="true"
           >
           </el-pagination>
         </center> -->
-      </div>
 
-      <div v-if="type == 100" id="authorLabel" class="dataWrapper">
+      </div>
+      <!-- <div v-if="type == 100" id="authorLabel" class="dataWrapper">
         <div>
           <div class="datatitle">
             <h2>学者标签</h2>
@@ -254,26 +320,10 @@
               align-items: flex-start;
             "
           >
-
-            <!-- <center style="margin-top: 30px; margin-bottom: 30px">
-              <el-pagination
-                background
-                layout="prev, pager, next"
-                :total="total1"
-                :page-size="eachPage1"
-                @current-change="handleCurrentChange1"
-                :pager-count="5"
-                :hide-on-single-page="true"
-              >
-              </el-pagination>
-            </center> -->
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
-
-    <div id="authorColumn" v-if="issettled">这里是专栏</div>
-    <div id="authorRecommend" v-if="issettled">这里是推荐</div>
   </div>
 </template>
 
@@ -295,7 +345,14 @@ export default {
   },
   data(){
     return {
+      testFlag: false,
       type: 2,
+      currentPage: 1,
+      pageSize: 25,
+      authenticationAccessible: true,
+      inputMessage: "",
+      fileList: [],
+      dialogVisible: false,
       authorLoaded: false,
       paperLoaded: false,
       relationLoaded: false,
@@ -305,6 +362,7 @@ export default {
         numOfPaper: 5,
         numOfCitation: 10086,
         hIndex: 20,
+        worksApiUrl: "",
         InformationByYear: [
           { year: 2023, works_count: 0, cited_by_count: 179 },
           { year: 2022, works_count: 2, cited_by_count: 217 },
@@ -392,9 +450,36 @@ export default {
   mounted() {
     this.author.id = this.$route.params.authorId;
     this.initAnimation();
+    this.getAuthorAuthentication();
     this.initAuthorInformation();
   },
   methods: {
+    handleCurrentChange(curPage) {
+      this.currentPage = curPage;
+      this.getAuthorPapers(this.author.worksApiUrl, this.currentPage);
+    },
+    getAuthorAuthentication() {
+      const userInfoString = this.$Cookies.get('user_info');
+      if (userInfoString) {
+          const userInfo = JSON.parse(userInfoString);
+          console.log("用户已登录，获取到Cookie，用户名为：" + userInfo.username);
+          var data = {
+            "user_id": userInfo.id,
+            "author_id": this.author.id
+          };
+          AuthorAPI.getIfAuthenticated(data)
+            .then((res) => {
+              if (res.data.status === "true") {
+                this.authenticationAccessible = true;
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+      } else {
+          console.log("Cookie不存在");
+      }
+    },
     getReverseList(list){
       var len = list.length;
       var reverseList = [];
@@ -470,22 +555,26 @@ export default {
         },
       });
     },
-    getAuthorPapers(papersUrl) {
+    getAuthorPapers(papersUrl, page) {
+      // console.log("getAuthorPapers from " + papersUrl);
+      papersUrl = papersUrl + "&page=" + page;
+      // console.log("getAuthorPapers from " + papersUrl);
       axios.get(papersUrl)
         .then((res) => {
           this.papers = res.data.results;
+          if (res.data.meta.count !== this.author.numOfPaper) {
+            this.author.numOfPaper = res.data.meta.count;
+          }
+          for (let i = 0; i < this.papers.length; i++) {
+            this.papers[i].id = this.papers[i].id.split("org/")[1];
+          }
+          // console.log(papersUrl + " return :" + res.data.results);
+          // console.log("papers :" + res.data.results.length);
           this.paperLoaded = true;
         })
         .catch(function (error) {
           console.log(error);
         });
-      // Author.getAuthorPaper(url)
-      // .then((res) => {
-      //   this.papers = res.data.results;
-      // })
-      // .catch((err) => {
-      //   console.log("Get paperList failed\n");
-      // });
     },
     getAuthorRelations() {
       var data = {
@@ -547,14 +636,55 @@ export default {
             this.author.hIndex = res.data.specific_entity_data.summary_stats.h_index;
             this.author.organizations = res.data.specific_entity_data.affiliations;
             this.author.InformationByYear = res.data.specific_entity_data.counts_by_year;
+            this.author.worksApiUrl = res.data.specific_entity_data.works_api_url;
             this.authorLoaded = true;
-            this.getAuthorPapers(res.data.specific_entity_data.works_api_url);
+            this.getAuthorPapers(res.data.specific_entity_data.works_api_url, 1);
             this.getAuthorRelations();
           }
         })
         .catch((err) => {
           console.log(err);
         });
+    },
+    handlePictureRemove(file){
+      this.fileList.forEach(function(item, index, arr) {
+          if(item == file) {
+              arr.splice(index, 1);
+          }
+      });
+    },
+    beforePictureUpload(file) {
+      console.log("上传的文件格式：" + file.type);
+      if (file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/jpg') {
+        ElMessage.error('请上传jpeg/jpg/png格式的图片');
+        return false;
+      }
+      return true;
+    },
+    sendAuthenticationApply() {
+      var data = new FormData();
+      data.append("images", this.fileList);
+      data.append("author_id", this.author.id);
+      data.append("name", this.author.name);
+      data.append("content", this.inputMessage);
+      if (this.fileList.length > 0) {
+        console.log("fileList:" + this.fileList);
+        console.log("file 1:" + this.fileList[0]);
+      }
+      AuthorAPI.uploadAuthentication(data)
+        .then((res) => {
+          console.log(res.data.msg);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      this.dialogVisible = false;
+      console.log("authenticationData:" + data);
+    }, 
+    handleDialogClose() {
+      this.inputMessage = "";
+      this.fileList = [];
+      this.dialogVisible = false;
     },
   }
 }
@@ -600,6 +730,12 @@ export default {
 
   width: 360px;
   text-align: center;
+}
+
+#authentication {
+  position: absolute;
+  top: 7px;
+  right: -20px;
 }
 
 #authorNameFake {
@@ -650,7 +786,7 @@ export default {
   /* max-width: 300px; */
   max-width: 400px;
 
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 #authorData {
@@ -856,5 +992,23 @@ a:hover {
 .clean-router-link {
   color: inherit;
   text-decoration: none;
+}
+
+::-webkit-scrollbar {
+  width: 8px !important ;
+  height: 8px !important ;
+}
+
+::-webkit-scrollbar-track {
+  background-color:transparent !important ;
+  -webkit-border-radius: 2em !important ;
+  -moz-border-radius: 2em !important ;
+  border-radius:2em !important ;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgb(147,147,153,0.5) !important ;
+  -webkit-border-radius: 2em !important ;
+  -moz-border-radius: 2em !important ;
+  border-radius:2em !important ;
 }
 </style>
