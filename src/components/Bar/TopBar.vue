@@ -21,11 +21,6 @@
                             {{ $t("message.settle") }}
                         </router-link>
                     </div>
-                    <div class="nav_bar_action_link" v-else-if="issettled">
-                        <router-link tag="div" class="nav_bar_action_link" :to="'/portal/' + author()">
-                            {{ $t("message.portal") }}
-                        </router-link>
-                    </div>
                     <router-link tag="div" class="nav_bar_action_link" :to="'/userinfo'">
                         {{ $t("message.personal") }}
                     </router-link>
@@ -33,6 +28,9 @@
                         <router-link tag="div" class="nav_bar_action_link" :to="'/admin'">
                             {{ $t("message.admin") }}
                         </router-link>
+                    </div>
+                    <div class="nav_bar_action_link">
+                        <el-button class="view" type="text" @click="logout">{{ $t("message.logout") }}</el-button>
                     </div>
                 </div>
             </div>
@@ -46,38 +44,37 @@ export default {
     name: "TopBar",
     props: [],
     mounted() {
-        if (localStorage.getItem('userid')) {
-            this.logged_in = true;
-            this.user_info.user_type = localStorage.getItem('user_type');
-            this.user_info.user_id = localStorage.getItem('userid');
+        if (this.$Cookies.get('user_info')) {
+            this.logged_in = false;
+            this.user_info = JSON.parse(this.$Cookies.get('user_info'));
         }
     },
     data() {
         return {
             active_index: 0,
-            logged_in: false,
+            logged_in: true,
             user_info: {
-                user_type: null,
-                user_id: null,
+                isAdmin: null,
+                id: null,
+                is_authenticated: null
             },
         };
     },
     computed: {
         isadmin() {
-            return this.user_info.user_type && this.user_info.user_type == 3
+            return this.user_info.isAdmin == true
         },
         isnotsettled() {
-            return this.user_info.user_type && this.user_info.user_type == 1
+            return this.user_info.is_authenticated != 1
         },
         issettled() {
-            return this.user_info.user_type && this.user_info.user_type == 2
+            return this.user_info.is_authenticated == 1
         }
     },
     methods: {
         change() {
             this.$emit('change');
         },
-        author() { return localStorage.getItem("authorId") },
         backtostartpage() {
             this.$router.push('/home').then(() => {
                 window.location.reload();
@@ -92,8 +89,8 @@ export default {
 
         },
         logout() {
-            localStorage.clear()
-            this.user_info.user_type = null;
+            this.$Cookies.remove('user_info');
+            this.$Cookies.remove('commandId');
             this.logged_in = false;
             this.$router.push('/login')
             window.location.reload();

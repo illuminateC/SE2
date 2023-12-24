@@ -95,7 +95,48 @@ export default {
     },
     created() {
         this.itemType = this.type;
-        this.getHomepage();
+        if (this.title == 'Recommend') {
+            let recommend = JSON.parse(this.$Cookies.get('commandId'));
+            let that = this;
+            axios({
+                method: 'post',
+                url: 'http://123.249.124.181/api/search/entity/search/list',
+                data: {
+                    "entity_type": "works",
+                    "params": {
+                        "filter": {
+                            "concepts.id": recommend[0].id
+                        },
+                        "page": 1,
+                        "per_page": 15,
+                        "search": "",
+                        "sort": {
+                            "cited_by_count": "desc"
+
+                        }
+                    }
+                }
+            })
+                .then(function (res) {
+                    that.result = res.data.list_of_entity_data[0].results
+                    that.itemList = that.result.slice(0, 4);
+                    for (let i = 0; i < that.itemList.length; i++) {
+                        that.itemList[i].rank = i + 1;
+                        that.itemList[i].papers = that.itemList[i].cited_by_count;
+                        var cutIndex = that.itemList[i].id.lastIndexOf("/") + 1;
+                        var Id = that.itemList[i].id.substring(cutIndex);
+                        that.itemList[i].Id = Id;
+                        if (that.itemList[i].title.length > 22) {
+                            that.itemList[i].title = that.itemList[i].title.slice(0, 22) + "...";
+                        }
+                    }
+                })
+                .catch(function (error) {
+                    that.getHomepage();
+                });
+        } else {
+            this.getHomepage();
+        }
     }
 }
 </script>

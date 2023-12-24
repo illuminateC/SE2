@@ -74,6 +74,7 @@
   </template>
   
   <script>
+  import axios from "axios";
     export default {
       props:['type'],
       name: 'StartPageInfo',
@@ -86,17 +87,20 @@
         }
       },
       mounted(){
-        if(this.$props.type=='cs'){
-          this.authors = 114445;
-          this.papers = 98215;
-          this.affiliation = 3153;
-          this.venue = 13;
-        } else{
-          this.authors = 744494;
-          this.papers = 1003171;
-          this.affiliation = 7386;
-          this.venue = 4279;
-        }
+        let that = this;
+        axios({
+                method: 'post',
+                url: 'http://123.249.124.181/api/search/entity/num',
+            })
+                .then(function (res) {
+                    that.authors = res.data.author_count;
+                    that.papers = res.data.work_count;
+                    that.affiliation = res.data.institutions_count;
+                    that.venue = res.data.venues_count;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
       }
     }
   </script>

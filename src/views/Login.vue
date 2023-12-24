@@ -397,6 +397,8 @@ export default {
         if (res.data) {
             let valueData = JSON.stringify({
                 id:res.data.user_id,
+                isAdmin:res.data.isAdmin,
+                is_authenticated:res.data.is_authenticated
             })  
             this.$Cookies.set('token', res.data.token);
             this.$Cookies.set('user_info', valueData,{expires:30});
