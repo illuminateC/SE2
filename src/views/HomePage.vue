@@ -30,7 +30,7 @@
       </div>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取消</el-button>
+          <el-button @click="closeDialog">取消</el-button>
           <el-button type="primary" @click="changeDialog">
             确定
           </el-button>
@@ -56,7 +56,7 @@ export default {
   data() {
     return {
       input: '',
-      dialogFormVisible: this.$Cookies.get('commandId') == "[]",
+      dialogFormVisible: this.$Cookies.get('commandId') == "[]" || this.$Cookies.get('commandId') == null,
       arr: [],
       allimgData: [
         {
@@ -168,7 +168,11 @@ export default {
       }
     },
     changeDialog() {
-      dialogFormVisible = false;
+      this.dialogFormVisible = false;
+    },
+    closeDialog() {
+      this.dialogFormVisible = false;
+      this.$Cookies.set('commandId', "[]");
     }
   }
 }

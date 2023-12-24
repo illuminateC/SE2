@@ -8,9 +8,6 @@
             </div>
             <div class="nav_bar_action_frame">
                 <div v-if="logged_in === false">
-                    <router-link tag="div" class="nav_bar_action_link" to="/register">
-                        {{ $t("message.register") }}
-                    </router-link>
                     <router-link tag="div" class="nav_bar_action_link" to="/login">
                         {{ $t("message.login") }}
                     </router-link>
@@ -44,15 +41,15 @@ export default {
     name: "TopBar",
     props: [],
     mounted() {
-        if (this.$Cookies.get('user_info')) {
-            this.logged_in = false;
+        if (this.$Cookies.get('user_info') != null) {
+            this.logged_in = true;
             this.user_info = JSON.parse(this.$Cookies.get('user_info'));
         }
     },
     data() {
         return {
             active_index: 0,
-            logged_in: true,
+            logged_in: false,
             user_info: {
                 isAdmin: null,
                 id: null,
@@ -92,7 +89,6 @@ export default {
             this.$Cookies.remove('user_info');
             this.$Cookies.remove('commandId');
             this.logged_in = false;
-            this.$router.push('/login')
             window.location.reload();
         }
     }

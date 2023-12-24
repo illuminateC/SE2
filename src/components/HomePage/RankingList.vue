@@ -96,7 +96,13 @@ export default {
     created() {
         this.itemType = this.type;
         if (this.title == 'Recommend') {
-            let recommend = JSON.parse(this.$Cookies.get('commandId'));
+            let recommend;
+            if (this.$Cookies.get('commandId') == null || this.$Cookies.get('commandId') == "[]") {
+                recommend = [{id: "0"}];
+            }
+            else {
+                recommend = JSON.parse(this.$Cookies.get('commandId'));
+            }
             let that = this;
             axios({
                 method: 'post',
