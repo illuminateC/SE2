@@ -6,8 +6,8 @@
                 <input type="file" accept="image/*" ref="fileInput" @change="changeUpload">
                 <div v-if="this.$data.isVisitor" class="follow-box">
                     <button class="follow-button" @click="follow">
-                        <div v-if="this.$data.isFollow == 'false'">FOLLOW</div>
-                        <div v-else>UNFOLLOW</div>
+                        <div style="font-size: 15px;" v-if="this.$data.isFollow == 'false'">FOLLOW</div>
+                        <div style="font-size: 15px;" v-else>UNFOLLOW</div>
                     </button>
                 </div>
             </div>
@@ -458,7 +458,6 @@ body {
 
     .follow-button {
         display: flex;
-        font-size: 16px;
         font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         background-color: aliceblue;
         opacity: 70%;

@@ -23,7 +23,7 @@
                             <div class="word">
                                 <div class="wordcontain">
                                     <div class="name">
-                                        <p @click="jump(item.user_id)">{{ item.username }}</p>
+                                        <p @click="jump(item.user_id)">{{ item.nickname }}</p>
                                     </div>
                                     <div class="works" @click="jump(item.user_id)">
                                         <p>作品数：{{ item.works }}</p>
