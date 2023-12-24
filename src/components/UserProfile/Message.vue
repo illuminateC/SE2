@@ -17,7 +17,21 @@
                 <div v-if="messageList && messageList.length">
                     <div class="message-box">
                         <div class="message" v-for="item in currentPageData" :key="item.id" @click="read(item.id)">
-                            <li>{{ item.content }}</li>
+                            <div class="each" @mouseover="setHoveredId(item.id)"  @mouseleave="resetHoverId()">
+                               <div v-show="item.is_read===false">
+                                <unread style="display: flex; margin-left: 1vw;"></unread>
+                                </div>
+                            
+                            <div style="display: flex; width: 80%;">
+                                <div class="title">{{ item.sender_name }}</div>
+                                <div class="time">{{ new Date(item.time).toLocaleString() }}</div>
+                            </div>
+                            <div class="delete" 
+                            
+                            v-show="hoveredId === item.id" style="display: flex; margin-left: 3vw;">
+                                <deleteicon @click.stop = "delete_message(item.id)"></deleteicon></div> 
+                            </div>
+                            
                         </div>
                     </div>
                     <div class="bottom">
@@ -47,11 +61,15 @@ import loading from "./loading.vue";
 import none from "./None.vue";
 import './svg.css'
 import messageAPI from "@/api/message";
+import unread from "@/components/UserProfile/unread.vue"
+import deleteicon from "./deleteicon.vue";
 export default defineComponent({
     components: {
         back,
         loading,
-        none
+        none,
+        unread,
+        deleteicon
     },
     setup() {
         return {
@@ -68,7 +86,8 @@ export default defineComponent({
             width: 30,
             isLoading: false,
             user_id: "",
-            isVisitor: ""
+            isVisitor: "",
+            hoveredId:""
         };
     },
     computed: {
@@ -108,11 +127,13 @@ export default defineComponent({
     },
     methods: {
         back() { this.$router.push({ name: "map", params: { id: this.$data.user_id } }) },
-        read(messageId) {
-            // this.isDialog = true
-            console.log("delete" + messageId)
-            const message = this.messageList.find(item => item.id === messageId).content
-            Swal.fire(message);
+        async read(messageId) {
+            const message = this.messageList.find(item => item.id == messageId)
+            message.is_read = JSON.parse('true');
+            Swal.fire(message.content);
+            const data={"id":messageId}
+            const response = await messageAPI.readMeaage(data)
+
         },
         handleOver() {
             anime({
@@ -132,6 +153,12 @@ export default defineComponent({
                 easing: 'easeInOutQuad' // 缓动函数
             })
         },
+        setHoveredId(id) {
+            this.$data.hoveredId = id
+        },
+        resetHoverId() {
+            this.$data.hoveredId = null
+        },
         async getList() {
             try {
                 this.$data.isLoading = true;
@@ -147,6 +174,28 @@ export default defineComponent({
                 this.$data.isLoading = false; // 数据加载完成，隐藏 loading 状态
             }
         },
+        async delete_message(id){
+            Swal.fire({
+                title: "确定删除该消息?",
+                text: "注意：该操作不可逆!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "确认删除!",
+                cancelButtonText: "取消"
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const data = { "id": id }
+                    const response = await messageAPI.delete_message(data)
+                    this.$data.messageList = this.$data.messageList.filter(message => message.id !== id);
+                    Swal.fire({
+                        title: "该消息已删除！",
+                        icon: "success"
+                    });
+                }
+            });
+        }
 
     }
 })
@@ -160,7 +209,7 @@ export default defineComponent({
     .right {
         margin-left: 3vw;
         width: 90%;
-        height: 60vh;
+        height: 65vh;
         background-color: white;
         border-radius: 20px;
         box-shadow: 4px 3px 5px rgba(0, 0, 0, 0.5);
@@ -229,8 +278,22 @@ export default defineComponent({
 .message {
     border: 1px solid grey;
     border-radius: 10px;
-    display: flex;
-    align-items: center;
+    
+    .each{
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
+    .title{
+        display: flex;
+        margin-left: 2vw;
+        font-size: 15px;
+        font-weight: bold;
+    }
+    .time{
+        display: flex;
+        margin-left: auto;
+    }
 }
 
 

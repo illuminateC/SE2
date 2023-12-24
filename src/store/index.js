@@ -5,6 +5,7 @@ export default createStore({
     avatar: null,
     follows: null,
     collections: null,
+    unreads:null,
   },
   getters: {
     getAvatar: state => state.avatar
@@ -18,6 +19,9 @@ export default createStore({
     },
     setCollections(state, collections) {
       state.collections = collections
+    },
+    setUnreads(state,unreads){
+      state.unreads = unreads
     }
   },
   actions: {

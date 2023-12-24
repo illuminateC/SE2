@@ -1,39 +1,14 @@
 <template>
     <div class="right-box">
         <div class="right">
-            <!-- <div class="map-box">
-                <p>here is a map</p>
-                <div class="map">此处应有图片</div>
+            
+            <div style="display: flex; width: 100%;" v-if="this.$data.is_authenticated==0">
+                <div style="display: flex; width: 100%; align-items: center; justify-content: center;">
+                    <None></None>
+                    <p style="font-size: 20px; font-weight: bold;">仍未认领门户，去别的地方转转吧！ </p>
+                </div>
             </div>
-            <div class="article-box">
-                <div class="grid-item">
-                    <div class="grid-head">
-                        <p>我的投稿</p>
-                        <div class="all" @click="jumpAll('post')">全部</div>
-                    </div>
-                    <div class="article-container">
-                        <div>
-                            <p>这是第一个</p>
-                            <p href="a">xxxx</p>
-                        </div>
-                        <div>2</div>
-                        <div>3</div>
-                    </div>
-                </div>
-                <div class="grid-item">
-                    <div class="grid-head">
-                        <p>我的收藏</p>
-                        <div class="all" @click="jumpAll('star')">全部</div>
-                    </div>
-                    <div class="article-container">
-                        <div>1</div>
-                        <div>2</div>
-                        <div>3</div>
-                    </div>
-                </div>
-
-            </div> -->
-            <swiper :slidesPerView="1" :spaceBetween="30" :pagination="{
+            <swiper  v-else :slidesPerView="1" :spaceBetween="30" :pagination="{
                 clickable: true,
             }" :mousewheel="true" :modules="modules" class="mySwiper">
                 <swiper-slide>
@@ -46,74 +21,65 @@
                     <div class="grid-item">
                         <div class="grid-head">
                             <p>我的投稿</p>
-                            <div class="all" @click="jumpAll('post')">全部</div>
+                            <div class="all" @click="jumpMe()">进入个人主页</div>
                         </div>
                         <div class="article-container">
-                            <div v-for="item in post" :key="item.id">
-                                <div class="each-container">
-                                    <Num :Number=item.id></Num>
-                                    {{ item.id }}
-                                    {{ item.content }}
+                            <div v-for="(item,index) in post" :key="index">
+                                <div class="each-container" @click="jumparticle(item.id)">
+                                    <Num :Number=index+1></Num>
+                                   {{ item.title }}
                                 </div>
                             </div>
 
-                        </div>
-                    </div>
-                </swiper-slide><swiper-slide>
-                    <div class="grid-item">
-                        <div class="grid-head">
-                            <p>我的收藏</p>
-                            <div class="all" @click="jumpAll('star')">全部</div>
-                        </div>
-                        <div class="article-container">
-                            <div v-for="item in star" :key="item.id">
-                                <div class="each-container">
-                                    <Num :Number=item.id></Num>
-                                    {{ item.id }}
-                                    {{ item.content }}
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </swiper-slide>
-
             </swiper>
         </div>
     </div>
 </template>
 
 <script>
-// Import Swiper Vue.js components
+import userAPI from '@/api/user';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import Num from './Num.vue'
-// Import Swiper styles
+import { Search } from '@/api/search';
+
 import 'swiper/css';
 
 import 'swiper/css/pagination';
 
 import { Mousewheel, Pagination } from 'swiper/modules';
+import None from './None.vue';
 export default {
     data() {
         return {
-            post: [
-                { id: 1, content: 'THIs IS the TITLE' },
-                { id: 2, content: 'Block 2' },
-                { id: 3, content: 'Block 3' }
-            ],
-            star: [
-                { id: 1, content: 'THIs IS the star' },
-                { id: 2, content: 'Block 2' },
-                { id: 3, content: 'Block 3' },
-                { id: 4, content: 'THIs IS the TITLE' },
-                { id: 5, content: 'Block 2' },
-
-            ]
+            post: [],
+            user_id:"",
+            isVisitor:false,
+            gateway_id:"",
+            is_authenticated:1,
         }
     },
     components: {
         Swiper,
         SwiperSlide,
-        Num
+        Num,
+        None
+    },
+    mounted () {
+        const hasIdParam = this.$route.params.hasOwnProperty('id');
+        if (hasIdParam) {
+            this.$data.user_id = this.$route.params.id
+            const userInfoString = this.$Cookies.get('user_info');
+            if (userInfoString) {
+                const userInfo = JSON.parse(userInfoString);
+                if (this.$data.user_id != userInfo.id) this.$data.isVisitor = true;
+            } else {
+                this.$data.isVisitor = true;
+            }
+        };
+        this.getInfo()
     },
     setup() {
         return {
@@ -127,6 +93,40 @@ export default {
                 this.$router.push({ name: name, params: "id" })
             } else this.$router.push({ name: name })
 
+        },
+        async getInfo(){
+            var data = { "user_id": this.$data.user_id }
+            var response = await userAPI.getInfo(data)
+            if(response.data.result.is_authenticated==1){
+                this.$data.is_authenticated=1
+                const parts = response.data.result.gateway_id.split('/');
+                this.$data.gateway_id = parts[parts.length - 1]
+                data={
+                "entity_type": "works",
+                "params": {
+                    "filter": {
+                        "authorships.author.id":this.$data.gateway_id
+                    },
+                    "page": 1,
+                    "per_page": 5,
+                    "search": "",
+                    "sort": {
+                        "cited_by_count":"desc"
+                    }
+                }
+            }
+            response = await Search.getSearchDataList(data)
+            this.$data.post=response.data.list_of_entity_data[0].results
+            }else{
+                this.$data.is_authenticated=0
+            }
+        },
+        jumparticle(id){
+            const parts = id.split('/');
+            const articleId=parts[parts.length-1]
+            this.$router.push({name:"articleDetail",params:{articleId:articleId}})
+        },jumpMe(){
+            this.$router.push({name:"Author",params:{authorId:this.$data.gateway_id}})
         }
     },
 }
@@ -200,9 +200,10 @@ export default {
 
             .each-container {
                 display: flex;
-                font-size: 40px;
+                font-size: 18px;
                 font-style: italic;
                 cursor: pointer;
+                align-items: center;
             }
 
             .each-container:hover {

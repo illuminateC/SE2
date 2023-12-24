@@ -45,7 +45,7 @@
 
                 </div>
                 <div v-if="!this.$data.isVisitor" class="message-box" @click="jumpMessage">
-                    <MessageBox :isIn="this.$props.isIn" :num="this.$data.user.unread_message_count"></MessageBox>
+                    <MessageBox :isIn="this.$props.isIn"></MessageBox>
                 </div>
             </div>
 
@@ -110,8 +110,8 @@ export default {
     },
     computed: {
         ...mapState(['follows']),
-        ...mapState(['collections'])
-
+        ...mapState(['collections']),
+        ...mapState(['unreads'])
     },
     mounted() {
         const hasIdParam = this.$route.params.hasOwnProperty('id');
@@ -292,6 +292,7 @@ export default {
             this.$data.user = response.data.result
             this.$store.commit('setFollows', this.$data.user.follows)
             this.$store.commit('setCollections', this.$data.user.collections)
+            this.$store.commit('setUnreads',this.$data.user.unread_message_count)
             data = { "user_id": this.$data.loginId, "author_id": id }
             response = await followAPI.isFollow(data)
             this.$data.isFollow = response.data.is_follow
@@ -346,7 +347,7 @@ body {
     z-index: 2;
 
     .personal-info {
-        margin: 15% 10% 15% 10%;
+        margin: 15% 10% 0 10%;
         height: auto;
     }
 
@@ -365,14 +366,14 @@ body {
     }
 
     .mailbox {
-        margin: 10% 10% 0vh 7%;
-        font-size: 12px;
+        margin: 0 10% 0vh 7%;
+        font-size: 10px;
         display: flex;
         align-items: center;
     }
 
     .mailbox span {
-        margin-left: 1vw;
+        
     }
 
     .instruction {
@@ -607,8 +608,8 @@ body {
 }
 
 #cropImg {
-    height: 450px;
-    width: 450px;
+    height: 35vh;
+    width: 50vw;
     box-shadow: 0 0 5px #adadad;
 }
 
