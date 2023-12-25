@@ -15,7 +15,7 @@ const routes = [
     path: '/home',
     name: 'HomePage',
     component: HomePage,
-    meta: { title: "XpertiseScholar 首页" }
+    meta: { title: "SpiderScholar 首页" }
   },
   {
     path: '/about',

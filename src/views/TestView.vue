@@ -1,100 +1,134 @@
 <template>
-    <swiper :slidesPerView="1" :spaceBetween="30" :pagination="{
-        clickable: true,
-    }" :mousewheel="true" :modules="modules" class="mySwiper">
-        <swiper-slide>Slide 1</swiper-slide>
-        <swiper-slide>Slide 2</swiper-slide><swiper-slide>Slide 3</swiper-slide>
-        <swiper-slide>Slide 4</swiper-slide><swiper-slide>Slide 5</swiper-slide>
-        <swiper-slide>Slide 6</swiper-slide><swiper-slide>Slide 7</swiper-slide>
-        <swiper-slide>Slide 8</swiper-slide><swiper-slide>Slide 9</swiper-slide>
-    </swiper>
-
-    <button @click="login">login</button>
-    <button @click="logout">logout</button>
+<el-form-item label="上传模板：" prop="fileId">
+    <el-upload
+       ref="exampleUploadRef"
+      :file-list="fileList"
+      :action="postUrl"
+      :limit="1"
+      list-type="text"
+      accept=".doc,.docx"
+      class="avatar-uploader"
+      :before-remove="beforeRemove"
+      :before-upload="beforeUpload"
+      :on-remove="handleRemove"   
+      :name="fileName"
+      :data="otherParam"
+      :headers="headers"
+      :on-preview="handlePreview"
+      :on-exceed="handleExceed"
+      :multiple="false"
+      :on-success="uploadSuccess"
+      :on-error="errorMessage"
+      :on-change="handleChange"
+    >
+      <div class="uploadIcon">
+        <el-icon>
+          <Plus />
+        </el-icon>
+      </div>
+      <template #tip>
+        <div class="el-upload__tip text-red">只能上传doc/docx文件</div>
+      </template>
+    </el-upload>
+</el-form-item>
 </template>
 <script>
-// Import Swiper Vue.js components
-import { Swiper, SwiperSlide } from 'swiper/vue';
-
-// Import Swiper styles
-import 'swiper/css';
-
-import 'swiper/css/pagination';
-
-
-
-// import required modules
-import { Mousewheel, Pagination } from 'swiper/modules';
-import userAPI from '@/api/user';
-import CookiesPlugin from '@/cookies-plugin';
 export default {
-    components: {
-        Swiper,
-        SwiperSlide,
+setup() {
+const token = store.getters["login_store/token"];
+const data = reactive({
+  fileName: "multipartFiles",//用于指定上传文件的字段名，也就是在后端接收上传文件时需要使用的字段名。在前端发送上传请求时，请求头中会包含该字段名和对应的文件数据，后端就可以通过这个字段名获取到上传的文件数据
+  headers: {
+          Authorization: "Bearer " + token //获取token数据
+           },
+  otherParam: {
+          bucketName: "fastabp",
+          fileType: "personalData",
+          unzip: false
     },
-    setup() {
-        return {
-            modules: [Mousewheel, Pagination],
-        };
-    },
-    methods: {
-        login() {
-            let valueData = JSON.stringify({
-                id: 2,
-            });
-            this.$Cookies.set('user_info', valueData, { expires: 30 });
-            this.$Cookies.set('token', "+e@34e4pq@b+a(sfsjw8soib57oie17=6aapg1)_w$ztgiu+d3")
-        },
-        async logout() {
-
-            const response = await userAPI.logout()
-            this.$Cookies.remove('token')
-            alert(response.data.msg)
-
+   fileList:[],
+   postUrl :""
+})
+const beforeRemove = (file, uploadFiles) => {
+     if(this.status=='view'){
+   ElMessage({
+            message: "不允许删除！",
+            type: "error",
+            offset: 60
+          });
+          return false
+        }else{
+          return true
         }
-    },
 };
+ //文件移除操作
+const  handleRemove = (file, fileList) => {
+  data.fileList=fileList//或者data.fileList = []; //清空fileList所有数组    
+};
+  //上传文件失败
+const errorMessage = (response) => {
+        return ElMessage({
+          message: "文件上传失败，请联系管理员",
+          type: "error",
+          offset: 60
+        });
+};
+//上传文件成功
+const uploadSuccess = (response, file, fileList) => {
+        data.fileList.push({//得到的文件数据转换成 name url方式
+          name: file.fileOrigName,
+          url: file.filePreviewUrl
+        });
+};
+//文件超出个数限制时的钩子
+const handleExceed = (files, fileList) => {};
+//点击文件列表中已上传的文件时的钩子,进行下载
+const handlePreview = (file) => {
+        console.log("file", file);
+        var link = document.createElement("a"); //定义一个a标签
+        link.download = file.name; //下载后的文件名称
+        link.href = file.url; //需要生成一个 URL 来实现下载
+        link.click(); //模拟在按钮上实现一次鼠标点击
+        window.URL.revokeObjectURL(link.href);
+  };
+const handleChange = (uploadFile, uploadFiles) => {};
+//判断上传之前文件的格式
+const beforeUpload = (file) => {
+        const isLt20M = file.size / 1024 / 1024 < 20;
+        if (!isLt20M) {
+          ElMessage({
+            message: "上传图片大小不能超过 20MB!",
+            type: "error",
+            offset: 60
+          });
+        }
+        var fileType = file.name.substring(file.name.lastIndexOf(".") + 1);
+        const isFile = fileType === "doc" || fileType === "docx";
+  
+        if (!isFile) {
+          ElMessage({
+            message: "请选择正确的文件格式",
+            type: "error",
+            offset: 60
+          });
+          return false;
+        }
+        return isLt20M && isFile;
+  };
+
+onMounted(async () => {
+data.postUrl = "http://XXXXX/file/uploadFile";
+});
+
+}
+}
 </script>
-<style>
-#app {
-    height: 100%;
-}
-
-html,
-body {
-    position: relative;
-    height: 100%;
-}
-
-body {
-    background: #eee;
-    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    color: #000;
-    margin: 0;
-    padding: 0;
-}
-
-.swiper {
-    width: 100%;
-    height: 20vh;
-}
-
-.swiper-slide {
-    text-align: center;
-    font-size: 18px;
-    background: #fff;
-
-    /* Center slide text vertically */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.swiper-slide img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+<style lang="scss" scoped>
+            //修改上传图标的样式
+        .uploadIcon {
+                border: 1px dashed var(--el-border-color);
+                border-radius: 5px;
+                padding: 2px 12px;
+           }
 </style>
+

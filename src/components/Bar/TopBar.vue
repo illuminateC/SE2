@@ -2,7 +2,7 @@
     <div id="nav_bar">
         <div class="nav_bar_frame">
             <div class="nav_bar_icon">
-                <div class="nav_bar_icon_title_bold" @click="backtostartpage">Xpertise</div>
+                <div class="nav_bar_icon_title_bold" @click="backtostartpage">Spider</div>
                 <div class="nav_bar_icon_title" @click="backtostartpage">Scholar</div>
                 <el-button class="view" type="text" @click="change">{{ $t("message.language") }}</el-button>
             </div>
@@ -13,19 +13,9 @@
                     </router-link>
                 </div>
                 <div v-else>
-                    <div class="nav_bar_action_link" v-if="isnotsettled">
-                        <router-link tag="div" class="nav_bar_action_link" :to="'/settle'">
-                            {{ $t("message.settle") }}
-                        </router-link>
-                    </div>
-                    <router-link tag="div" class="nav_bar_action_link" :to="'/userinfo'">
+                    <router-link tag="div" class="nav_bar_action_link" :to="{path:'/user/' + this.user_info.id}">
                         {{ $t("message.personal") }}
                     </router-link>
-                    <div class="nav_bar_action_link" v-if="isadmin">
-                        <router-link tag="div" class="nav_bar_action_link" :to="'/admin'">
-                            {{ $t("message.admin") }}
-                        </router-link>
-                    </div>
                     <div class="nav_bar_action_link">
                         <el-button class="view" type="text" @click="logout">{{ $t("message.logout") }}</el-button>
                     </div>
@@ -41,6 +31,12 @@ export default {
     name: "TopBar",
     props: [],
     mounted() {
+        if (this.$Cookies.get('user_info') != null) {
+            this.logged_in = true;
+            this.user_info = JSON.parse(this.$Cookies.get('user_info'));
+        }
+    },
+    created() {
         if (this.$Cookies.get('user_info') != null) {
             this.logged_in = true;
             this.user_info = JSON.parse(this.$Cookies.get('user_info'));
@@ -88,6 +84,8 @@ export default {
         logout() {
             this.$Cookies.remove('user_info');
             this.$Cookies.remove('commandId');
+            this.$Cookies.remove('commandIdNum');
+            this.$Cookies.remove('token');
             this.logged_in = false;
             window.location.reload();
         }

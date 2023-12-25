@@ -114,6 +114,9 @@ export default {
         async getInfo() {
             var data = { "user_id": this.$data.user_id }
             var response = await userAPI.getInfo(data)
+            if (response.data.msgno == -1) {
+                return
+            }
             if (response.data.result.is_authenticated == 1) {
                 this.$data.is_authenticated = 1
                 const parts = response.data.result.gateway_id.split('/');

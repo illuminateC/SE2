@@ -71,8 +71,9 @@ export default {
             }
           },
         },
-        animationDuration: 100,
+        animationDuration: 1500,
         animationEasingUpdate: "quinticInOut",
+        // layoutAnimation: false,
         series: [
           {
             name: "作者合作关系图",
