@@ -16,11 +16,6 @@
                     <router-link tag="div" class="nav_bar_action_link" :to="{path:'/user/' + this.user_info.id}">
                         {{ $t("message.personal") }}
                     </router-link>
-                    <div class="nav_bar_action_link" v-if="isadmin">
-                        <router-link tag="div" class="nav_bar_action_link" :to="'/admin'">
-                            {{ $t("message.admin") }}
-                        </router-link>
-                    </div>
                     <div class="nav_bar_action_link">
                         <el-button class="view" type="text" @click="logout">{{ $t("message.logout") }}</el-button>
                     </div>
@@ -46,7 +41,6 @@ export default {
             this.logged_in = true;
             this.user_info = JSON.parse(this.$Cookies.get('user_info'));
         }
-        console.log(this.$Cookies.get('user_info'))
     },
     data() {
         return {
