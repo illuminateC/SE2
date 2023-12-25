@@ -53,6 +53,7 @@ import loading from "./loading.vue";
 import none from "./None.vue";
 import './svg.css'
 import reviewAPI from "@/api/review";
+import userAPI from "@/api/user";
 export default defineComponent({
     components: {
         back,
@@ -98,7 +99,7 @@ export default defineComponent({
         }
 
     },
-    mounted() {
+    async mounted() {
         const hasIdParam = this.$route.params.hasOwnProperty('id');
         if (hasIdParam) {
             this.$data.user_id = this.$route.params.id
@@ -107,6 +108,12 @@ export default defineComponent({
                 const userInfo = JSON.parse(userInfoString);
                 if (this.$data.user_id != userInfo.id) {
                     this.$router.push({ name: "map", params: { "id": this.$data.user_id } })
+                } else {
+                    const data = { "user_id": this.$data.user_id }
+                    const response = await userAPI.getInfo(data)
+                    if (response.data.result.is_admin == false) {
+                        this.$router.push({ name: "map", params: { "id": this.$data.user_id } })
+                    }
                 }
             } else {
                 this.$router.push({ name: "map", params: { "id": this.$data.user_id } })

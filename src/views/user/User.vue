@@ -34,7 +34,7 @@
                 <p>收藏</p>
                 <span> {{ collections }}</span>
             </div>
-            <div class="moveDiv" v-show="isAdmin" @click="jumpReview">
+            <div class="moveDiv" v-show="user.is_admin && !isVisitor" @click="jumpReview">
                 <p>前往审核信息</p>
             </div>
         </div>
@@ -122,14 +122,17 @@ export default {
         if (hasIdParam) {
             this.$data.currentId = this.$route.params.id;
             const userInfoString = this.$Cookies.get('user_info');
-            this.getInfo(this.$data.currentId)
             if (userInfoString) {
+                this.getInfo(this.$data.currentId)
                 const userInfo = JSON.parse(userInfoString);
                 this.$data.loginId = userInfo.id
                 if (this.$data.loginId != this.$data.currentId) this.$data.isVisitor = true;
             } else {
+                alert("请先登录！")
+                this.$router.push({ name: "HomePage" })
                 this.$data.isVisitor = true;
             }
+
         }
     },
     created() {
@@ -296,6 +299,11 @@ export default {
         async getInfo(id) {
             var data = { "user_id": id }
             var response = await userAPI.getInfo(data)
+            if (response.data.msgno == -1) {
+                this.$router.push({ "name": "HomePage" })
+                alert(response.data.msg)
+                return
+            }
             this.$data.user = response.data.result
             this.$store.commit('setFollows', this.$data.user.follows)
             this.$store.commit('setCollections', this.$data.user.collections)
