@@ -88,6 +88,7 @@ export default {
         logout() {
             this.$Cookies.remove('user_info');
             this.$Cookies.remove('commandId');
+            this.$Cookies.remove('commandIdNum');
             this.logged_in = false;
             window.location.reload();
         }

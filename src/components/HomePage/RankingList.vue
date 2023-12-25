@@ -1,6 +1,6 @@
 <template>
     <div id="root">
-        <div id="title">
+        <div id="title" @click="refreshRecommend">
             <span>{{ this.title }}</span>
         </div>
         <div id="rank">
@@ -27,6 +27,11 @@ export default {
         };
     },
     methods: {
+        refreshRecommend() {
+            if (this.title == 'Recommend') {
+                this.getRecommend();
+            }
+        },
         getHomepage() {
             const that = this;
             axios({
@@ -91,17 +96,15 @@ export default {
                 .catch(function (error) {
                     console.log(error);
                 });
-        }
-    },
-    created() {
-        this.itemType = this.type;
-        if (this.title == 'Recommend') {
+        },
+        getRecommend() {
             let recommend;
-            if (this.$Cookies.get('commandId') == null || this.$Cookies.get('commandId') == "[]") {
-                recommend = [{id: "0"}];
-            }
-            else {
+            let id = 0;
+            let num = this.$Cookies.get('commandIdNum');
+            if (this.$Cookies.get('commandId') != null && this.$Cookies.get('commandId') != "[]") {
                 recommend = JSON.parse(this.$Cookies.get('commandId'));
+                id = recommend[num].id;
+                console.log(num)
             }
             let that = this;
             axios({
@@ -111,7 +114,7 @@ export default {
                     "entity_type": "works",
                     "params": {
                         "filter": {
-                            "concepts.id": recommend[0].id
+                            "concepts.id": id
                         },
                         "page": 1,
                         "per_page": 15,
@@ -136,10 +139,23 @@ export default {
                             that.itemList[i].title = that.itemList[i].title.slice(0, 22) + "...";
                         }
                     }
+                    if (num != recommend.length - 1) {
+                        num++;
+                        that.$Cookies.set('commandIdNum', num);
+                    } else {
+                        num = 0;
+                        that.$Cookies.set('commandIdNum', num);
+                    }
                 })
                 .catch(function (error) {
                     that.getHomepage();
                 });
+        }
+    },
+    created() {
+        this.itemType = this.type;
+        if (this.title == 'Recommend') {
+            this.getRecommend();
         } else {
             this.getHomepage();
         }

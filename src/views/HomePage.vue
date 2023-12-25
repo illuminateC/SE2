@@ -56,7 +56,7 @@ export default {
   data() {
     return {
       input: '',
-      dialogFormVisible: this.$Cookies.get('commandId') == "[]" || this.$Cookies.get('commandId') == null,
+      dialogFormVisible: (this.$Cookies.get('commandId') == "[]" || this.$Cookies.get('commandId') == null) && this.$Cookies.get('user_info') != null,
       arr: [],
       allimgData: [
         {
@@ -165,14 +165,18 @@ export default {
         commandId = commandId.filter(item => item.id != this.allimgData[index].id)
         let command = JSON.stringify(commandId);
         this.$Cookies.set('commandId', command);
+        console.log(this.$Cookies.get('commandIdNum'))
       }
     },
     changeDialog() {
       this.dialogFormVisible = false;
+      window.location.reload();
+      this.$Cookies.set('commandIdNum', 0);
     },
     closeDialog() {
       this.dialogFormVisible = false;
       this.$Cookies.set('commandId', "[]");
+      this.$Cookies.set('commandIdNum', 0);
     }
   }
 }
