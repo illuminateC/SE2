@@ -1,6 +1,6 @@
 <template>
-    <svg height="400" node-id="1" sillyvg="true" template-height="600" template-width="600" version="1.1"
-        viewBox="0 0 600 600" width="400" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <svg height="300" node-id="1" sillyvg="true" template-height="600" template-width="600" version="1.1"
+        viewBox="0 0 600 600" width="300" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <defs node-id="57">
             <linearGradient gradientUnits="objectBoundingBox" id="linearGradient-1" node-id="5" spreadMethod="pad"
                 x1="1.4458808" x2="0.29515958" y1="0.6691032" y2="0.6732615">

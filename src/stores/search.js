@@ -15,7 +15,7 @@ export const useSearchStore = defineStore({
             // 对应于用户的搜索历史，是一个 String 类型的数组
             historyList: useLocalStorage("historyList", [], localStorage),
             // 搜索结果排序类型
-            sortType: useLocalStorage("sortType", "Relevance", localStorage),
+            sortType: useLocalStorage("sortType", "相关度↓", localStorage),
         }
     },
     actions: {

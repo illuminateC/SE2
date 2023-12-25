@@ -51,6 +51,7 @@ const messages = {
       personal: 'Personal Center',
       admin: 'Administrator',
       language: 'Switch languages',
+      logout: 'Logout'
     }
   },
   cn: {
@@ -62,6 +63,7 @@ const messages = {
       personal: '个人中心',
       admin: '管理员',
       language: '切换语言',
+      logout: '退出'
     }
   }
 }

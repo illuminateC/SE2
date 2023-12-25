@@ -1,0 +1,13 @@
+/* 在线链接服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
+@font-face {
+    font-family: "阿里妈妈刀隶体 Regular";font-weight: 400;
+    font-display: swap;
+    src: url('./AlimamaDaoLiTi.ttf');
+    font-style: normal;
+}
+@font-face {
+    font-family: "阿里妈妈方圆体 VF Regular";font-weight: 400;
+    font-display: swap;
+    src: url('./AlimamaFangYuanTiVF-Thin.ttf');
+    font-style: normal;
+}

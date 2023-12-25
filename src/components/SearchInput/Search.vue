@@ -42,6 +42,7 @@ import { useSearchStore } from '@/stores/search';
 import History from './History.vue';
 import SearchInputFrame from './SearchInputFrame.vue';
 import {ref} from "vue";
+import Hint from './Hint.vue';
 
 const emits = defineEmits([EMIT_SEARCH]);
 

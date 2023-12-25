@@ -6,8 +6,8 @@
                 <input type="file" accept="image/*" ref="fileInput" @change="changeUpload">
                 <div v-if="this.$data.isVisitor" class="follow-box">
                     <button class="follow-button" @click="follow">
-                        <div v-if="this.$data.isFollow == 'false'">FOLLOW</div>
-                        <div v-else>UNFOLLOW</div>
+                        <div style="font-size: 15px;" v-if="this.$data.isFollow == 'false'">FOLLOW</div>
+                        <div style="font-size: 15px;" v-else>UNFOLLOW</div>
                     </button>
                 </div>
             </div>
@@ -34,6 +34,9 @@
                 <p>收藏</p>
                 <span> {{ collections }}</span>
             </div>
+            <div class="moveDiv" v-show="isAdmin" @click="jumpReview">
+                <p>前往审核信息</p>
+            </div>
         </div>
         <div class="head-box">
             <video autoplay muted loop>
@@ -45,7 +48,7 @@
 
                 </div>
                 <div v-if="!this.$data.isVisitor" class="message-box" @click="jumpMessage">
-                    <MessageBox :isIn="this.$props.isIn" :num="this.$data.user.unread_message_count"></MessageBox>
+                    <MessageBox :isIn="this.$props.isIn"></MessageBox>
                 </div>
             </div>
 
@@ -87,6 +90,7 @@ export default {
         return {
             isVisible: false,
             cropperInstance: null,
+            isAdmin: true,
             user: {
                 user_id: "",
                 username: "",
@@ -110,8 +114,8 @@ export default {
     },
     computed: {
         ...mapState(['follows']),
-        ...mapState(['collections'])
-
+        ...mapState(['collections']),
+        ...mapState(['unreads'])
     },
     mounted() {
         const hasIdParam = this.$route.params.hasOwnProperty('id');
@@ -189,6 +193,9 @@ export default {
         },
         jumpStar() {
             this.$router.push({ name: 'star' })
+        },
+        jumpReview() {
+            this.$router.push({ name: 'review' })
         },
         changeStyle(element, cursorType) {
 
@@ -292,6 +299,7 @@ export default {
             this.$data.user = response.data.result
             this.$store.commit('setFollows', this.$data.user.follows)
             this.$store.commit('setCollections', this.$data.user.collections)
+            this.$store.commit('setUnreads', this.$data.user.unread_message_count)
             data = { "user_id": this.$data.loginId, "author_id": id }
             response = await followAPI.isFollow(data)
             this.$data.isFollow = response.data.is_follow
@@ -346,7 +354,7 @@ body {
     z-index: 2;
 
     .personal-info {
-        margin: 15% 10% 15% 10%;
+        margin: 15% 10% 0 10%;
         height: auto;
     }
 
@@ -365,15 +373,13 @@ body {
     }
 
     .mailbox {
-        margin: 10% 10% 0vh 7%;
-        font-size: 12px;
+        margin: 0 10% 0vh 7%;
+        font-size: 10px;
         display: flex;
         align-items: center;
     }
 
-    .mailbox span {
-        margin-left: 1vw;
-    }
+    .mailbox span {}
 
     .instruction {
         margin: 0 10% 0vh 10%;
@@ -457,7 +463,6 @@ body {
 
     .follow-button {
         display: flex;
-        font-size: 16px;
         font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         background-color: aliceblue;
         opacity: 70%;
@@ -607,8 +612,8 @@ body {
 }
 
 #cropImg {
-    height: 450px;
-    width: 450px;
+    height: 35vh;
+    width: 50vw;
     box-shadow: 0 0 5px #adadad;
 }
 

@@ -263,7 +263,9 @@ a:focus {
   /* 15px */
   margin-top: .9375rem;
   padding: .9375rem;
-  box-shadow: 0 0.3125rem 0.5rem rgb(0 0 0 / 10%);
+  //box-shadow: 0 0.3125rem 0.5rem rgb(0 0 0 / 10%);
+  border: 1px solid ;
+  border-radius: 20px;
   background: #fff;
   word-break: break-word;
   position: relative;
@@ -330,7 +332,7 @@ a:focus {
 .card-title {
   color: #0077c2;
   font-weight: 500;
-  font-family: 'Times New Roman', Times, "Microsoft YaHei", serif;
+  font-family: "阿里妈妈方圆体 VF Regular",serif;
   font-size: 1.25rem;
   margin-bottom: .625rem;
   cursor: pointer;

@@ -394,16 +394,18 @@ export default {
       }
       Login.login(data)
       .then((res) => {
-        if (res.data) {
+        if (res.data.msgno==0) {
             let valueData = JSON.stringify({
                 id:res.data.user_id,
                 isAdmin:res.data.isAdmin,
-                is_authenticated: res.data.is_authenticated
+                is_authenticated:res.data.is_authenticated
             })  
             this.$Cookies.set('token', res.data.token);
             this.$Cookies.set('user_info', valueData,{expires:30});
             ElMessage.success("登录成功！");
             this.$router.push('/');
+        }else{
+          ElMessage.error("登录失败！请检查用户名和密码");
         }
       })
       .catch((err) => {
