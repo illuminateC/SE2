@@ -76,10 +76,20 @@
         }
         if(this.vote==0){
           Article.likeComment(data)
+          // .then((res) => {
+          //   if (res.data.message=='点赞成功！') {
+          //     console.log(res.data);
+          //     this.vote=1;
+          //   }else{
+          //     ElMessage.warning("未登录用户不能点赞哦");
+          //   }
+          // })
           .then((res) => {
-            if (res.data) {
+            if (this.user_id!=-1) {
               console.log(res.data);
               this.vote=1;
+            }else{
+              ElMessage.warning("未登录用户不能点赞哦");
             }
           })
           .catch((err) => {

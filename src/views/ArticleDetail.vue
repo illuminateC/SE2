@@ -300,6 +300,7 @@ export default {
         listed:false,
         link:"",
       },
+      user_id:"",
       authors: [],
       fav:"",
       collections:[],
@@ -358,6 +359,13 @@ export default {
       formLabelWidth: "120px",
       documentcopylist: [],
     };
+  },
+  created(){
+    const user_info=this.$Cookies.get('user_info');
+    if(user_info!=null){
+      const info=JSON.parse(user_info);
+      this.user_id=info.id; 
+    }
   },
   mounted() {
     this.getData();

@@ -67,6 +67,7 @@ export default {
                 this.$data.isVisitor = true;
             }
         }
+        this.$data.collection_id=this.$route.params.starId
         this.getList(this.$data.isPost, this.$data.collection_id)
     },
     setup() {
@@ -154,6 +155,7 @@ export default {
         async getList(flag, id) {
             if (!flag) {
                 try {
+                    alert(id)
                     this.$data.isLoading = true
                     const data = { "collection_package_id": id }
                     const response = await collectionAPI.collectionGetEach(data)
