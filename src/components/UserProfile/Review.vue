@@ -16,7 +16,7 @@
                 </div>
                 <div v-if="reviewList && reviewList.length">
                     <div class="review-box">
-                        <div class="review" v-for="item in currentPageData" :key="item.id" @click="read(item.id)">
+                        <div class="review" v-for="item in currentPageData" :key="item.id" @click="read(item)">
                             <div class="each" @mouseover="setHoveredId(item.id)" @mouseleave="resetHoverId()">
                                 <div style="display: flex; width: 80%;">
                                     <div class="title">{{ item.name }}</div>
@@ -42,6 +42,22 @@
             </div>
         </div>
     </div>
+    <el-dialog v-model="clicked">
+        <div style="width: 100%;">
+            <span style=" word-wrap: break-word; text-indent: 2em;">
+                {{ current.content }} 
+            </span>
+          
+        </div>
+<div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center;" >
+    <div style="height: auto; width: auto; padding-top: 5px; padding-bottom: 5px; padding-left:10px ;padding-right: 10px;" v-for="item in current.images" :key="item">
+    <img  style="width: 40vh;" :src="item" alt="">
+</div>
+
+</div>
+<button @click="review(current.id,1)">1</button>
+<button @click="review(current.id,2)">2</button>
+    </el-dialog>
 </template>
 
 <script>
@@ -75,7 +91,9 @@ export default defineComponent({
             width: 30,
             isLoading: false,
             user_id: "",
-            hoveredId: ""
+            hoveredId: "",
+            clicked:false,
+            current:null,
         };
     },
     computed: {
@@ -124,7 +142,8 @@ export default defineComponent({
     methods: {
         back() { this.$router.push({ name: "map", params: { id: this.$data.user_id } }) },
         async read(id) {
-
+this.$data.clicked=true
+this.$data.current = id
 
         },
         handleOver() {
@@ -170,6 +189,12 @@ export default defineComponent({
             const data = { "id": id, "op": op }
             const response = await reviewAPI.review(data);
 
+        },
+        async review(id,op){
+const data={"id":id,"op":op}
+const response = await reviewAPI.review(data)
+this.$data.reviewList=this.$data.reviewList.filter(review =>review.id!=this.current.id)
+this.$data.clicked=false
         }
     }
 })
