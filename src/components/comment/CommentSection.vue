@@ -41,11 +41,15 @@
       return{
         commentList: [],
         textarea: "",
+        isAdmin:0,
+
       }
     },
     mounted () {
-      this.getCommentList()
+      this.getCommentList();
       
+      
+
     },
     methods: {
       getCommentList() {
@@ -73,9 +77,13 @@
         }
         Article.createComment(data)
         .then((res) => {
-          if (res.data) {
+          if (res.data.message=="评论成功！") {
             console.log(res.data);
             this.textarea="";
+            ElMessage.success("评论成功！");
+          }else{
+            ElMessage.warning("请先登录");
+            this.$router.push('/login');
           }
         })
         .catch((err) => {
@@ -84,7 +92,7 @@
         setTimeout(() => {
           this.getCommentList();
         }, 100);
-        ElMessage.success("评论成功！");
+        
       },
     },
   
