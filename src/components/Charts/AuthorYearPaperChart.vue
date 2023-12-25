@@ -92,8 +92,8 @@ export default {
       var len = InformationByYear.length;
       for (let i = 0; i < len; i++) {
         this.option.xAxis[0].data.push(InformationByYear[i].year.toString());
-        this.option.series[0].data.push(InformationByYear[i].cited_by_count.toString());
-        this.option.series[1].data.push(InformationByYear[i].works_count.toString());
+        this.option.series[0].data.push(InformationByYear[i].works_count.toString());
+        this.option.series[1].data.push(InformationByYear[i].cited_by_count.toString());
       }
       this.option.yAxis[0].max =
         Math.ceil(Math.max(...this.option.series[0].data) / 10) * 10;
