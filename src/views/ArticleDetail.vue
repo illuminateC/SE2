@@ -377,7 +377,7 @@ export default {
     getCollection(){
       // this.$Cookies.set('token', "8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v");
       var data = {
-        "user_id": 2,
+        "user_id": this.user_id,
       }
       Article.getCollection(data)
       .then((res) => {
