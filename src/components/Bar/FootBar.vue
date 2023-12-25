@@ -1,7 +1,7 @@
 <template>
     <div class="gcs-footer">
         <div class="footer-top">
-            <b>Xpertise</b> Scholar
+            <b>Spider</b> Scholar
         </div>
     </div>
 </template>

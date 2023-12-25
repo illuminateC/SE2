@@ -3,7 +3,7 @@
     <div id="backpic">
       <StartPageInfo :type="'main'" />
       <div id='title'>
-        <span style="font-weight: bold; font-size: 40px; margin-right: 10px;">Xpertise</span>
+        <span style="font-weight: bold; font-size: 40px; margin-right: 10px;">Spider</span>
         <span style="font-size: 20px;">Scholar</span>
       </div>
       <input id="searchinput" v-model='input' v-on:keyup.enter="submit" @mouseover="mouseOver()"
@@ -228,7 +228,7 @@ export default {
   border-radius: 300px;
   box-shadow: 0px 0px 50px 10px rgba(127, 127, 127, 0.3);
 
-  background-image: url(../assets/startBack.png);
+  background-image: url(../assets/startBack.jpg);
   background-size: 100% 100%;
 
   height: 500px;
