@@ -13,12 +13,7 @@
                     </router-link>
                 </div>
                 <div v-else>
-                    <div class="nav_bar_action_link" v-if="isnotsettled">
-                        <router-link tag="div" class="nav_bar_action_link" :to="'/settle'">
-                            {{ $t("message.settle") }}
-                        </router-link>
-                    </div>
-                    <router-link tag="div" class="nav_bar_action_link" :to="'/userinfo'">
+                    <router-link tag="div" class="nav_bar_action_link" :to="{path:'/user/' + this.user_info.id}">
                         {{ $t("message.personal") }}
                     </router-link>
                     <div class="nav_bar_action_link" v-if="isadmin">
@@ -45,6 +40,13 @@ export default {
             this.logged_in = true;
             this.user_info = JSON.parse(this.$Cookies.get('user_info'));
         }
+    },
+    created() {
+        if (this.$Cookies.get('user_info') != null) {
+            this.logged_in = true;
+            this.user_info = JSON.parse(this.$Cookies.get('user_info'));
+        }
+        console.log(this.$Cookies.get('user_info'))
     },
     data() {
         return {

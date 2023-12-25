@@ -104,7 +104,6 @@ export default {
             if (this.$Cookies.get('commandId') != null && this.$Cookies.get('commandId') != "[]") {
                 recommend = JSON.parse(this.$Cookies.get('commandId'));
                 id = recommend[num].id;
-                console.log(num)
             }
             let that = this;
             axios({
