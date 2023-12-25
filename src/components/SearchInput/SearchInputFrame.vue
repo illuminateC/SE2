@@ -32,7 +32,7 @@
        -->
       <input class="group search-input"
         type="text"
-        placeholder="输入搜索内容"
+        placeholder=" 输入搜索内容"
         v-model="inputSearchValue"
         @focus="onFocusHandler"
         @blur="onBlurHandler"
