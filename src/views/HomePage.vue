@@ -21,7 +21,7 @@
     <div>
       <TotalPaperChart id='paper-chart'></TotalPaperChart>
     </div>
-    <el-dialog v-model="dialogFormVisible" title="请选择您感兴趣的领域" destroy-on-close style="width: 80%; opacity: 0.85;">
+    <el-dialog v-model="dialogFormVisible" title="请选择您感兴趣的领域" destroy-on-close style="width: 80%; opacity: 0.85;"  :before-close="closeDialog">
       <div class="imgList">
         <div class="img-item" v-for="(item, index) in allimgData" :class="{ active: item.bOn }" :key="index"
           @click="checkImg(index)">
@@ -56,7 +56,7 @@ export default {
   data() {
     return {
       input: '',
-      dialogFormVisible: (this.$Cookies.get('commandId') == "[]" || this.$Cookies.get('commandId') == null) && this.$Cookies.get('user_info') != null,
+      dialogFormVisible: this.$Cookies.get('commandId') == null && this.$Cookies.get('user_info') != null,
       arr: [],
       allimgData: [
         {
@@ -177,6 +177,7 @@ export default {
       this.dialogFormVisible = false;
       this.$Cookies.set('commandId', "[]");
       this.$Cookies.set('commandIdNum', 0);
+      window.location.reload();
     }
   }
 }
