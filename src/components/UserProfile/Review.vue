@@ -43,20 +43,33 @@
         </div>
     </div>
     <el-dialog v-model="clicked">
-        <div style="width: 100%;">
-            <span style=" word-wrap: break-word; text-indent: 2em;">
-                {{ current.content }} 
+        <div style="width: 100%; padding-left:4vw ; padding-right:3vw; padding-bottom:2vh">
+            <span style=" word-wrap: break-word; text-indent: 2em; font-size:18px">
+                {{ current.content }}
             </span>
-          
         </div>
-<div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center;" >
-    <div style="height: auto; width: auto; padding-top: 5px; padding-bottom: 5px; padding-left:10px ;padding-right: 10px;" v-for="item in current.images" :key="item">
-    <img  style="width: 40vh;" :src="item" alt="">
-</div>
+        <div style="display: flex; flex-direction:row; justify-content:center">
+            <div style="padding-left: 3vw; padding-right:3vw; cursor:pointer" @click="jump(1, current.author_id)">点击打开学者主页
+            </div>
+            <div style="padding-left: 3vw; padding-right:3vw; cursor:pointer" @click="jump(2, current.user_id)">点击打开用户主页
+            </div>
+        </div>
+        <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center;">
+            <div style="height: auto; width: auto; padding-top: 5px; padding-bottom: 5px; padding-left:10px ;padding-right: 10px;"
+                v-for="item in current.images" :key="item">
+                <img style="width: 20vw;" :src="item" alt="">
+            </div>
 
-</div>
-<button @click="review(current.id,1)">1</button>
-<button @click="review(current.id,2)">2</button>
+        </div>
+        <div class="iconList">
+            <div class="icon">
+                <pass @click="review(current.id, 1)"></pass>
+            </div>
+            <div class="icon">
+                <unpass @click="review(current.id, 2)"></unpass>
+            </div>
+        </div>
+
     </el-dialog>
 </template>
 
@@ -69,12 +82,16 @@ import loading from "./loading.vue";
 import none from "./None.vue";
 import './svg.css'
 import reviewAPI from "@/api/review";
+import pass from "./pass.vue";
+import unpass from "./unpass.vue";
 import userAPI from "@/api/user";
 export default defineComponent({
     components: {
         back,
         loading,
         none,
+        pass,
+        unpass
     },
     setup() {
         return {
@@ -92,8 +109,8 @@ export default defineComponent({
             isLoading: false,
             user_id: "",
             hoveredId: "",
-            clicked:false,
-            current:null,
+            clicked: false,
+            current: null,
         };
     },
     computed: {
@@ -142,8 +159,8 @@ export default defineComponent({
     methods: {
         back() { this.$router.push({ name: "map", params: { id: this.$data.user_id } }) },
         async read(id) {
-this.$data.clicked=true
-this.$data.current = id
+            this.$data.clicked = true
+            this.$data.current = id
 
         },
         handleOver() {
@@ -185,17 +202,20 @@ this.$data.current = id
                 this.$data.isLoading = false; // 数据加载完成，隐藏 loading 状态
             }
         },
-        async handle(id, op) {
+        async review(id, op) {
             const data = { "id": id, "op": op }
-            const response = await reviewAPI.review(data);
-
+            const response = await reviewAPI.review(data)
+            this.$data.reviewList = this.$data.reviewList.filter(review => review.id != this.current.id)
+            this.$data.clicked = false
         },
-        async review(id,op){
-const data={"id":id,"op":op}
-const response = await reviewAPI.review(data)
-this.$data.reviewList=this.$data.reviewList.filter(review =>review.id!=this.current.id)
-this.$data.clicked=false
+        jump(op, id) {
+            if (op == 1) {
+                window.open("/author/" + id)
+            } else {
+                window.open("/user/" + id)
+            }
         }
+
     }
 })
 </script>
@@ -302,5 +322,21 @@ this.$data.clicked=false
 .review:hover {
     background-color: wheat;
     cursor: pointer;
+}
+
+.iconList {
+    display: flex;
+    justify-content: center;
+    gap: 16vw;
+}
+
+.icon {
+    cursor: pointer;
+    display: flex;
+    width: auto;
+}
+
+.icon:hover {
+    scale: 1.2;
 }
 </style>
