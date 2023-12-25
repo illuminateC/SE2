@@ -19,7 +19,7 @@
                     <router-link v-if="rout == 3" class="link" :to="{path:'/author/' + this.information.Id}" tag="a" target="_blank">
                         {{ this.information.title }}
                     </router-link>
-                    <router-link v-if="rout == 4" class="link" @click.prevent :to="{path:'/article/' + this.information.Id}" tag="a" target="_blank">
+                    <router-link v-if="rout == 4" class="link" @click.prevent :to="{path:'/article/1'}" tag="a" target="_blank">
                         {{ this.information.title }}
                     </router-link>
                 </div>

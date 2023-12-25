@@ -93,14 +93,14 @@
 <!--                    确认筛选-->
 <!--                    <span></span>-->
 <!--                  </button>-->
-                  <el-button   round @click="handleAllTypeFilterSearch">确认筛选</el-button>
+                  <el-button  class="confirm-choose" round @click="handleAllTypeFilterSearch">确认筛选</el-button>
                 </div>
                 <div class="filter-btn-wrapper" :class="{'extended': confirmFilterSearch}">
 <!--                  <button class="cancel-filter-btn" @click="cancelFilterSearch">-->
 <!--                    取消筛选-->
 <!--                    <span></span>-->
 <!--                  </button>-->
-                  <el-button  type="info" round @click="cancelFilterSearch">取消筛选</el-button>
+                  <el-button class="confirm-choose" type="info" round @click="cancelFilterSearch">取消筛选</el-button>
                 </div>
                 <div class="search-result__sort-right">
                   <!-- 排序类型 -->
@@ -1214,6 +1214,7 @@ a, a:hover, a:focus {
   position: relative;
 }
 .search-num-info-detail .hitlength{
+  color: #0077c2;
   font-weight: 600;
 }
 .search-result {
@@ -1578,4 +1579,7 @@ div.el-pagination {
 }
   /* #endregion 响应式布局结束 */
 
+.confirm-choose{
+  font-family: "阿里妈妈刀隶体 Regular",serif;
+}
 </style>

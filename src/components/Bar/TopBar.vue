@@ -2,37 +2,27 @@
     <div id="nav_bar">
         <div class="nav_bar_frame">
             <div class="nav_bar_icon">
-                <div class="nav_bar_icon_title_bold" @click="backtostartpage">Xpertise</div>
+                <div class="nav_bar_icon_title_bold" @click="backtostartpage">Spider</div>
                 <div class="nav_bar_icon_title" @click="backtostartpage">Scholar</div>
                 <el-button class="view" type="text" @click="change">{{ $t("message.language") }}</el-button>
             </div>
             <div class="nav_bar_action_frame">
                 <div v-if="logged_in === false">
-                    <router-link tag="div" class="nav_bar_action_link" to="/register">
-                        {{ $t("message.register") }}
-                    </router-link>
                     <router-link tag="div" class="nav_bar_action_link" to="/login">
                         {{ $t("message.login") }}
                     </router-link>
                 </div>
                 <div v-else>
-                    <div class="nav_bar_action_link" v-if="isnotsettled">
-                        <router-link tag="div" class="nav_bar_action_link" :to="'/settle'">
-                            {{ $t("message.settle") }}
-                        </router-link>
-                    </div>
-                    <div class="nav_bar_action_link" v-else-if="issettled">
-                        <router-link tag="div" class="nav_bar_action_link" :to="'/portal/' + author()">
-                            {{ $t("message.portal") }}
-                        </router-link>
-                    </div>
-                    <router-link tag="div" class="nav_bar_action_link" :to="'/userinfo'">
+                    <router-link tag="div" class="nav_bar_action_link" :to="{path:'/user/' + this.user_info.id}">
                         {{ $t("message.personal") }}
                     </router-link>
                     <div class="nav_bar_action_link" v-if="isadmin">
                         <router-link tag="div" class="nav_bar_action_link" :to="'/admin'">
                             {{ $t("message.admin") }}
                         </router-link>
+                    </div>
+                    <div class="nav_bar_action_link">
+                        <el-button class="view" type="text" @click="logout">{{ $t("message.logout") }}</el-button>
                     </div>
                 </div>
             </div>
@@ -46,38 +36,44 @@ export default {
     name: "TopBar",
     props: [],
     mounted() {
-        if (localStorage.getItem('userid')) {
+        if (this.$Cookies.get('user_info') != null) {
             this.logged_in = true;
-            this.user_info.user_type = localStorage.getItem('user_type');
-            this.user_info.user_id = localStorage.getItem('userid');
+            this.user_info = JSON.parse(this.$Cookies.get('user_info'));
         }
+    },
+    created() {
+        if (this.$Cookies.get('user_info') != null) {
+            this.logged_in = true;
+            this.user_info = JSON.parse(this.$Cookies.get('user_info'));
+        }
+        console.log(this.$Cookies.get('user_info'))
     },
     data() {
         return {
             active_index: 0,
             logged_in: false,
             user_info: {
-                user_type: null,
-                user_id: null,
+                isAdmin: null,
+                id: null,
+                is_authenticated: null
             },
         };
     },
     computed: {
         isadmin() {
-            return this.user_info.user_type && this.user_info.user_type == 3
+            return this.user_info.isAdmin == true
         },
         isnotsettled() {
-            return this.user_info.user_type && this.user_info.user_type == 1
+            return this.user_info.is_authenticated != 1
         },
         issettled() {
-            return this.user_info.user_type && this.user_info.user_type == 2
+            return this.user_info.is_authenticated == 1
         }
     },
     methods: {
         change() {
             this.$emit('change');
         },
-        author() { return localStorage.getItem("authorId") },
         backtostartpage() {
             this.$router.push('/home').then(() => {
                 window.location.reload();
@@ -92,10 +88,11 @@ export default {
 
         },
         logout() {
-            localStorage.clear()
-            this.user_info.user_type = null;
+            this.$Cookies.remove('user_info');
+            this.$Cookies.remove('commandId');
+            this.$Cookies.remove('commandIdNum');
+            this.$Cookies.remove('token');
             this.logged_in = false;
-            this.$router.push('/login')
             window.location.reload();
         }
     }

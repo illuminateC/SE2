@@ -1,6 +1,6 @@
 <template>
     <div id="root">
-        <div id="title">
+        <div id="title" @click="refreshRecommend">
             <span>{{ this.title }}</span>
         </div>
         <div id="rank">
@@ -27,6 +27,11 @@ export default {
         };
     },
     methods: {
+        refreshRecommend() {
+            if (this.title == 'Recommend') {
+                this.getRecommend();
+            }
+        },
         getHomepage() {
             const that = this;
             axios({
@@ -91,11 +96,68 @@ export default {
                 .catch(function (error) {
                     console.log(error);
                 });
+        },
+        getRecommend() {
+            let recommend;
+            let id = 0;
+            let num = this.$Cookies.get('commandIdNum');
+            if (this.$Cookies.get('commandId') != null && this.$Cookies.get('commandId') != "[]") {
+                recommend = JSON.parse(this.$Cookies.get('commandId'));
+                id = recommend[num].id;
+            }
+            let that = this;
+            axios({
+                method: 'post',
+                url: 'http://123.249.124.181/api/search/entity/search/list',
+                data: {
+                    "entity_type": "works",
+                    "params": {
+                        "filter": {
+                            "concepts.id": id
+                        },
+                        "page": 1,
+                        "per_page": 15,
+                        "search": "",
+                        "sort": {
+                            "cited_by_count": "desc"
+
+                        }
+                    }
+                }
+            })
+                .then(function (res) {
+                    that.result = res.data.list_of_entity_data[0].results
+                    that.itemList = that.result.slice(0, 4);
+                    for (let i = 0; i < that.itemList.length; i++) {
+                        that.itemList[i].rank = i + 1;
+                        that.itemList[i].papers = that.itemList[i].cited_by_count;
+                        var cutIndex = that.itemList[i].id.lastIndexOf("/") + 1;
+                        var Id = that.itemList[i].id.substring(cutIndex);
+                        that.itemList[i].Id = Id;
+                        if (that.itemList[i].title.length > 22) {
+                            that.itemList[i].title = that.itemList[i].title.slice(0, 22) + "...";
+                        }
+                    }
+                    if (num != recommend.length - 1) {
+                        num++;
+                        that.$Cookies.set('commandIdNum', num);
+                    } else {
+                        num = 0;
+                        that.$Cookies.set('commandIdNum', num);
+                    }
+                })
+                .catch(function (error) {
+                    that.getHomepage();
+                });
         }
     },
     created() {
         this.itemType = this.type;
-        this.getHomepage();
+        if (this.title == 'Recommend') {
+            this.getRecommend();
+        } else {
+            this.getHomepage();
+        }
     }
 }
 </script>

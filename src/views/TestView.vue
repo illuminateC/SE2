@@ -1,63 +1,4 @@
 <template>
-  <el-upload
-    v-model:file-list="this.fileList"
-    class="upload-demo"
-    :auto-upload="false"
-    :on-change="this.handleChange"
-    action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-  >
-    <el-button type="primary">Click to select</el-button>
-    <template #tip>
-      <div class="el-upload__tip">
-        jpg/png files with a size less than 500kb
-      </div>
-    </template>
-  </el-upload>
-  <el-button type="primary" @click="console.log(JSON.stringify(this.fileList))"
-    >Click to upload</el-button
-  >
-</template>
-<script>
-export default {
-  setup() {
-    // const handleChange = (uploadFile, uploadFiles) => {
-    //   console.log("uploadFile: " + uploadFile);
-    //   console.log("uploadFile JSON: " + JSON.stringify(uploadFile));
-    //   console.log("uploadFiles: " + uploadFiles);
-    //   console.log("uploadFiles JSON: " + JSON.stringify(uploadFiles));
-    // };
-  },
-  methods: {
-    handleChange (uploadFile, uploadFiles){
-      console.log("uploadFile: " + uploadFile);
-      console.log("uploadFile JSON: " + JSON.stringify(uploadFile));
-      console.log("uploadFiles: " + uploadFiles);
-      console.log("uploadFiles JSON: " + JSON.stringify(uploadFiles));
-    },
-    changeFile (val) {
-      let formData = new FormData();
-      //file是键，val.raw是要传的文件，val.name是要传的文件名
-      formData.append('file', val.raw, val.name);
-    },
-  },
-  data() {
-    return {
-      fileList: [
-        {
-          name: "food.jpeg",
-          url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-        },
-        {
-          name: "food2.jpeg",
-          url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-        },
-      ],
-    };
-  },
-};
-</script>
-
-<!-- <template>
 <el-form-item label="上传模板：" prop="fileId">
     <el-upload
        ref="exampleUploadRef"
@@ -190,4 +131,4 @@ data.postUrl = "http://XXXXX/file/uploadFile";
                 padding: 2px 12px;
            }
 </style>
- -->
+

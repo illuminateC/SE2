@@ -680,16 +680,11 @@ export default {
         "name": this.author.name,
         "content": this.inputMessage,
       }
-      // var data = new FormData();
-      // data.append("author_id", this.author.id);
-      // data.append("name", this.author.name);
-      // data.append("content", this.inputMessage);
       console.log("fileList (JSON):" + JSON.stringify(this.fileList));
       for (let i = 0; i < this.base64FileList.length; i++) {
         // data.append("images", this.base64FileList[i]);
         console.log("base64[" + i + "] = " + this.base64FileList[i]);
       }
-      // data.append("images", this.base64FileList);
       var jsonData = {
         "author_id": this.author.id,
         "name": this.author.name,
@@ -698,7 +693,18 @@ export default {
       }
       AuthorAPI.uploadAuthentication(jsonData)
         .then((res) => {
-          console.log(res.data.msg);
+          console.log(res.data.result);
+          if (res.data.result === 0) {
+            ElMessage({
+              message: res.data.message,
+              type: 'success',
+            })
+          } else {
+            ElMessage({
+              message: res.data.message,
+              type: 'warning',
+            })
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -707,7 +713,6 @@ export default {
       this.fileList = [];
       this.base64FileList = [],
       this.dialogVisible = false;
-      // console.log("authenticationData:" + data);
     }, 
     handleDialogClose() {
       this.inputMessage = "";
@@ -722,7 +727,7 @@ export default {
         ElMessage({
           message: '该学者尚未入驻平台',
           type: 'warning',
-        })
+        });
       }
     }
   }
