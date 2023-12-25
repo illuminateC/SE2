@@ -18,7 +18,7 @@
                         <div v-for="item in  currentPageData" :key="item.id">
                             <div class="each" @mouseover="setHoverId(item.id)" @mouseleave="resetHoverId()">
                                 <work></work>
-                                <li @click="jump(item.id)">{{ item.name }}</li>
+                                <li @click="jump(item.id)">{{ item.title }}</li>
                                 <div class="cancelicon" v-show="hoveredId === item.id && !isVisitor">
                                     <cancelicon @click="cancel(item.id)"></cancelicon>
                                 </div>
@@ -67,7 +67,7 @@ export default {
                 this.$data.isVisitor = true;
             }
         }
-        this.$data.collection_id=this.$route.params.starId
+        this.$data.collection_id = this.$route.params.starId
         this.getList(this.$data.isPost, this.$data.collection_id)
     },
     setup() {
@@ -155,16 +155,10 @@ export default {
         async getList(flag, id) {
             if (!flag) {
                 try {
-                    alert(id)
                     this.$data.isLoading = true
                     const data = { "collection_package_id": id }
                     const response = await collectionAPI.collectionGetEach(data)
-                    this.$data.starList = response.data.work_list.flatMap((item) => {
-                        return {
-                            id: item.specific_entity_data.id,
-                            name: item.specific_entity_data.title
-                        }
-                    })
+                    this.$data.starList = response.data.work_list
                 } catch (error) {
                     console.error("Error fetching data:", error);
                 } finally {
