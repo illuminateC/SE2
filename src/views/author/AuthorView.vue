@@ -19,14 +19,17 @@
         </svg>
 
         <div id="authorName">
-          <router-link
-            :to="'/user/' + this.author.id"
-            target="_blank"
-            class="clean-router-link"
+          <!-- "this.author.userId !== 0 ? '/user/' + this.author.userId : null" -->
+          <!-- :to="'/user/' + this.author.userId"
+          target="_blank"
+          class="clean-router-link" -->
+          <a
+            style="cursor: pointer;"
+            @click="handleToUser"
           >
             <div v-if="authorLoaded">{{ this.author.name }}</div>
-          </router-link>
-          <el-button id="authentication" text @click="this.dialogVisible = true" v-if="authenticationAccessible">认领</el-button>
+          </a>
+          <el-button id="authentication" text bg @click="this.dialogVisible = true" v-if="authenticationAccessible">认领</el-button>
         </div>
 
         <div id="authorNameFake">
@@ -128,13 +131,16 @@
       width="30%"
       :before-close="handleDialogClose"
     >
-      <el-input v-model="this.inputMessage" placeholder="请输入相关的验证信息" />
-      <span> 请上传相应的图片（） </span>
+      <el-input style="margin-bottom: 10px;" v-model="this.inputMessage" placeholder="请输入相关的验证信息" />
+      <div style="margin-bottom: 10px;">
+        <span> 请上传能证明个人身份的图片（证件、文书） </span>
+      </div>
       <el-upload 
         action="#" 
         list-type="picture-card" 
         :auto-upload="false" 
         v-model:file-list="this.fileList" 
+        :on-change="this.handleFileSelect"
         :limit="2"
         accept=".png, .jpg, .jpeg"
       >
@@ -157,6 +163,7 @@
         <span class="dialog-footer">
           <el-button @click="handleDialogClose">取消</el-button>
           <el-button type="primary" @click="sendAuthenticationApply">
+            <!-- sendAuthenticationApply  console.log(this.fileList) -->
             发送
           </el-button>
         </span>
@@ -335,6 +342,7 @@ import RelatedAuthorChart from "@/components/Charts/RelatedAuthorChart.vue";
 import gsap from "gsap";
 import { AuthorAPI } from '@/api/author';
 import axios from 'axios';
+import { ElMessage } from "element-plus";
 export default {
   name: "Author",
   components: {
@@ -349,15 +357,17 @@ export default {
       type: 2,
       currentPage: 1,
       pageSize: 25,
-      authenticationAccessible: true,
+      authenticationAccessible: false,
       inputMessage: "",
       fileList: [],
+      base64FileList:[],
       dialogVisible: false,
       authorLoaded: false,
       paperLoaded: false,
       relationLoaded: false,
       author: {
         id: 1,
+        userId: "",
         name: "Nishikigi Chisato",
         numOfPaper: 5,
         numOfCitation: 10086,
@@ -471,6 +481,7 @@ export default {
             .then((res) => {
               if (res.data.status === "true") {
                 this.authenticationAccessible = true;
+                this.author.userId = res.data.userid;
               }
             })
             .catch((err) => {
@@ -646,46 +657,74 @@ export default {
           console.log(err);
         });
     },
+    handleFileSelect(uploadFile, uploadFiles) {
+      let reader = new FileReader();
+      reader.readAsDataURL(uploadFile.raw);
+      reader.onload = e => {
+        const code = e.target.result;
+        this.base64FileList.push(code);
+      }
+      console.log(this.base64FileList);
+    },
     handlePictureRemove(file){
+      console.log("remove File:" + file);
       this.fileList.forEach(function(item, index, arr) {
           if(item == file) {
               arr.splice(index, 1);
           }
       });
     },
-    beforePictureUpload(file) {
-      console.log("上传的文件格式：" + file.type);
-      if (file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/jpg') {
-        ElMessage.error('请上传jpeg/jpg/png格式的图片');
-        return false;
-      }
-      return true;
-    },
     sendAuthenticationApply() {
-      var data = new FormData();
-      data.append("images", this.fileList);
-      data.append("author_id", this.author.id);
-      data.append("name", this.author.name);
-      data.append("content", this.inputMessage);
-      if (this.fileList.length > 0) {
-        console.log("fileList:" + this.fileList);
-        console.log("file 1:" + this.fileList[0]);
+      var jsonData = {
+        "author_id": this.author.id,
+        "name": this.author.name,
+        "content": this.inputMessage,
       }
-      AuthorAPI.uploadAuthentication(data)
+      // var data = new FormData();
+      // data.append("author_id", this.author.id);
+      // data.append("name", this.author.name);
+      // data.append("content", this.inputMessage);
+      console.log("fileList (JSON):" + JSON.stringify(this.fileList));
+      for (let i = 0; i < this.base64FileList.length; i++) {
+        // data.append("images", this.base64FileList[i]);
+        console.log("base64[" + i + "] = " + this.base64FileList[i]);
+      }
+      // data.append("images", this.base64FileList);
+      var jsonData = {
+        "author_id": this.author.id,
+        "name": this.author.name,
+        "content": this.inputMessage,
+        "images": this.base64FileList
+      }
+      AuthorAPI.uploadAuthentication(jsonData)
         .then((res) => {
           console.log(res.data.msg);
         })
         .catch((err) => {
           console.log(err);
         });
+      this.inputMessage = "";
+      this.fileList = [];
+      this.base64FileList = [],
       this.dialogVisible = false;
-      console.log("authenticationData:" + data);
+      // console.log("authenticationData:" + data);
     }, 
     handleDialogClose() {
       this.inputMessage = "";
       this.fileList = [];
+      this.base64FileList = [],
       this.dialogVisible = false;
     },
+    handleToUser() {
+      if (this.author.userId !== 0) {
+        this.$router.push("user/" + this.author.userId);
+      } else {
+        ElMessage({
+          message: '该学者尚未入驻平台',
+          type: 'warning',
+        })
+      }
+    }
   }
 }
 </script>
@@ -762,6 +801,7 @@ export default {
 
 #authorAff {
   margin-top: 20px;
+  margin-bottom: 10px;
 
   display: flex;
   flex-direction: column;

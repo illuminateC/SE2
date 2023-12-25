@@ -31,6 +31,7 @@ export class AuthorAPI{
             data,
             headers: {
                 // ContentType: "application/form-data",
+                // ContentType: "multipart/form-data",
                 Authorization: getToken()
             }
         });
