@@ -24,3 +24,4 @@ pnpm-debug.log*
 
 # test
 package-lock.json
+dist.zip

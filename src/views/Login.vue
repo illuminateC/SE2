@@ -1,111 +1,96 @@
 <template>
   <div id="login">
-        <div class="container" :class="{ 'right-panel-active': isRightPanelActive }" id="login-box" >
-          <div class="form-container sign-up-container">
-            <form>
-              <h1>注册</h1>
-              <div class="txtb">
-                <input type="text" v-model="signupUsername" @focus="onFocus" @blur="onBlur" maxlength="16">
-                <span data-placeholder="输入您的用户名"></span>
-              </div>
-              <!-- <div class="txtb">
-                <input type="text" v-model="realname" @focus="onFocus" @blur="onBlur" maxlength="8">
-                <span data-placeholder="输入您的真实姓名"></span>
-              </div> -->
-              <div class="txtb">
-                <input type="text" v-model="email" @focus="onFocus" @blur="onBlur" maxlength="25">
-                <span data-placeholder="输入您的邮箱"></span>
-                <!-- <el-button round
-                  style="background: white; color: black; align-items: center; justify-content: center; margin-top: 0px;"
-                  @click="postCode">发送验证码</el-button> -->
-              </div>
-              <!-- <div class="txtb">
-                <input type="password" v-model="verificationCode" @focus="onFocus" @blur="onBlur" maxlength="16">
-                <span data-placeholder="输入您收到的验证码"></span>
-              </div> -->
-              <div class="txtb">
-                <input type="password" v-model="signupPassword" @focus="onFocus" @blur="onBlur" maxlength="16">
-                <span data-placeholder="密码由6-16位数字和字母组成"></span>
-              </div>
-              <div class="txtb">
-                <input type="password" v-model="signupConfirmPassword" @focus="onFocus" @blur="onBlur" maxlength="16">
-                <span data-placeholder="请再次确认密码"></span>
-              </div>
-              <button @click.prevent="onSignUp">注册</button>
-            </form>
+    <image :src="backGroundUrl"></image>
+    <div class="container" :class="{ 'right-panel-active': isRightPanelActive }" id="login-box" >
+      <div class="form-container sign-up-container">
+        <form>
+          <h1>注册</h1>
+          <div class="txtb">
+            <input type="text" v-model="signupUsername" @focus="onFocus" @blur="onBlur" maxlength="16">
+            <span data-placeholder="输入您的用户名"></span>
           </div>
-          <div class="form-container sign-in-container" v-if="forget === false">
-            <form>
-              <h1 as>登录</h1>
-              <div class="txtb">
-                <input type="email" v-model="signinUsername" @focus="onFocus" @blur="onBlur">
-                <span data-placeholder="用户名"></span>
-              </div>
-              <div class="txtb">
-                <input type="password" v-model="signinPassword" @focus="onFocus" @blur="onBlur">
-                <span data-placeholder="密码"></span>
-              </div>
-              <!-- <div class="txtb">
-                <input type="text" v-model="inputCode" @focus="onFocus" @blur="onBlur" @click="getCode">
-                <span data-placeholder="请输入右侧图案的值"></span>
-                <canvas class="codeCanvas" ref="checkCode"></canvas>
-              </div> -->
-              <div
-                style="float: left; text-align: left; margin-top: -10px; margin-bottom: -20px; transform: translateX(-34%);">
-                <a href="#" @click.prevent="toggleForget" style="float: left; font-size: 2px; color: #adadad;;">忘记密码？</a>
-              </div>
-              <button @click.prevent="onSignIn()" style="margin-top: 20px;">登录</button>
-            </form>
+          <div class="txtb">
+            <input type="text" v-model="email" @focus="onFocus" @blur="onBlur" maxlength="25">
+            <span data-placeholder="输入您的邮箱"></span>
           </div>
-          <div class="form-container sign-in-container" v-if="forget === true">
-            <form>
-              <h1 as>找回密码</h1>
-              <div class="txtb">
-                <input type="email" v-model="forgetUsername" @focus="onFocus" @blur="onBlur">
-                <span data-placeholder="用户名"></span>
-              </div>
-              <div class="txtb">
-                <input type="text" v-model="forgetEmail" @focus="onFocus" @blur="onBlur" maxlength="25">
-                <span data-placeholder="输入您的邮箱"></span>
-                <el-button round
-                  style="background: white; color: black; align-items: center; justify-content: center; margin-top: 0px;"
-                  @click="postForgetCode">发送验证码</el-button>
-              </div>
-              <div class="txtb">
-                <input type="password" v-model="verificationCodeForget" @focus="onFocus" @blur="onBlur" maxlength="16">
-                <span data-placeholder="输入您收到的验证码"></span>
-              </div>
-              <div class="txtb">
-                <input type="password" v-model="forgetPassword" @focus="onFocus" @blur="onBlur">
-                <span data-placeholder="新密码"></span>
-              </div>
-              <div class="txtb">
-                <input type="password" v-model="forgetConfirmPassword" @focus="onFocus" @blur="onBlur" maxlength="16">
-                <span data-placeholder="请再次确认密码"></span>
-              </div>
-              <div
-                style="float: left; text-align: left; margin-top: -10px; margin-bottom: -20px; transform: translateX(-34%);">
-                <a href="#" @click.prevent="toggleForget" style="float: left; font-size: 2px; color: #adadad;;">返回</a>
-              </div>
-              <button @click.prevent="changePassword" style="margin-top: 20px;">修改密码</button>
-            </form>
+          <div class="txtb">
+            <input type="password" v-model="signupPassword" @focus="onFocus" @blur="onBlur" maxlength="16">
+            <span data-placeholder="密码由6-16位数字和字母组成"></span>
           </div>
-          <div class="overlay-container">
-            <div class="overlay">
-              <div class="overlay-panel overlay-left">
-                <h1>已有账号？</h1>
-                <p>快来打开新世界的大门吧~</p>
-                <button class="ghost" @click="isRightPanelActive = false">登录</button>
-              </div>
-              <div class="overlay-panel overlay-right">
-                <h1>没有账号?</h1>
-                <p>加入我们，和大家愉快玩耍吧owo</p>
-                <button class="ghost" @click="isRightPanelActive = true">注册</button>
-              </div>
-            </div>
+          <div class="txtb">
+            <input type="password" v-model="signupConfirmPassword" @focus="onFocus" @blur="onBlur" maxlength="16">
+            <span data-placeholder="请再次确认密码"></span>
+          </div>
+          <button @click.prevent="onSignUp">注册</button>
+        </form>
+      </div>
+      <div class="form-container sign-in-container" v-if="forget === false">
+        <form>
+          <h1 as>登录</h1>
+          <div class="txtb">
+            <input type="email" v-model="signinUsername" @focus="onFocus" @blur="onBlur">
+            <span data-placeholder="用户名"></span>
+          </div>
+          <div class="txtb">
+            <input type="password" v-model="signinPassword" @focus="onFocus" @blur="onBlur">
+            <span data-placeholder="密码"></span>
+          </div>
+          <div
+            style="float: left; text-align: left; margin-top: -10px; margin-bottom: -20px; transform: translateX(-34%);">
+            <a href="#" @click.prevent="toggleForget" style="float: left; font-size: 12px; color: #adadad;;">忘记密码？</a>
+          </div>
+          <button @click.prevent="onSignIn()" style="margin-top: 20px;">登录</button>
+        </form>
+      </div>
+      <div class="form-container sign-in-container" v-if="forget === true">
+        <form>
+          <h1 as>找回密码</h1>
+          <div class="txtb">
+            <input type="email" v-model="forgetUsername" @focus="onFocus" @blur="onBlur">
+            <span data-placeholder="用户名"></span>
+          </div>
+          <div class="txtb">
+            <input type="text" v-model="forgetEmail" @focus="onFocus" @blur="onBlur" maxlength="25">
+            <span data-placeholder="输入您的邮箱"></span>
+            <el-button round
+              style="background: white; color: black; align-items: center; justify-content: center; margin-top: 0px;"
+              @click="postForgetCode">发送验证码</el-button>
+          </div>
+          <div class="txtb">
+            <input type="password" v-model="verificationCodeForget" @focus="onFocus" @blur="onBlur" maxlength="16">
+            <span data-placeholder="输入您收到的验证码"></span>
+          </div>
+          <div class="txtb">
+            <input type="password" v-model="forgetPassword" @focus="onFocus" @blur="onBlur">
+            <span data-placeholder="新密码"></span>
+          </div>
+          <div class="txtb">
+            <input type="password" v-model="forgetConfirmPassword" @focus="onFocus" @blur="onBlur" maxlength="16">
+            <span data-placeholder="请再次确认密码"></span>
+          </div>
+          <div
+            style="float: left; text-align: left; margin-top: -10px; margin-bottom: -20px; transform: translateX(-34%);">
+            <a href="#" @click.prevent="toggleForget" style="float: left; font-size: 2px; color: #adadad;;">返回</a>
+          </div>
+          <button @click.prevent="changePassword" style="margin-top: 20px;">修改密码</button>
+        </form>
+      </div>
+      <div class="overlay-container">
+        <div class="overlay">
+          <div class="overlay-panel overlay-left">
+            <h1>已有账号？</h1>
+            <p>快来打开新世界的大门吧~</p>
+            <button class="ghost" @click="isRightPanelActive = false">登录</button>
+          </div>
+          <div class="overlay-panel overlay-right">
+            <h1>没有账号?</h1>
+            <p>加入我们，和大家愉快玩耍吧owo</p>
+            <button class="ghost" @click="isRightPanelActive = true">注册</button>
           </div>
         </div>
-      
+      </div>
+    </div>
+  
   </div>
 </template>
 <script>
@@ -116,6 +101,7 @@ import { ElMessage } from 'element-plus'
 export default {
   data() {
     return {
+      backGroundUrl: 'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
       forgetPassword: '',
       forgetConfirmPassword: '',
       verificationCodeForget: '',
@@ -611,7 +597,8 @@ a {
   top: 100%;
   width: 0%;
   height: 2px;
-  background-image: linear-gradient(120deg, #3498db, #8e44ad);
+  /* background-image: linear-gradient(120deg, #a3c1d4, #f7714c); */
+  background: linear-gradient(120deg, #abb9c3, #86e79d);
   transition: .5s;
 }
 
@@ -658,7 +645,9 @@ button.ghost {
 }
 
 .form-container button {
-  background: linear-gradient(120deg, #3498db, #8e44ad);
+  /* background: linear-gradient(120deg, #abb9c3, #4fe690); */
+  /* background-image: linear-gradient(120deg, #dbe6ed, #f7714c); */
+  background: linear-gradient(120deg, #abb9c3, #86e79d);
   border: none;
   background-size: 200%;
   color: #fff;
@@ -703,7 +692,7 @@ button.ghost {
 }
 
 .overlay {
-  background-image: linear-gradient(120deg, #3498db, #8e44ad);
+  background: linear-gradient(120deg, #abb9c3, #86e79d);
   color: #fff;
   position: relative;
   left: -100%;
@@ -779,10 +768,22 @@ button.ghost {
 }
 
 #login{
-    background:url("../assets/avatar.jpg");
+  /* background-color: grey; */
+  /* background:url("https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg"); */
+  background:url("@/assets/BG16.webp");
+  /* background:url("@/assets/startBack.jpg"); */
+  width:100%;
+  height:500px;
+  image {
+    width: 100%; 
+    height: 100%; 
+    position: fixed; 
+    top: 0; 
+  }
+    /* background:url("../assets/avatar.jpg");
     height:100%;
-    /* position:fixed; */
-    /* background-size:100% 100%; */
+    position:fixed;
+    background-size:100% 100%; */
 }
 
 </style>

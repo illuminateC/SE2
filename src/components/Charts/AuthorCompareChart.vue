@@ -101,24 +101,21 @@ export default {
       var hIndex = this.$props.hIndex;
       var numOfPaper = this.$props.numOfPaper;
       var numOfCitation = this.$props.numOfCitation;
-      // console.log("hIndex = " + hIndex);
-      // console.log("numOfPaper = " + numOfPaper);
-      // console.log("numOfCitation = " + numOfCitation);
       this.option.series[0].data = [
         hIndex,
         numOfPaper,
         numOfCitation,
         Math.log(hIndex).toFixed(3),
-        Math.log(numOfPaper).toFixed(3),
         Math.log(numOfCitation).toFixed(3),
+        Math.log(numOfPaper).toFixed(3),
       ];
       this.option.series[1].data = [
-        171,
-        2484,
-        259517,
-        Math.log(171).toFixed(3),
-        Math.log(259517).toFixed(3),
-        Math.log(2484).toFixed(3),
+        295,
+        96233,
+        723624,
+        Math.log(295).toFixed(3),
+        Math.log(723624).toFixed(3),
+        Math.log(96233).toFixed(3),
       ];
       this.option.series[2].data = [
         6.06,
