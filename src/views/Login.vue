@@ -436,9 +436,13 @@ export default {
       }
       Login.register(data)
       .then((res) => {
-        if (res.data) {
-            console.log(res.data);
+        if (res.data.msgno==0) {
+            // console.log(res.data);
             ElMessage.success("注册成功！");
+        }else if(res.data.msgno==-1){
+          ElMessage.error("用户名已存在！");
+        }else{
+          ElMessage.error("注册失败！");
         }
       })
       .catch((err) => {

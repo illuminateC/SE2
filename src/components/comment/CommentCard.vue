@@ -45,6 +45,10 @@
         isAdmin:false,
         user_id:-1,
         canDelete:false,
+        short_abstract: "",
+        commentOperate:false,
+        vote:0,
+        is_like:0,
       }
     },
     created() {
@@ -59,6 +63,8 @@
         }
         console.log(this.canDelete);
       }
+      this.vote=this.comment.is_like;
+      this.is_like=this.comment.is_like;
       console.log(this.comment);
       let list = JSON.parse(localStorage.getItem("paper_info"));
       if(list === null) return
@@ -74,20 +80,12 @@
         var data = {
           "comment_id": this.comment.id,
         }
-        if(this.vote==0){
+        if(this.is_like==0){
           Article.likeComment(data)
-          // .then((res) => {
-          //   if (res.data.message=='点赞成功！') {
-          //     console.log(res.data);
-          //     this.vote=1;
-          //   }else{
-          //     ElMessage.warning("未登录用户不能点赞哦");
-          //   }
-          // })
           .then((res) => {
             if (this.user_id!=-1) {
               console.log(res.data);
-              this.vote=1;
+              this.is_like=1;
             }else{
               ElMessage.warning("未登录用户不能点赞哦");
             }
@@ -95,12 +93,12 @@
           .catch((err) => {
             console.log(err);
           });
-        }else if(this.vote==1){
+        }else if(this.is_like==1){
           Article.dislikeComment(data)
           .then((res) => {
             if (res.data) {
               console.log(res.data);
-              this.vote=0;
+              this.is_like=0;
             }
           })
           .catch((err) => {
@@ -129,39 +127,32 @@
         ElMessage.success("删除成功！");
        
       },
-      getLikeCount(){return this.comment.like_count + (this.vote === 1?1:0);},
-      getDislikeCount(){return this.comment.dislike + (this.vote === 2?1:0);},
+      getLikeCount(){
+        if(this.vote==1){
+          if(this.is_like==0){
+            return this.comment.like_count-1;
+          }else{
+            return this.comment.like_count;
+          }
+        }if(this.vote==0){
+          if(this.is_like==0){
+            return this.comment.like_count;
+          }else{
+            return this.comment.like_count+1;
+          }
+        }
+        return this.comment.like_count;
+      },
+     
       getLikeType(){
-        if(this.vote==1)return "success";
+        if(this.is_like==1)return "success";
         else return "plain";
       },
-      getDislikeType(){
-        if(this.vote==2)return "danger";
-        else return "plain";
-      },
+      
       handleClick2(method) {
         console.log(method);
       },
-      dislikeOrLikeComment(method) {
-        let that = this;
-        let formData = new FormData();
-        formData.append("comment_id", this.comment.comment_id);
-        formData.append("user_id", localStorage.getItem("userid"));
-        if(method === this.vote) method = 0;
-        formData.append("method", method);
-        let config = { headers: { "Content-Type": "multipart/form-data", }, };
-        this.vote=method;
-        // axios.post(testurl, formData, config).then((response) => {
-        //   if (response) {
-        //     if (response.data.success) {
-        //       this.vote = method;
-        //       this.$parent.getCommentList();
-        //     } else {
-        //       console.log(response)
-        //     }
-        //   }
-        // });
-      },
+      
       operateComment(method) {
         let that = this;
         let formData = new FormData();
@@ -180,38 +171,8 @@
         });
       },
     },
-    data() {
-      return {
-        short_abstract: "",
-        // comment:{
-        //   on_top:true,
-        //   author_name:"田所浩二",
-        //   username: "",
-        //   create_time:"2020-12-18 20:23:23",
-        //   content:"this is an example comment",
-        //   paper_id:114,
-        //   like:114,
-        //   dislike:514,
-        //   status:'该条评论该用户已点赞',
-        // },
-        commentOperate:false,
-        vote:0,
-      };
-    },
-    // data() {
-    //     return {
-    //     short_abstract: "",
-    //     itemExample: {
-    //         username: "",
-    //         create_time:"2020-12-18 20:23:23",
-    //         comment:"this is an example comment",
-    //     },
-    //     vote:0,
-    //     commentOperate: false,
-    //     judgeSettle: false,
-    //     judgeSettle2: false,
-    //     };
-    // },
+    
+   
   };
   </script>
   
