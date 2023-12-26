@@ -12,7 +12,7 @@
                     </router-link>
                 </div>
                 <div v-else>
-                    <router-link tag="div" class="nav_bar_action_link" :to="{path:'/user/' + this.user_info.id}">
+                    <router-link tag="div" class="nav_bar_action_link" :to="{path:'/user/' + this.user_info.id}" target="_blank">
                         {{ $t("message.personal") }}
                     </router-link>
                     <div class="nav_bar_action_link">

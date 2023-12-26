@@ -136,13 +136,6 @@ const routes = [
     ]
   },
   {
-    path: '/test',
-    name: 'test',
-    component: function () {
-      return import('../views/TestView.vue')
-    }
-  },
-  {
     path: '/article/:articleId',
     name: 'articleDetail',
     component: function () {

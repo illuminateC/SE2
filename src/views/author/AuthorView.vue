@@ -367,7 +367,7 @@ export default {
       relationLoaded: false,
       author: {
         id: 1,
-        userId: "",
+        userId: 0,
         name: "Nishikigi Chisato",
         numOfPaper: 5,
         numOfCitation: 10086,
@@ -480,9 +480,10 @@ export default {
           AuthorAPI.getIfAuthenticated(data)
             .then((res) => {
               if (res.data.status === "true") {
-                this.authenticationAccessible = true;
-                this.author.userId = res.data.userid;
+                this.authenticationAccessible = true; 
               }
+              this.author.userId = res.data.userid;
+              console.log("author's user_id: " + this.author.userId);
             })
             .catch((err) => {
               console.log(err);
@@ -722,7 +723,8 @@ export default {
     },
     handleToUser() {
       if (this.author.userId !== 0) {
-        this.$router.push("user/" + this.author.userId);
+        // console.log(this.author.userId);
+        this.$router.push({name:"user",params:{"id":this.author.userId}});
       } else {
         ElMessage({
           message: '该学者尚未入驻平台',
