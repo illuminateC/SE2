@@ -1,7 +1,7 @@
 <template>
     <div id="nav_bar">
         <div class="nav_bar_frame">
-            <div class="nav_bar_icon">
+            <div class="nav_bar_icon" style="cursor: pointer;">
                 <div class="nav_bar_icon_title_bold" @click="backtostartpage">Spider</div>
                 <div class="nav_bar_icon_title" @click="backtostartpage">Scholar</div>
             </div>

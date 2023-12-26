@@ -108,10 +108,19 @@
               type="primary"
               plain
               @click="seeArticle()"
+              v-if="this.hasArticle==1"
+            ><el-icon style="margin-right: 10%;"><Download /></el-icon>下载原文
+            </el-button
+            >
+            <el-button
+              type="primary"
+              plain
+              @click="seeArticle()"
+              v-else
             ><el-icon style="margin-right: 10%;"><View /></el-icon>查看原文
             </el-button
             >
-            <el-dropdown v-if="this.article.starred === false">
+            <el-dropdown v-if="this.isfav == 0">
               <el-button
                 type="warning"
                 plain  
@@ -300,9 +309,11 @@ export default {
         listed:false,
         link:"",
       },
+      hasArticle:0,
       user_id:"",
       authors: [],
       fav:"",
+      isfav:0,
       collections:[],
       work_id:"",
       citationGraph:{},
@@ -366,12 +377,13 @@ export default {
       const info=JSON.parse(user_info);
       this.user_id=info.id; 
     }
+    this.isFav();
   },
   mounted() {
     this.getData();
     // this.getComments();
     this.getCollection();
-    this.isFav();
+    
   },
   methods: {
     isFav(){
@@ -380,8 +392,15 @@ export default {
       }
       Article.isFav(data)
       .then((res) => {
-        if (res.data) {
+        if(res.data){
           console.log(res.data);
+          if (res.data.isin==1) {
+            this.isfav=1;
+          }else{
+            this.isfav=0;
+          }
+        }else{
+          console.log("114");
         }
       })
       .catch((err) => {
@@ -397,7 +416,7 @@ export default {
       .then((res) => {
         if (res.data) {
           this.collections=res.data.package_list;
-          console.log(res.data);
+          
         }
       })
       .catch((err) => {
@@ -449,7 +468,13 @@ export default {
           });
           this.article.venue=res.data.specific_entity_data.locations.map(location => location.source.display_name);
           this.article.issn=res.data.specific_entity_data.locations.map(location => location.source.id);
-          this.article.link=res.data.specific_entity_data.locations[0].pdf_url;
+          if(res.data.specific_entity_data.locations[0].pdf_url){
+            this.article.link=res.data.specific_entity_data.locations[0].pdf_url;
+            this.hasArticle=1;
+          }else{
+            this.article.link=res.data.specific_entity_data.locations[0].landing_page_url;
+          }
+          
           this.authors=res.data.specific_entity_data.authorships.map(item => item.author);
           if(res.data.specific_entity_data.language=="en"){
             this.article.language="English";
@@ -518,7 +543,7 @@ export default {
       Article.addToFav(data)
       .then((res) => {
         if (res.data) {
-          this.article.starred=true;
+          this.isfav=1;
           this.fav=a;
           console.log(res.data);
         }
@@ -531,18 +556,22 @@ export default {
     removeFromFav(){
       var myArray = [];
       myArray.push(this.$route.params.articleId);
-      var data = {
-        "work_id_list": myArray,
-        "package_id": this.fav,
-      }
-      Article.removeFromFav(data)
-      .then((res) => {
-        if (res.data) {
-          this.article.starred=false;
+      this.collections.forEach((element) => {
+        this.fav=element.id; 
+        var data = {
+          "work_id_list": myArray,
+          "package_id": this.fav,
         }
-      })
-      .catch((err) => {
-        console.log(err);
+        Article.removeFromFav(data)
+        .then((res) => {
+          if (res.data) {
+            this.isfav=0;
+            console.log(res.data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       });
       
     },
