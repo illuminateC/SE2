@@ -259,7 +259,8 @@ export default {
                         if (response.data.result == -1) {
                             throw new Error("名称不能为空")
                         }
-                        this.$data.starList.push({ id: response.data.collection_package.id, name: name })
+                        this.$data.starList.push({ id: response.data.collection_package.id, name: name });
+                        this.$store.commit('setCollections', this.$data.starList.length)
                         return name;
                     } catch (error) {
                         Swal.showValidationMessage(error);
