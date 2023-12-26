@@ -141,9 +141,7 @@ export default {
             })
         },
         jump(id) {
-            const hasIdParam = this.$route.params.hasOwnProperty('id');
-            console.log(hasIdParam)
-            //this.$router.push({ name: "starList", params: { starId: id, isVisitor: hasIdParam } })
+            window.open("/article/"+id)
         },
         setHoverId(id) {
             this.$data.hoveredId = id

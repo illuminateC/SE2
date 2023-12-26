@@ -127,6 +127,18 @@ export default {
           id: "https://openalex.org/C154945302",
           imgsrc: require("../assets/HomePage/Artificial intelligence.jpg")
         },
+        {
+          id: "https://openalex.org/C17744445",
+          imgsrc: require("../assets/HomePage/Political science.jpg")
+        },
+        {
+          id: "https://openalex.org/C144024400",
+          imgsrc: require("../assets/HomePage/Sociology.jpg")
+        },
+        {
+          id: "https://openalex.org/C134018914",
+          imgsrc: require("../assets/HomePage/Endocrinology.jpg")
+        },
       ],
     }
   },

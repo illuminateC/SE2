@@ -134,10 +134,11 @@ export default defineComponent({
                 message.is_read = JSON.parse('true');
                 this.$data.unreads = this.$data.unreads - 1;
                 this.$store.commit('setUnreads', this.$data.unreads)
+                const data = { "id": messageId }
+                const response = await messageAPI.readMessage(data)
             }
             Swal.fire(message.content);
-            const data = { "id": messageId }
-            const response = await messageAPI.readMessage(data)
+            
 
 
         },
