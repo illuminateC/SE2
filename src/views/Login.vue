@@ -1,15 +1,11 @@
-/* eslint-disable */
 <template>
   <div id="login">
-    <audio id="bg-music" src="../assets/1203029617-1-192.mp3" autoplay loop></audio>
-    <el-container>
-      <el-main>
-        <div class="container" :class="{ 'right-panel-active': isRightPanelActive }" id="login-box">
+        <div class="container" :class="{ 'right-panel-active': isRightPanelActive }" id="login-box" >
           <div class="form-container sign-up-container">
             <form>
               <h1>注册</h1>
               <div class="txtb">
-                <input type="text" v-model="signupUsername" @focus="onFocus" @blur="onBlur" maxlength="8">
+                <input type="text" v-model="signupUsername" @focus="onFocus" @blur="onBlur" maxlength="16">
                 <span data-placeholder="输入您的用户名"></span>
               </div>
               <!-- <div class="txtb">
@@ -109,8 +105,7 @@
             </div>
           </div>
         </div>
-      </el-main>
-    </el-container>
+      
   </div>
 </template>
 <script>
@@ -439,6 +434,7 @@ export default {
         if (res.data.msgno==0) {
             // console.log(res.data);
             ElMessage.success("注册成功！");
+            this.isRightPanelActive=false;
         }else if(res.data.msgno==-1){
           ElMessage.error("用户名已存在！");
         }else{
@@ -528,7 +524,7 @@ a {
 }
 
 .container {
-  background: #fff;
+  background-color: transparent;
   border-radius: 10px;
   box-shadow: 0 14px 28px rgba(0, 0, 0, .25), 0 10px 10px rgba(0, 0, 0, .22);
   position: absolute;
@@ -781,5 +777,13 @@ button.ghost {
   transition: opacity 1s, transform .25s, filter .25s;
   backface-visibility: hidden;
 }
+
+#login{
+    background:url("../assets/avatar.jpg");
+    height:100%;
+    /* position:fixed; */
+    /* background-size:100% 100%; */
+}
+
 </style>
     

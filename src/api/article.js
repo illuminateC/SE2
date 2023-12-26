@@ -11,8 +11,15 @@ const url = {
     removeFromFav:"/collection/cancel_work",
     likeComment:"/comment/like_comment",
     dislikeComment:"/comment/dislike_comment",
+    isFav:"/collection/check_in_collection",
 }
 export class Article{
+    static async isFav(data) {
+        return service(url.isFav, {
+            method: "POST",
+            data,
+          });
+    }
     static async articleMess(data) {
         return service(url.articleMess, {
             method: "POST",

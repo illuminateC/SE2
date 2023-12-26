@@ -371,9 +371,23 @@ export default {
     this.getData();
     // this.getComments();
     this.getCollection();
-    
+    this.isFav();
   },
   methods: {
+    isFav(){
+      var data = {
+        "work_id": this.$route.params.articleId,
+      }
+      Article.isFav(data)
+      .then((res) => {
+        if (res.data) {
+          console.log(res.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    },
     getCollection(){
       // this.$Cookies.set('token', "8z2tki!hqm(fqk_(1)kle2i+j92!8wslzbs%h3(-xavat5b%_v");
       var data = {
