@@ -539,6 +539,7 @@ export default {
       var data = {
         "work_id": this.$route.params.articleId,
         "package_id": a,
+        "title":this.article.title,
       }
       Article.addToFav(data)
       .then((res) => {

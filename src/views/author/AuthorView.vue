@@ -90,7 +90,7 @@
               />
             </svg>
             <div style="margin-left: 5px; white-space: nowrap">
-              {{ this.author.hIndex }}次
+              {{ this.author.hIndex }}
             </div>
           </div>
         </div>
