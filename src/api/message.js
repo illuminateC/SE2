@@ -2,7 +2,7 @@ import service from "@/http/request";
 import Cookies from 'js-cookie';
 const url = {
     getMessageList: "/message/get_message_list",
-    readMeaage: "/message/read_message",
+    readMessage: "/message/read_message",
     readAllMessage: "/message/read_all/messages",
     deleteMessage: "/message/delete_message",
     deleteAllMessage: "/message/delete_all_messages",
@@ -17,8 +17,8 @@ const messageAPI = {
             }
         })
     },
-    async readMeaage(data) {
-        return service(url.readMeaage, {
+    async readMessage(data) {
+        return service(url.readMessage, {
             method: "post",
             data,
             headers: {

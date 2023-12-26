@@ -85,7 +85,8 @@ export default defineComponent({
             width: 30,
             isLoading: false,
             user_id: "",
-            hoveredId: ""
+            hoveredId: "",
+            unreads: ""
         };
     },
     computed: {
@@ -129,10 +130,15 @@ export default defineComponent({
         back() { this.$router.push({ name: "map", params: { id: this.$data.user_id } }) },
         async read(messageId) {
             const message = this.messageList.find(item => item.id == messageId)
-            message.is_read = JSON.parse('true');
+            if (message.is_read == false) {
+                message.is_read = JSON.parse('true');
+                this.$data.unreads = this.$data.unreads - 1;
+                this.$store.commit('setUnreads', this.$data.unreads)
+            }
             Swal.fire(message.content);
             const data = { "id": messageId }
-            const response = await messageAPI.readMeaage(data)
+            const response = await messageAPI.readMessage(data)
+
 
         },
         handleOver() {
@@ -165,6 +171,7 @@ export default defineComponent({
                 const data = { "receiver_id": this.$data.user_id }
                 const response = await messageAPI.getMessageList(data);
                 this.$data.messageList = response.data.message_list;
+                this.$data.unreads = response.data.unread;
 
             }
             catch (error) {
