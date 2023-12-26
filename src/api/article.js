@@ -18,13 +18,16 @@ export class Article{
         return service(url.isFav, {
             method: "POST",
             data,
+            headers: {
+                Authorization: getToken()
+            },
           });
     }
     static async articleMess(data) {
         return service(url.articleMess, {
             method: "POST",
             data,
-          });
+        });
     }
     static async articleComment(data) {
         return service(url.articleComment, {
