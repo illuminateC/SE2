@@ -5,7 +5,7 @@ export default createStore({
     avatar: null,
     follows: null,
     collections: null,
-    unreads:null,
+    unreads:0,
   },
   getters: {
     getAvatar: state => state.avatar

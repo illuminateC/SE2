@@ -308,7 +308,6 @@ export default {
             this.$store.commit('setFollows', this.$data.user.follows)
             this.$store.commit('setCollections', this.$data.user.collections)
             this.$store.commit('setUnreads', this.$data.user.unread_message_count)
-            alert(this.$data.user.unread_message_count)
             data = { "user_id": this.$data.loginId, "author_id": id }
             response = await followAPI.isFollow(data)
             this.$data.isFollow = response.data.is_follow
