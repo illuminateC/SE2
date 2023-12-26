@@ -432,7 +432,7 @@ export default {
       Login.register(data)
       .then((res) => {
         if (res.data.msgno==0) {
-            // console.log(res.data);
+            console.log(res.data);
             ElMessage.success("注册成功！");
             this.isRightPanelActive=false;
         }else if(res.data.msgno==-1){
